@@ -714,7 +714,7 @@
                             </div>
                             <div style="font-size: 6pt; color: #666; text-align: center; padding: 1px 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid #2c3e50; border-top: none; background: #f8f9fa;">
                                 <div style="text-align: center; border-right: 1px solid #2c3e50;">HRMO</div>
-                                <div style="text-align: center;">Municipal Administrator.</div>
+                                <div style="text-align: center;">Municipal Administrator</div>
                             </div>
 
                             <div style="font-size: 8pt; line-height: 1.2; display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">
@@ -789,11 +789,6 @@
                 const data = getFormData();
                 if (!data.driverName || !data.plateNo || !data.purpose || !data.placeVisited) {
                     errorMessageDiv.textContent = 'Please fill in the Driver, Vehicle, Place Visited, and Purpose fields.';
-                    errorMessageDiv.classList.remove('hidden');
-                    return false;
-                }
-                if (!data.departureTime || !data.arrivalTime) {
-                    errorMessageDiv.textContent = 'Please enter both Departure and Arrival times.';
                     errorMessageDiv.classList.remove('hidden');
                     return false;
                 }

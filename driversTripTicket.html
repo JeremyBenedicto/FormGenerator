@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver's Trip Ticket Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .page-container {
+            width: 8.5in; 
+            height: 11in;
+            margin: 0 auto;
+            box-sizing: border-box;
+            background: white;
+            color: #1a1a1a;
+            font-family: 'Roboto', sans-serif;
+            font-size: 9pt;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .trip-ticket-half {
+            height: 5.5in;
+            flex-shrink: 0;
+            padding: 0.15in 0.55in;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px dashed #999;
+            overflow: hidden;
+            font-size: 9pt;
+            background: white;
+            position: relative;
+        }
+
+        .trip-ticket-half::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2.5px;
+            background: linear-gradient(90deg, #2c3e50 0%, #3498db 50%, #2c3e50 100%);
+        }
+        
+        .trip-ticket-half:last-child {
+            border-bottom: none;
+        }
+
+        .header-box {
+            text-align: center;
+            margin-bottom: 2px;
+            padding-bottom: 2px;
+            border-bottom: 2px solid #3498db;
+            font-size: 8pt;
+            line-height: 1.2;
+        }
+
+        .header-box .institution {
+            font-weight: 700;
+            font-size: 8pt;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            color: #2c3e50;
+        }
+
+        .header-box .title {
+            font-weight: 700;
+            font-size: 11pt;
+            margin-top: 2px;
+            letter-spacing: 1.2px;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+
+        .header-box .copy-type {
+            font-weight: 600;
+            font-size: 7pt;
+            color: #e74c3c;
+            margin-top: 1px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 1px;
+            font-size: 9pt;
+            line-height: 1.3;
+        }
+
+        .info-label {
+            width: 50px;
+            font-weight: 700;
+            flex-shrink: 0;
+            color: #2c3e50;
+        }
+
+        .info-value {
+            flex: 1;
+            border-bottom: 1px solid #2c3e50;
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .passenger-section {
+            margin: 2px 0;
+            font-size: 8.5pt;
+        }
+
+        .passenger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.5pt;
+        }
+
+        .passenger-table th {
+            border: 1.5px solid #2c3e50;
+            padding: 2px 3px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            text-align: left;
+            font-size: 7.5pt;
+            text-transform: uppercase;
+        }
+
+        .passenger-table td {
+            border: 1px solid #2c3e50;
+            padding: 1px 3px;
+            height: 1.3em;
+            font-weight: 600;
+        }
+
+        .passenger-table tbody tr:nth-child(even) {
+            background: #ecf0f1;
+        }
+
+        .passenger-columns-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            margin: 2px 0;
+        }
+
+        .passenger-column-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .passenger-column-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+        }
+
+        .passenger-column-table th {
+            border: 1.5px solid #2c3e50;
+            padding: 2px 3px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            text-align: left;
+            font-size: 6.5pt;
+            text-transform: uppercase;
+        }
+
+        .passenger-column-table td {
+            border: 1px solid #2c3e50;
+            padding: 1px 2px;
+            height: 1.2em;
+            font-weight: 600;
+            font-size: 7.5pt;
+        }
+
+        .passenger-column-table tbody tr:nth-child(even) {
+            background: #ecf0f1;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 8pt;
+            margin-top: 2px;
+            margin-bottom: 1px;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .time-row {
+            display: flex;
+            margin-bottom: 2px;
+            font-size: 8.5pt;
+            align-items: center;
+        }
+
+        .time-label {
+            width: 45px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .time-value {
+            border-bottom: 1px solid #2c3e50;
+            padding: 0 3px;
+            min-width: 50px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .time-unit {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 7.5pt;
+            margin-left: 3px;
+        }
+
+        .fuel-grid {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 1px 3px;
+            margin-left: 2px;
+            font-size: 8pt;
+            line-height: 1.3;
+        }
+
+        .fuel-item-label {
+            font-weight: 700;
+            font-size: 8pt;
+            color: #2c3e50;
+        }
+
+        .fuel-item-value {
+            border-bottom: 1px solid #2c3e50;
+            padding: 0 2px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 8pt;
+        }
+
+        .fuel-item-unit {
+            font-size: 7.5pt;
+            font-weight: 600;
+            text-align: center;
+            min-width: 15px;
+        }
+
+        .total-row {
+            font-weight: 700;
+            margin: 1px 0;
+        }
+
+        .signature-line-inner {
+            border-bottom: 1px solid #2c3e50;
+            height: 1.2em;
+            margin-bottom: 1px;
+        }
+
+        .signature-label {
+            font-weight: 700;
+            font-size: 7.5pt;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: #fff;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #print-area {
+                display: block !important;
+                margin: 0;
+                width: 8.5in;
+                padding: 0;
+            }
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                page-break-after: always;
+                break-inside: avoid;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .passenger-row {
+            margin-bottom: 4px;
+        }
+
+        .control-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid #3498db;
+        }
+
+        .control-panel h1 {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        fieldset {
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+        }
+
+        fieldset legend {
+            color: #3498db !important;
+            font-weight: 700 !important;
+        }
+
+        input, textarea {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #3498db !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
+        }
+
+        #preview-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            transition: all 0.3s ease;
+        }
+
+        #preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        #generate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            transition: all 0.3s ease;
+        }
+
+        #generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto control-panel p-6 md:p-8 rounded-xl shadow-2xl no-print">
+        <h1 class="text-3xl font-bold text-center mb-1">Driver's Trip Ticket</h1>
+        <p class="text-center text-gray-600 mb-8 font-medium">Professional vehicle trip documentation system</p>
+
+        <fieldset class="mb-6 p-5 border rounded-lg">
+            <legend class="text-lg font-semibold px-2">Trip & Personnel Details</legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="driverName" class="block text-sm font-semibold text-gray-700 mb-2">Driver Name</label>
+                    <input type="text" id="driverName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Juan Dela Cruz" style="font-weight: 500;">
+                </div>
+                <div>
+                    <label for="plateNo" class="block text-sm font-semibold text-gray-700 mb-2">Vehicle Plate Number</label>
+                    <input type="text" id="plateNo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="SJD 1234" style="font-weight: 500;">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Passenger(s)</label>
+                    <div id="passengerInputs" class="space-y-2"></div>
+                    <button type="button" id="addPassengerBtn" class="mt-2 w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150 font-medium">
+                        + Add Passenger
+                    </button>
+                </div>
+                
+                <div>
+                    <label for="ticketDate" class="block text-sm font-semibold text-gray-700 mb-2">Ticket Date</label>
+                    <input type="date" id="ticketDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="placeVisited" class="block text-sm font-semibold text-gray-700 mb-2">Destination</label>
+                    <input type="text" id="placeVisited" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="PDRRMO, Cabanatuan City" style="font-weight: 500;">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="purpose" class="block text-sm font-semibold text-gray-700 mb-2">Purpose of Travel</label>
+                    <textarea id="purpose" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Describe the purpose of this trip..." style="font-weight: 500;"></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-6 p-5 border rounded-lg">
+            <legend class="text-lg font-semibold px-2">Time & Fuel Information</legend>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="departureTime" class="block text-sm font-semibold text-gray-700 mb-2">Departure Time</label>
+                    <input type="time" id="departureTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="arrivalTime" class="block text-sm font-semibold text-gray-700 mb-2">Arrival Time</label>
+                    <input type="time" id="arrivalTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="font-semibold text-gray-700">Fuel / Diesel (Liters)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="fuelBalance" class="block text-sm font-medium text-gray-600 mb-1">Balance in Tank</label>
+                        <input type="number" id="fuelBalance" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="fuelIssue" class="block text-sm font-medium text-gray-600 mb-1">Issue from Stock</label>
+                        <input type="number" id="fuelIssue" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="fuelPurchased" class="block text-sm font-medium text-gray-600 mb-1">Purchased</label>
+                        <input type="number" id="fuelPurchased" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div class="flex flex-col justify-end">
+                        <label for="fuelTotal" class="block text-sm font-semibold text-gray-700 mb-1">TOTAL</label>
+                        <input type="text" id="fuelTotal" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label for="fuelUse" class="block text-sm font-medium text-gray-600 mb-1">Used During Trip</label>
+                        <input type="number" id="fuelUse" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="fuelEndBalance" class="block text-sm font-medium text-gray-600 mb-1">End Balance</label>
+                        <input type="number" id="fuelEndBalance" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4 pt-6">
+                <h3 class="font-semibold text-gray-700">Lubricant (Liters)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="oilMotor" class="block text-sm font-medium text-gray-600 mb-1">Motor Oil</label>
+                        <input type="number" id="oilMotor" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="oilGear" class="block text-sm font-medium text-gray-600 mb-1">Gear Oil</label>
+                        <input type="number" id="oilGear" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-8 p-5 border rounded-lg">
+            <legend class="text-lg font-semibold px-2">Approvals</legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="recommendedName" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By</label>
+                    <input type="text" id="recommendedName" value="JENNELYN D. DALACAT" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                </div>
+                <div>
+                    <label for="approvedName" class="block text-sm font-semibold text-gray-700 mb-2">Approved By</label>
+                    <input type="text" id="approvedName" value="RICARDO A. SUBIDO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                </div>
+            </div>
+        </fieldset>
+
+        <div id="error-message" class="hidden text-red-600 text-center mb-4 font-medium p-3 bg-red-50 rounded-lg border border-red-200"></div>
+
+        <div class="flex justify-center space-x-4">
+            <button id="preview-btn" class="px-8 py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-150">
+                👁️ Preview
+            </button>
+            <button id="generate-btn" class="px-8 py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-150">
+                🖨️ Print (2 Copies)
+            </button>
+        </div>
+    </div>
+
+    <div id="preview-modal" class="modal-overlay hidden">
+        <div class="modal-content bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 my-8">
+            <div class="modal-header flex justify-between items-center p-5 border-b bg-gradient-to-r from-blue-600 to-blue-800">
+                <h2 class="text-xl font-bold text-white">Trip Ticket Preview</h2>
+                <button id="modal-close" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
+            </div>
+            <div id="preview-content" class="p-4 overflow-y-auto" style="max-height: 80vh;"></div>
+        </div>
+    </div>
+
+    <div id="print-area" class="hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const driverNameInput = document.getElementById('driverName');
+            const plateNoInput = document.getElementById('plateNo');
+            const placeVisitedInput = document.getElementById('placeVisited');
+            const ticketDateInput = document.getElementById('ticketDate');
+            const purposeInput = document.getElementById('purpose');
+            const departureTimeInput = document.getElementById('departureTime');
+            const arrivalTimeInput = document.getElementById('arrivalTime');
+            const fuelBalanceInput = document.getElementById('fuelBalance');
+            const fuelIssueInput = document.getElementById('fuelIssue');
+            const fuelPurchasedInput = document.getElementById('fuelPurchased');
+            const fuelTotalInput = document.getElementById('fuelTotal');
+            const fuelUseInput = document.getElementById('fuelUse');
+            const fuelEndBalanceInput = document.getElementById('fuelEndBalance');
+            const oilMotorInput = document.getElementById('oilMotor');
+            const oilGearInput = document.getElementById('oilGear');
+            const recommendedNameInput = document.getElementById('recommendedName');
+            const approvedNameInput = document.getElementById('approvedName');
+            const previewBtn = document.getElementById('preview-btn');
+            const generateBtn = document.getElementById('generate-btn');
+            const errorMessageDiv = document.getElementById('error-message');
+            const previewModal = document.getElementById('preview-modal');
+            const previewContent = document.getElementById('preview-content');
+            const printArea = document.getElementById('print-area');
+            const modalClose = document.getElementById('modal-close');
+            const passengerInputsContainer = document.getElementById('passengerInputs');
+            const addPassengerBtn = document.getElementById('addPassengerBtn');
+
+            function createPassengerRow(initialValue = '') {
+                const row = document.createElement('div');
+                row.className = 'flex space-x-2 items-center passenger-row';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = initialValue;
+                input.placeholder = 'Passenger Name';
+                input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm';
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'text-red-500 hover:text-red-700 p-1 rounded-full transition duration-150';
+                deleteBtn.innerHTML = '&#10005;';
+                deleteBtn.onclick = () => row.remove();
+                
+                row.appendChild(input);
+                row.appendChild(deleteBtn);
+                passengerInputsContainer.appendChild(row);
+            }
+
+            function getPassengerData() {
+                const passengers = [];
+                document.querySelectorAll('#passengerInputs input[type="text"]').forEach(input => {
+                    const name = input.value.trim().toUpperCase();
+                    if (name) passengers.push(name);
+                });
+                return passengers;
+            }
+
+            addPassengerBtn.addEventListener('click', () => createPassengerRow());
+            createPassengerRow('PEDRO REYES');
+            createPassengerRow('MARIA SANTOS');
+
+            function calculateTotalFuel() {
+                const balance = parseFloat(fuelBalanceInput.value) || 0;
+                const issue = parseFloat(fuelIssueInput.value) || 0;
+                const purchased = parseFloat(fuelPurchasedInput.value) || 0;
+                const total = balance + issue + purchased;
+                fuelTotalInput.value = total.toFixed(2);
+                return total.toFixed(2);
+            }
+
+            document.querySelectorAll('.fuel-input').forEach(input => {
+                input.addEventListener('input', calculateTotalFuel);
+            });
+
+            calculateTotalFuel();
+
+            function getFormData() {
+                const ticketDate = ticketDateInput.value ? new Date(ticketDateInput.value).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+                const formatTime = (time24) => {
+                    if (!time24) return '';
+                    try {
+                        const [hours, minutes] = time24.split(':');
+                        let h = parseInt(hours, 10);
+                        const m = minutes;
+                        const ampm = h >= 12 ? 'pm' : 'am';
+                        h = h % 12;
+                        h = h ? h : 12;
+                        return `${h}:${m} ${ampm}`;
+                    } catch (e) {
+                        return time24;
+                    }
+                };
+
+                return {
+                    driverName: driverNameInput.value.toUpperCase().trim(),
+                    plateNo: plateNoInput.value.toUpperCase().trim(),
+                    passengerNames: getPassengerData(),
+                    placeVisited: placeVisitedInput.value.toUpperCase().trim(),
+                    purpose: purposeInput.value.toUpperCase().trim(),
+                    departureTime: formatTime(departureTimeInput.value).trim(),
+                    arrivalTime: formatTime(arrivalTimeInput.value).trim(),
+                    date: ticketDate.toUpperCase(),
+                    fuelBalance: (parseFloat(fuelBalanceInput.value) || 0).toFixed(2),
+                    fuelIssue: (parseFloat(fuelIssueInput.value) || 0).toFixed(2),
+                    fuelPurchased: (parseFloat(fuelPurchasedInput.value) || 0).toFixed(2),
+                    fuelTotal: calculateTotalFuel(),
+                    fuelUse: (parseFloat(fuelUseInput.value) || 0).toFixed(2),
+                    fuelEndBalance: (parseFloat(fuelEndBalanceInput.value) || 0).toFixed(2),
+                    oilMotor: (parseFloat(oilMotorInput.value) || 0).toFixed(2),
+                    oilGear: (parseFloat(oilGearInput.value) || 0).toFixed(2),
+                    recommendedName: recommendedNameInput.value.toUpperCase().trim(),
+                    approvedName: approvedNameInput.value.toUpperCase().trim(),
+                };
+            }
+
+            function createPassengerTableHTML(passengers) {
+                const maxPerColumn = 4;
+                const numColumns = Math.ceil(passengers.length / maxPerColumn);
+                let html = '<div class="passenger-columns-container" style="grid-template-columns: ' + Array(numColumns).fill('1fr').join(' ') + ';">';
+                
+                for (let col = 0; col < numColumns; col++) {
+                    const start = col * maxPerColumn;
+                    const end = Math.min(start + maxPerColumn, passengers.length);
+                    const columnPassengers = passengers.slice(start, end);
+                    
+                    html += '<div class="passenger-column-wrapper">';
+                    html += '<table class="passenger-column-table">';
+                    html += '<thead><tr><th>NAME</th><th style="width: 40%; text-align: center;">SIGN</th></tr></thead>';
+                    html += '<tbody>';
+                    
+                    columnPassengers.forEach((name, idx) => {
+                        html += `<tr><td>${idx + 1}. ${name}</td><td>&nbsp;</td></tr>`;
+                    });
+                    
+                    html += '</tbody></table>';
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+                return html;
+            }
+
+            function createTripTicketHTML(data, copyType) {
+                const departureAMPM = data.departureTime.includes('pm') ? 'pm' : 'am';
+                const arrivalAMPM = data.arrivalTime.includes('pm') ? 'pm' : 'am';
+                const passengerTableHTML = createPassengerTableHTML(data.passengerNames);
+
+                return `
+                    <div class="trip-ticket-half">
+                        <div class="header-box">
+                            <div class="institution">Republic of the Philippines</div>
+                            <div class="institution">Province of Nueva Ecija</div>
+                            <div class="institution">Municipality of Gabaldon</div>
+                            <div class="title">DRIVER'S TRIP TICKET</div>
+                            <div class="copy-type">(${copyType})</div>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Date:</span>
+                            <span class="info-value">${data.date || '&nbsp;'}</span>
+                        </div>
+
+                        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="info-row">
+                                    <span class="info-label">Driver:</span>
+                                    <span class="info-value">${data.driverName || '&nbsp;'}</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Plate:</span>
+                                    <span class="info-value">${data.plateNo || '&nbsp;'}</span>
+                                </div>
+
+                                <div class="passenger-section">
+                                    ${passengerTableHTML}
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Dest:</span>
+                                    <span class="info-value">${data.placeVisited || '&nbsp;'}</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Purpose:</span>
+                                    <span class="info-value">${data.purpose || '&nbsp;'}</span>
+                                </div>
+                            </div>
+
+                            <div style="border: 1px solid #2c3e50; font-size: 7.5pt; margin: 1px 0; background: #f8f9fa; display: grid; grid-template-columns: 1fr 1fr;">
+                                <div style="display: flex; border-right: 1px solid #2c3e50; min-height: 1.8em;">
+                                    <div style="font-weight: 700; padding: 2px 3px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #2c3e50; background: #ecf0f1; font-size: 6.5pt; white-space: nowrap;">Recommended by:</div>
+                                    <div style="flex: 1; padding: 15px 3px 2px 3px; display: flex; align-items: center; justify-content: center;">
+                                        <div style="text-align: center; width: 100%; border-bottom: 1px solid #2c3e50; font-weight: 700; font-size: 7pt; min-height: 1.1em;">${data.recommendedName || '&nbsp;'}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; min-height: 1.8em;">
+                                    <div style="font-weight: 700; padding: 2px 3px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #2c3e50; background: #ecf0f1; font-size: 6.5pt; white-space: nowrap;">Approved by:</div>
+                                    <div style="flex: 1; padding: 15px 3px 2px 3px; display: flex; align-items: center; justify-content: center;">
+                                        <div style="text-align: center; width: 100%; border-bottom: 1px solid #2c3e50; font-weight: 700; font-size: 7pt; min-height: 1.1em;">${data.approvedName || '&nbsp;'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="font-size: 6pt; color: #666; text-align: center; padding: 1px 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid #2c3e50; border-top: none; background: #f8f9fa;">
+                                <div style="text-align: center; border-right: 1px solid #2c3e50;">HRMO</div>
+                                <div style="text-align: center;">Municipal Administrator.</div>
+                            </div>
+
+                            <div style="font-size: 8pt; line-height: 1.2; display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">
+                                <div>
+                                    <div class="time-row" style="margin-bottom: 1px;">
+                                        <span style="font-weight: 700; font-size: 8pt; width: 45px; flex-shrink: 0;">1. Depart:</span>
+                                        <span class="time-value" style="min-width: 40px;">${data.departureTime.split(' ')[0] || '&nbsp;'}</span>
+                                        <span class="time-unit" style="width: 20px;">${departureAMPM}</span>
+                                    </div>
+
+                                    <div class="time-row" style="margin-bottom: 1px;">
+                                        <span style="font-weight: 700; font-size: 8pt; width: 45px; flex-shrink: 0;">2. Arrival:</span>
+                                        <span class="time-value" style="min-width: 40px;">${data.arrivalTime.split(' ')[0] || '&nbsp;'}</span>
+                                        <span class="time-unit" style="width: 20px;">${arrivalAMPM}</span>
+                                    </div>
+
+                                    <div class="section-title" style="margin-top: 1px; margin-bottom: 1px; font-size: 7.5pt;">3. Fuel/Diesel:</div>
+                                    <div class="fuel-grid" style="grid-template-columns: auto 1fr auto; font-size: 7.5pt;">
+                                        <span class="fuel-item-label">a. Balance:</span>
+                                        <span class="fuel-item-value">${data.fuelBalance}</span>
+                                        <span class="fuel-item-unit">L</span>
+
+                                        <span class="fuel-item-label">b. Issue:</span>
+                                        <span class="fuel-item-value">${data.fuelIssue}</span>
+                                        <span class="fuel-item-unit">L</span>
+
+                                        <span class="fuel-item-label">c. Purchased:</span>
+                                        <span class="fuel-item-value">${data.fuelPurchased}</span>
+                                        <span class="fuel-item-unit">L</span>
+
+                                        <span class="fuel-item-label total-row">TOTAL:</span>
+                                        <span class="fuel-item-value total-row">${data.fuelTotal}</span>
+                                        <span class="fuel-item-unit total-row">L</span>
+
+                                        <span class="fuel-item-label">d. Used:</span>
+                                        <span class="fuel-item-value">${data.fuelUse}</span>
+                                        <span class="fuel-item-unit">L</span>
+
+                                        <span class="fuel-item-label">e. End Balance:</span>
+                                        <span class="fuel-item-value">${data.fuelEndBalance}</span>
+                                        <span class="fuel-item-unit">L</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="section-title" style="margin-bottom: 1px; font-size: 7.5pt;">Lubricant:</div>
+                                    <div class="fuel-grid" style="grid-template-columns: auto 1fr auto; font-size: 7.5pt;">
+                                        <span class="fuel-item-label">a. Motor Oil:</span>
+                                        <span class="fuel-item-value">${data.oilMotor}</span>
+                                        <span class="fuel-item-unit">L</span>
+
+                                        <span class="fuel-item-label">b. Gear Oil:</span>
+                                        <span class="fuel-item-value">${data.oilGear}</span>
+                                        <span class="fuel-item-unit">L</span>
+                                    </div>
+
+                                    <div style="margin-top: 5px; border-top: 1px solid #ddd; padding-top: 2px;">
+                                        <div class="section-title" style="margin-bottom: 1px; font-size: 7.5pt;">Signature:</div>
+                                        <div style="text-align: center;">
+                                            <div class="signature-line-inner" style="height: 0.9em;"></div>
+                                            <div class="signature-label" style="font-size: 6.5pt;">Driver</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function validateForm() {
+                const data = getFormData();
+                if (!data.driverName || !data.plateNo || !data.purpose || !data.placeVisited) {
+                    errorMessageDiv.textContent = 'Please fill in the Driver, Vehicle, Place Visited, and Purpose fields.';
+                    errorMessageDiv.classList.remove('hidden');
+                    return false;
+                }
+                if (!data.departureTime || !data.arrivalTime) {
+                    errorMessageDiv.textContent = 'Please enter both Departure and Arrival times.';
+                    errorMessageDiv.classList.remove('hidden');
+                    return false;
+                }
+                if (data.passengerNames.length === 0) {
+                    errorMessageDiv.textContent = 'Please add at least one passenger.';
+                    errorMessageDiv.classList.remove('hidden');
+                    return false;
+                }
+                errorMessageDiv.classList.add('hidden');
+                return true;
+            }
+
+            function handlePreview() {
+                if (validateForm()) {
+                    const data = getFormData();
+                    previewContent.innerHTML = `<div class="trip-ticket-container">${createTripTicketHTML(data, "PREVIEW COPY")}</div>`;
+                    previewModal.classList.remove('hidden');
+                }
+            }
+
+            function handleGenerate() {
+                if (validateForm()) {
+                    const data = getFormData();
+                    const ticketHTML_Driver = createTripTicketHTML(data, "DRIVER'S COPY");
+                    const ticketHTML_Office = createTripTicketHTML(data, "OFFICE COPY");
+                    const pageContainer = document.createElement('div');
+                    pageContainer.className = 'page-container';
+                    pageContainer.innerHTML = ticketHTML_Driver + ticketHTML_Office;
+                    printArea.innerHTML = '';
+                    printArea.appendChild(pageContainer);
+                    window.print();
+                }
+            }
+
+            previewBtn.addEventListener('click', handlePreview);
+            generateBtn.addEventListener('click', handleGenerate);
+            modalClose.addEventListener('click', () => {
+                previewModal.classList.add('hidden');
+            });
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) {
+                    previewModal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

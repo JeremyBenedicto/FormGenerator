@@ -470,14 +470,22 @@
 
         <fieldset class="mb-8 p-5 border rounded-lg">
             <legend class="text-lg font-semibold px-2">Approvals</legend>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
                 <div>
-                    <label for="recommendedName" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By</label>
+                    <label for="recommendedName" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By (Name)</label>
                     <input type="text" id="recommendedName" value="JENNELYN D. DALACAT" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
                 </div>
                 <div>
-                    <label for="approvedName" class="block text-sm font-semibold text-gray-700 mb-2">Approved By</label>
+                    <label for="recommendedTitle" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By (Position)</label>
+                    <input type="text" id="recommendedTitle" value="HRMO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                </div>
+                <div>
+                    <label for="approvedName" class="block text-sm font-semibold text-gray-700 mb-2">Approved By (Name)</label>
                     <input type="text" id="approvedName" value="RICARDO A. SUBIDO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                </div>
+                <div>
+                    <label for="approvedTitle" class="block text-sm font-semibold text-gray-700 mb-2">Approved By (Position)</label>
+                    <input type="text" id="approvedTitle" value="Municipal Administrator" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
                 </div>
             </div>
         </fieldset>
@@ -524,7 +532,9 @@
             const oilMotorInput = document.getElementById('oilMotor');
             const oilGearInput = document.getElementById('oilGear');
             const recommendedNameInput = document.getElementById('recommendedName');
+            const recommendedTitleInput = document.getElementById('recommendedTitle');
             const approvedNameInput = document.getElementById('approvedName');
+            const approvedTitleInput = document.getElementById('approvedTitle');
             const previewBtn = document.getElementById('preview-btn');
             const generateBtn = document.getElementById('generate-btn');
             const errorMessageDiv = document.getElementById('error-message');
@@ -620,7 +630,9 @@
                     oilMotor: (parseFloat(oilMotorInput.value) || 0).toFixed(2),
                     oilGear: (parseFloat(oilGearInput.value) || 0).toFixed(2),
                     recommendedName: recommendedNameInput.value.toUpperCase().trim(),
+                    recommendedTitle: recommendedTitleInput.value.toUpperCase().trim(),
                     approvedName: approvedNameInput.value.toUpperCase().trim(),
+                    approvedTitle: approvedTitleInput.value.toUpperCase().trim(),
                 };
             }
 
@@ -713,8 +725,8 @@
                                 </div>
                             </div>
                             <div style="font-size: 6pt; color: #666; text-align: center; padding: 1px 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid #2c3e50; border-top: none; background: #f8f9fa;">
-                                <div style="text-align: center; border-right: 1px solid #2c3e50;">HRMO</div>
-                                <div style="text-align: center;">Municipal Administrator</div>
+                                <div style="text-align: center; border-right: 1px solid #2c3e50;">${data.recommendedTitle || '&nbsp;'}</div>
+                                <div style="text-align: center;">${data.approvedTitle || '&nbsp;'}</div>
                             </div>
 
                             <div style="font-size: 8pt; line-height: 1.2; display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">

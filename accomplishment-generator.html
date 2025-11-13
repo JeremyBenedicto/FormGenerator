@@ -113,6 +113,12 @@
         .button-container button.print-btn:hover {
             background-color: #1e7e34;
         }
+        .button-container button.clear-btn {
+            background-color: #dc3545;
+        }
+        .button-container button.clear-btn:hover {
+            background-color: #c82333;
+        }
         /* New Credit Style */
         #credit-obet {
             text-align: center;
@@ -126,7 +132,169 @@
             margin-right: 5px;
             color: #0056b3; /* Color the icon blue for emphasis */
         }
+        
+        /* Toast notification style */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success {
+            background-color: #28a745;
+        }
+        .toast.info {
+            background-color: #17a2b8;
+        }
 
+        /* Update Notification Modal */
+        .update-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .update-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .update-card {
+            background: white;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+        .update-modal.show .update-card {
+            transform: scale(1);
+        }
+        .update-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        .update-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+        .update-header .version-badge {
+            display: inline-block;
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .update-header .update-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+        .update-body {
+            padding: 30px;
+        }
+        .update-body h3 {
+            color: #2d3748;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        .update-body h3 span {
+            margin-right: 10px;
+            color: #007bff;
+        }
+        .update-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .update-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .update-list li:last-child {
+            border-bottom: none;
+        }
+        .update-list li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .update-footer {
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .update-footer button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .update-footer button:hover {
+            background-color: #0056b3;
+        }
+        .update-footer button:active {
+            transform: translateY(1px);
+        }
+        .dont-show-again {
+            margin-top: 15px;
+        }
+        .dont-show-again label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        .dont-show-again input[type="checkbox"] {
+            margin-right: 8px;
+        }
 
         /* Report container styling (A4-like paper) - PROFESSIONAL ENHANCEMENT */
         .report-container {
@@ -304,7 +472,7 @@
                 font-family: 'Lato', serif;
             }
             
-            .controls, #credit-obet { /* Hide controls AND the credit line when printing */
+            .controls, #credit-obet, .toast, .update-modal { /* Hide controls, credit line, toast AND update modal when printing */
                 display: none;
             }
 
@@ -357,6 +525,42 @@
 </head>
 <body>
 
+    <!-- Update Notification Modal -->
+    <div id="updateModal" class="update-modal">
+        <div class="update-card">
+            <div class="update-header">
+                <span class="update-icon">🚀</span>
+                <h2>What's New!</h2>
+                <div class="version-badge">Version 1.2.0</div>
+            </div>
+            <div class="update-body">
+                <h3><span>✨</span>Latest Updates</h3>
+                <ul class="update-list">
+                    <li><strong>Data Persistence:</strong> Your form data is now automatically saved and restored when you return</li>
+                    <li><strong>Smart Notifications:</strong> Get real-time feedback with toast notifications for all actions</li>
+                    <li><strong>Clear Data Option:</strong> New button to reset all saved data when needed</li>
+                    <li><strong>Enhanced UI:</strong> Improved visual design with better color schemes and transitions</li>
+                    <li><strong>Bug Fixes:</strong> Resolved timezone issues and improved date handling</li>
+                </ul>
+                <h3><span>💡</span>Tips</h3>
+                <ul class="update-list">
+                    <li>All your data is saved automatically as you type</li>
+                    <li>Click on any task cell to edit it directly</li>
+                    <li>Empty cells will restore to default values automatically</li>
+                </ul>
+            </div>
+            <div class="update-footer">
+                <button id="closeUpdateModal">Get Started</button>
+                <div class="dont-show-again">
+                    <label>
+                        <input type="checkbox" id="dontShowAgain">
+                        Don't show this message again
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="controls">
         <h2>Report Generator Controls <span style="color: #4a5568;">| DATA INPUT</span></h2>
         <div class="control-grid">
@@ -400,9 +604,10 @@
         <div class="button-container">
             <button id="generate-btn">Generate Report</button>
             <button id="print-btn" class="print-btn">Print Report 📄</button>
+            <button id="clear-btn" class="clear-btn">Clear Saved Data</button>
         </div>
 
-        <div id="credit-obet"><span class="icon">💻</span>Jeremy v1.0.1</div>
+        <div id="credit-obet"><span class="icon">💻</span>Jeremy v1.2.0</div>
     </div>
 
     <div class="report-container">
@@ -452,12 +657,105 @@
         </footer>
     </div>
 
+    <!-- Toast notification element -->
+    <div id="toast" class="toast"></div>
+
     <script>
         // Get references to all interactive elements
         const generateBtn = document.getElementById('generate-btn');
         const printBtn = document.getElementById('print-btn');
+        const clearBtn = document.getElementById('clear-btn');
         const allInputs = document.querySelectorAll('.controls input');
         const reportBody = document.getElementById('report-body');
+        const toast = document.getElementById('toast');
+        const updateModal = document.getElementById('updateModal');
+        const closeUpdateModalBtn = document.getElementById('closeUpdateModal');
+        const dontShowAgainCheckbox = document.getElementById('dontShowAgain');
+
+        // Storage keys for localStorage
+        const STORAGE_KEY = 'accomplishment_report_data';
+        const UPDATE_MODAL_KEY = 'hide_update_modal_v1_2_0';
+        const LAST_SEEN_VERSION = 'last_seen_version';
+
+        /**
+         * Shows the update notification modal
+         */
+        function showUpdateModal() {
+            // Check if user has chosen to hide this update
+            const hideModal = localStorage.getItem(UPDATE_MODAL_KEY);
+            const lastSeenVersion = localStorage.getItem(LAST_SEEN_VERSION);
+            
+            // Only show if not hidden or if version has changed
+            if (hideModal !== 'true' || lastSeenVersion !== '1.2.0') {
+                setTimeout(() => {
+                    updateModal.classList.add('show');
+                }, 500); // Small delay to ensure page is loaded
+            }
+        }
+
+        /**
+         * Hides the update notification modal
+         */
+        function hideUpdateModal() {
+            updateModal.classList.remove('show');
+            
+            // Save user preference if checkbox is checked
+            if (dontShowAgainCheckbox.checked) {
+                localStorage.setItem(UPDATE_MODAL_KEY, 'true');
+                localStorage.setItem(LAST_SEEN_VERSION, '1.2.0');
+            }
+        }
+
+        /**
+         * Shows a toast notification
+         * @param {string} message - The message to display
+         * @param {string} type - The type of toast (success, info, error)
+         */
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            setTimeout(() => {
+                toast.className = toast.className.replace('show', '');
+            }, 3000);
+        }
+
+        /**
+         * Saves all form data to localStorage
+         */
+        function saveFormData() {
+            const formData = {};
+            allInputs.forEach(input => {
+                formData[input.id] = input.value;
+            });
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        }
+
+        /**
+         * Loads form data from localStorage
+         */
+        function loadFormData() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                allInputs.forEach(input => {
+                    if (formData[input.id]) {
+                        input.value = formData[input.id];
+                    }
+                });
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Clears all saved data from localStorage
+         */
+        function clearSavedData() {
+            localStorage.removeItem(STORAGE_KEY);
+            showToast('Saved data cleared', 'info');
+        }
 
         /**
          * Formats a Date object into MM/DD/YYYY string.
@@ -597,7 +895,7 @@
                            event.target.style.textAlign = 'center';
                     } else {
                         // Ensure edited text is left-aligned unless it's a weekend default
-                        event.target.style.textAlign = 'left';
+                        eventTarget.style.textAlign = 'left';
                     }
                 });
 
@@ -612,9 +910,12 @@
 
         // 4. Attach Event Listeners
 
-        // Regenerate report whenever an input value changes
+        // Save data and regenerate report whenever an input value changes
         allInputs.forEach(input => {
-            input.addEventListener('input', generateReport);
+            input.addEventListener('input', () => {
+                saveFormData();
+                generateReport();
+            });
         });
 
         // Explicit button click listener
@@ -625,8 +926,51 @@
             window.print();
         });
 
-        // Generate report on page load with initial values
-        window.addEventListener('load', generateReport);
+        // Clear data button handler
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all saved data?')) {
+                clearSavedData();
+                // Reset to default values
+                allInputs.forEach(input => {
+                    if (input.id === 'employee-name') input.value = 'JEREMY C. BENEDICTO';
+                    else if (input.id === 'employee-position') input.value = 'JOB ORDER';
+                    else if (input.id === 'department-name') input.value = 'HUMAN RESOURCE MANAGEMENT OFFICE';
+                    else if (input.id === 'start-date') input.value = '2025-10-01';
+                    else if (input.id === 'end-date') input.value = '2025-10-15';
+                    else if (input.id === 'default-task') input.value = 'Continued system development for Municipal Digital Billboard';
+                    else if (input.id === 'certifier-name') input.value = 'JENNELYN D. DALACAT';
+                    else if (input.id === 'certifier-title') input.value = 'Head of HRMO';
+                    else input.value = '';
+                });
+                generateReport();
+            }
+        });
+
+        // Update modal event listeners
+        closeUpdateModalBtn.addEventListener('click', hideUpdateModal);
+        
+        // Close modal when clicking outside
+        updateModal.addEventListener('click', (e) => {
+            if (e.target === updateModal) {
+                hideUpdateModal();
+            }
+        });
+
+        // Load saved data on page load and generate report
+        window.addEventListener('load', () => {
+            const hasSavedData = loadFormData();
+            generateReport();
+            
+            // Show update modal
+            showUpdateModal();
+            
+            // Show welcome message after a delay (after modal might be closed)
+            setTimeout(() => {
+                if (hasSavedData) {
+                    showToast('Welcome back! Your previous data has been loaded.', 'success');
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>

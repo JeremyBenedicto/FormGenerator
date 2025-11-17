@@ -1,859 +1,862 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locator Slip & Travel Order Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locator Slip & Travel Order Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body {
+font-family: 'Inter', sans-serif;
+}
 
-        .form-container {
-            width: 8.5in;
-            height: 13in;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 0.75in;
-            box-sizing: border-box;
-            font-family: 'Times New Roman', Times, serif;
-            color: #000;
-            background: #fff;
-        }
+.form-container {
+width: 8.5in;
+height: 13in;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+padding: 0.75in;
+box-sizing: border-box;
+font-family: 'Times New Roman', Times, serif;
+color: #000;
+background: #fff;
+}
 
-        .form-half {
-            min-height: 6in;
-            max-height: 6in;
-            border: 2px solid #1a3a52;
-            padding: 0.35in 0.4in;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            background: #fff;
-            position: relative;
-            page-break-inside: avoid;
-            overflow: hidden;
-        }
+.form-half {
+min-height: 6in;
+max-height: 6in;
+border: 2px solid #1a3a52;
+padding: 0.35in 0.4in;
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+background: #fff;
+position: relative;
+page-break-inside: avoid;
+overflow: hidden;
+}
 
-        .form-half + .form-half {
-            border-top: 3px dashed #1a3a52;
-            margin-top: 0.2in;
-        }
+.form-half + .form-half {
+border-top: 3px dashed #1a3a52;
+margin-top: 0.2in;
+}
 
-        .form-half::before,
-        .form-half::after {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border: 2.5px solid #1a3a52;
-        }
+.form-half::before,
+.form-half::after {
+content: '';
+position: absolute;
+width: 18px;
+height: 18px;
+border: 2.5px solid #1a3a52;
+}
 
-        .form-half::before {
-            top: 6px;
-            left: 6px;
-            border-right: none;
-            border-bottom: none;
-        }
+.form-half::before {
+top: 6px;
+left: 6px;
+border-right: none;
+border-bottom: none;
+}
 
-        .form-half::after {
-            top: 6px;
-            right: 6px;
-            border-left: none;
-            border-bottom: none;
-        }
+.form-half::after {
+top: 6px;
+right: 6px;
+border-left: none;
+border-bottom: none;
+}
 
-        .form-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            line-height: 1.3;
-            margin-bottom: 8px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #1a3a52;
-            font-size: 0.82rem;
-            flex-shrink: 0;
-        }
+.form-header {
+display: flex;
+align-items: center;
+gap: 12px;
+line-height: 1.3;
+margin-bottom: 8px;
+padding-bottom: 6px;
+border-bottom: 2px solid #1a3a52;
+font-size: 0.82rem;
+flex-shrink: 0;
+}
 
-        .form-header-logo {
-            flex-shrink: 0;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            overflow: hidden;
-        }
+.form-header-logo {
+flex-shrink: 0;
+width: 50px;
+height: 50px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+overflow: hidden;
+}
 
-        .form-header-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+.form-header-logo img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+}
 
-        .form-header-content {
-            text-align: center;
-            flex: 1;
-        }
+.form-header-content {
+text-align: center;
+flex: 1;
+}
 
-        .form-header-content div:first-child,
-        .form-header-content div:nth-child(2) {
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+.form-header-content div:first-child,
+.form-header-content div:nth-child(2) {
+font-size: 0.8rem;
+font-weight: 500;
+}
 
-        .form-header-content strong {
-            font-size: 0.95rem;
-            font-weight: 700;
-            display: block;
-            margin: 2px 0;
-        }
+.form-header-content strong {
+font-size: 0.95rem;
+font-weight: 700;
+display: block;
+margin: 2px 0;
+}
 
-        .form-header-content div:last-child {
-            font-size: 0.75rem;
-            margin-top: 2px;
-            letter-spacing: 2px;
-        }
+.form-header-content div:last-child {
+font-size: 0.75rem;
+margin-top: 2px;
+letter-spacing: 2px;
+}
 
-        .form-title {
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin: 6px 0 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #1a3a52;
-            border-bottom: 2px solid #d4af37;
-            border-top: 2px solid #d4af37;
-            padding: 3px 0;
-            flex-shrink: 0;
-        }
+.form-title {
+text-align: center;
+font-weight: 700;
+font-size: 0.95rem;
+margin: 6px 0 8px 0;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: #1a3a52;
+border-bottom: 2px solid #d4af37;
+border-top: 2px solid #d4af37;
+padding: 3px 0;
+flex-shrink: 0;
+}
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 110px 1fr;
-            gap: 5px 3px;
-            font-size: 0.87rem;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-        
-        .form-grid .label {
-            font-weight: 700;
-            color: #1a3a52;
-            font-size: 0.88rem;
-        }
+.form-grid {
+display: grid;
+grid-template-columns: 110px 1fr;
+gap: 5px 3px;
+font-size: 0.87rem;
+flex-grow: 1;
+overflow: hidden;
+}
 
-        .form-grid .data {
-            font-weight: 500;
-            padding: 0 4px;
-            min-height: 20px;
-            color: #2d4a5f;
-        }
+.form-grid .label {
+font-weight: 700;
+color: #1a3a52;
+font-size: 0.88rem;
+}
 
-        .form-grid .data-lined {
-            border-bottom: 1.5px solid #1a3a52;
-            padding-bottom: 2px;
-        }
+.form-grid .data {
+font-weight: 500;
+padding: 0 4px;
+min-height: 20px;
+color: #2d4a5f;
+}
 
-        .form-grid .data div {
-            margin: 1px 0;
-            line-height: 1.25;
-        }
+.form-grid .data-lined {
+border-bottom: 1.5px solid #1a3a52;
+padding-bottom: 2px;
+}
 
-        .employee-table {
-            grid-column: 1 / -1;
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-            margin: 4px 0;
-            /* Removed min-height to allow auto-adjustment */
-        }
+.form-grid .data div {
+margin: 1px 0;
+line-height: 1.25;
+}
 
-        .employee-table thead {
-            background: #1a3a52;
-            color: white;
-        }
+.employee-table {
+grid-column: 1 / -1;
+width: 100%;
+border-collapse: collapse;
+font-size: 0.8rem;
+margin: 4px 0;
+/* Removed min-height to allow auto-adjustment */
+}
 
-        .employee-table th {
-            padding: 3px 4px;
-            text-align: left;
-            font-weight: 700;
-            border: 1px solid #1a3a52;
-            font-size: 0.75rem;
-        }
+.employee-table thead {
+background: #1a3a52;
+color: white;
+}
 
-        .employee-table td {
-            padding: 2px 4px;
-            border: 1px solid #ccc;
-            text-align: left;
-            line-height: 1.1;
-            /* Removed fixed height to allow auto-adjustment */
-        }
+.employee-table th {
+padding: 3px 4px;
+text-align: left;
+font-weight: 700;
+border: 1px solid #1a3a52;
+font-size: 0.75rem;
+}
 
-        .employee-table tbody tr {
-            border-bottom: 1px solid #ccc;
-        }
+.employee-table td {
+padding: 2px 4px;
+border: 1px solid #ccc;
+text-align: left;
+line-height: 1.1;
+/* Removed fixed height to allow auto-adjustment */
+}
 
-        .employee-table tbody tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        .form-grid .full-span {
-            grid-column: 1 / -1;
-        }
+.employee-table tbody tr {
+border-bottom: 1px solid #ccc;
+}
 
-        .employee-signature-grid {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px 12px;
-            margin: 6px 0;
-            padding: 8px 0;
-            border-top: 1px solid #999;
-            border-bottom: 1px solid #999;
-        }
+.employee-table tbody tr:nth-child(even) {
+background: #f9f9f9;
+}
 
-        .employee-sig-block {
-            display: flex;
-            flex-direction: column;
-            font-size: 0.7rem;
-            justify-content: flex-start;
-        }
+.form-grid .full-span {
+grid-column: 1 / -1;
+}
 
-        .employee-sig-block .label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #1a3a52;
-            margin-bottom: 3px;
-        }
+.employee-signature-grid {
+grid-column: 1 / -1;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 8px 12px;
+margin: 6px 0;
+padding: 8px 0;
+border-top: 1px solid #999;
+border-bottom: 1px solid #999;
+}
 
-        .employee-sig-block .sig-space {
-            border-top: 1px solid #1a3a52;
-            height: 24px;
-            margin-bottom: 1px;
-        }
+.employee-sig-block {
+display: flex;
+flex-direction: column;
+font-size: 0.7rem;
+justify-content: flex-start;
+}
 
-        .employee-sig-block .emp-name {
-            font-weight: 700;
-            font-size: 0.65rem;
-            color: #1a3a52;
-            text-transform: uppercase;
-            line-height: 1.1;
-        }
+.employee-sig-block .label {
+font-size: 0.65rem;
+font-weight: 600;
+color: #1a3a52;
+margin-bottom: 3px;
+}
 
-        .signature-section {
-            margin-top: auto;
-            padding-top: 8px;
-            border-top: 2px solid #1a3a52;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 12px;
-            font-size: 0.75rem;
-        }
-        
-        .signature-block {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            text-align: center;
-        }
-        
-        .signature-block .label {
-            margin-bottom: 6px;
-            font-size: 0.72rem;
-            color: #1a3a52;
-            font-weight: 600;
-        }
-        
-        .signature-block .signature-line {
-            border-top: 1px solid #1a3a52;
-            min-height: 24px;
-            margin-bottom: 2px;
-            position: relative;
-        }
+.employee-sig-block .sig-space {
+border-top: 1px solid #1a3a52;
+height: 24px;
+margin-bottom: 1px;
+}
 
-        .signature-block .signature-line::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85%;
-            height: 0.5px;
-            background: #d0d0d0;
-            opacity: 0.6;
-        }
-        
-        .signature-block .name {
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.68rem;
-            color: #1a3a52;
-            letter-spacing: 0.3px;
-            line-height: 1.1;
-        }
-        
-        .signature-block .title {
-            font-style: italic;
-            font-size: 0.62rem;
-            color: #2d4a5f;
-            margin-top: 0px;
-            line-height: 1;
-        }
+.employee-sig-block .emp-name {
+font-weight: 700;
+font-size: 0.65rem;
+color: #1a3a52;
+text-transform: uppercase;
+line-height: 1.1;
+}
 
-        .copy-footer {
-            text-align: right;
-            font-style: italic;
-            font-size: 0.72rem;
-            margin-top: 4px;
-            color: #666;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+.signature-section {
+margin-top: auto;
+padding-top: 8px;
+border-top: 2px solid #1a3a52;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px 12px;
+font-size: 0.75rem;
+}
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(2px);
-        }
+.signature-block {
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+text-align: center;
+}
 
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            max-width: 900px;
-            width: 95%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3);
-        }
+.signature-block .label {
+margin-bottom: 6px;
+font-size: 0.72rem;
+color: #1a3a52;
+font-weight: 600;
+}
 
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
-            color: white;
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #d4af37;
-        }
+.signature-block .signature-line {
+border-top: 1px solid #1a3a52;
+min-height: 24px;
+margin-bottom: 2px;
+position: relative;
+}
 
-        .modal-header h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+.signature-block .signature-line::after {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 85%;
+height: 0.5px;
+background: #d0d0d0;
+opacity: 0.6;
+}
 
-        .modal-close {
-            cursor: pointer;
-            font-size: 32px;
-            font-weight: bold;
-            line-height: 1;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
+.signature-block .name {
+font-weight: 700;
+text-transform: uppercase;
+font-size: 0.68rem;
+color: #1a3a52;
+letter-spacing: 0.3px;
+line-height: 1.1;
+}
 
-        .modal-close:hover {
-            opacity: 1;
-        }
+.signature-block .title {
+font-style: italic;
+font-size: 0.62rem;
+color: #2d4a5f;
+margin-top: 0px;
+line-height: 1;
+}
 
-        .modal-body {
-            padding: 24px;
-            background: #f9f9f9;
-        }
+.copy-footer {
+text-align: right;
+font-style: italic;
+font-size: 0.72rem;
+margin-top: 4px;
+color: #666;
+font-weight: 600;
+letter-spacing: 0.5px;
+}
 
-        .preview-form {
-            transform: scale(0.85);
-            transform-origin: top center;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
-        }
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0, 0, 0, 0.6);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 1000;
+backdrop-filter: blur(2px);
+}
 
-        .control-panel {
-            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
-            border-left: 5px solid #1a3a52;
-        }
+.modal-content {
+background: white;
+border-radius: 12px;
+max-width: 900px;
+width: 95%;
+max-height: 90vh;
+overflow-y: auto;
+box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3);
+}
 
-        .control-panel h1 {
-            background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.modal-header {
+position: sticky;
+top: 0;
+background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
+color: white;
+padding: 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 3px solid #d4af37;
+}
 
-        .button-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+.modal-header h2 {
+font-size: 1.5rem;
+font-weight: 700;
+letter-spacing: 1px;
+}
 
-        .btn-preview {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
-        }
+.modal-close {
+cursor: pointer;
+font-size: 32px;
+font-weight: bold;
+line-height: 1;
+opacity: 0.8;
+transition: opacity 0.2s;
+}
 
-        .btn-preview:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
-        }
+.modal-close:hover {
+opacity: 1;
+}
 
-        .btn-generate {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            transition: all 0.3s ease;
-        }
+.modal-body {
+padding: 24px;
+background: #f9f9f9;
+}
 
-        .btn-generate:hover {
-            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(17, 153, 142, 0.4);
-        }
+.preview-form {
+transform: scale(0.85);
+transform-origin: top center;
+margin-bottom: 20px;
+filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+}
 
-        /* Styles for multi-page printing */
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                background: #fff;
-            }
+.control-panel {
+background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+border-left: 5px solid #1a3a52;
+}
 
-            .no-print {
-                display: none !important;
-            }
+.control-panel h1 {
+background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
 
-            #print-area {
-                display: block !important;
-            }
-            
-            .form-container {
-                margin: 0;
-                border: none;
-                padding: 0.75in;
-                page-break-after: always; /* Force new page after each container */
-            }
+.button-group {
+display: flex;
+gap: 12px;
+justify-content: center;
+flex-wrap: wrap;
+}
 
-            .form-container:last-child {
-                page-break-after: avoid;
-            }
+.btn-preview {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+transition: all 0.3s ease;
+}
 
-            .form-half {
-                border: 2px solid #1a3a52;
-                background: #fff;
-            }
-            .form-half + .form-half {
-                border-top: 3px dashed #1a3a52;
-            }
-        }
-    </style>
-</head>
+.btn-preview:hover {
+background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+transform: translateY(-2px);
+box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-generate {
+background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+transition: all 0.3s ease;
+}
+
+.btn-generate:hover {
+background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+transform: translateY(-2px);
+box-shadow: 0 8px 16px rgba(17, 153, 142, 0.4);
+}
+
+/* Styles for multi-page printing */
+@media print {
+body {
+margin: 0;
+padding: 0;
+background: #fff;
+}
+
+.no-print {
+display: none !important;
+}
+
+#print-area {
+display: block !important;
+}
+
+.form-container {
+margin: 0;
+border: none;
+padding: 0.75in;
+page-break-after: always; /* Force new page after each container */
+}
+
+.form-container:last-child {
+page-break-after: avoid;
+}
+
+.form-half {
+border: 2px solid #1a3a52;
+background: #fff;
+}
+.form-half + .form-half {
+border-top: 3px dashed #1a3a52;
+}
+}
+</style></head>
 <body class="bg-gray-100 p-8">
 
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl no-print control-panel">
-        <h1 class="text-3xl font-bold text-center mb-2">Form Generator</h1>
-        <p class="text-center text-gray-600 mb-8">Generate Locator Slips and Travel Orders for multiple employees.</p>
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl no-print control-panel">
+<h1 class="text-3xl font-bold text-center mb-2">Form Generator</h1>
+<p class="text-center text-gray-600 mb-8">Generate Locator Slips and Travel Orders for multiple employees.</p>
 
-        <fieldset class="mb-6">
-            <legend class="text-xl font-semibold mb-3 text-gray-700">1. Select Form Type</legend>
-            <div class="flex space-x-6">
-                <label class="flex items-center space-x-2">
-                    <input type="radio" name="formType" value="locator" id="radioLocator" class="form-radio text-blue-600" checked>
-                    <span class="text-gray-700">Locator Slip</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input type="radio" name="formType" value="travel" id="radioTravel" class="form-radio text-blue-600">
-                    <span class="text-gray-700">Travel Order</span>
-                </label>
-            </div>
-        </fieldset>
+<fieldset class="mb-6">
+<legend class="text-xl font-semibold mb-3 text-gray-700">1. Select Form Type</legend>
+<div class="flex space-x-6">
+<label class="flex items-center space-x-2">
+<input type="radio" name="formType" value="locator" id="radioLocator" class="form-radio text-blue-600" checked>
+<span class="text-gray-700">Locator Slip</span>
+</label>
+<label class="flex items-center space-x-2">
+<input type="radio" name="formType" value="travel" id="radioTravel" class="form-radio text-blue-600">
+<span class="text-gray-700">Travel Order</span>
+</label>
+</div>
+</fieldset>
 
-        <fieldset class="mb-6">
-            <legend class="text-xl font-semibold mb-3 text-gray-700">2. Enter Common Details</legend>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="destination" class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
-                    <input type="text" id="destination" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Harvest Hotel, Cabanatuan City">
-                </div>
+<fieldset class="mb-6">
+<legend class="text-xl font-semibold mb-3 text-gray-700">2. Enter Common Details</legend>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="destination" class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+<input type="text" id="destination" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Harvest Hotel, Cabanatuan City">
+</div>
 
-                <div class="md:col-span-2">
-                    <label for="purpose" class="block text-sm font-medium text-gray-700 mb-1">Purpose of Travel</label>
-                    <textarea id="purpose" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Attend training/workshop..."></textarea>
-                </div>
-                
-                <!-- Combined Date and Time fields for both forms, always visible -->
-                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="departureDate" class="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
-                            <input type="date" id="departureDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="departureTime" class="block text-sm font-medium text-gray-700 mb-1">Departure Time</label>
-                            <input type="time" id="departureTime" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="arrivalDate" class="block text-sm font-medium text-gray-700 mb-1">Arrival Date</label>
-                            <input type="date" id="arrivalDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label for="arrivalTime" class="block text-sm font-medium text-gray-700 mb-1">Arrival Time</label>
-                            <input type="time" id="arrivalTime" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                </div>
-                <!-- End of Combined Date/Time fields -->
+<div class="md:col-span-2">
+<label for="purpose" class="block text-sm font-medium text-gray-700 mb-1">Purpose of Travel</label>
+<textarea id="purpose" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Attend training/workshop..."></textarea>
+</div>
 
-                <div class="border-t pt-4 mt-4 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="recommendingName" class="block text-sm font-medium text-gray-700 mb-1">Recommending Approval (Name)</label>
-                        <input type="text" id="recommendingName" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Engr. Manuel M. Cabungcal">
-                    </div>
-                     <div>
-                        <label for="recommendingTitle" class="block text-sm font-medium text-gray-700 mb-1">Recommending Approval (Title/Office)</label>
-                        <input type="text" id="recommendingTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Head of Office">
-                    </div>
-                    <div>
-                        <label for="approvedName" class="block text-sm font-medium text-gray-700 mb-1">Approved by (Name)</label>
-                        <input type="text" id="approvedName" value="RICARDO A. SUBIDO" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                     <div>
-                        <label for="approvedTitle" class="block text-sm font-medium text-gray-700 mb-1">Approved by (Title)</label>
-                        <input type="text" id="approvedTitle" value="Municipal Administrator" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-        
-        <fieldset class="mb-8">
-            <legend class="text-xl font-semibold mb-3 text-gray-700">3. Add Employees</legend>
-            <div id="employee-list" class="space-y-4 mb-4">
-            </div>
-            <button id="add-employee-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                + Add Employee
-            </button>
-        </fieldset>
+<!-- Combined Date and Time fields for both forms, always visible -->
+<div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label for="departureDate" class="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
+<input type="date" id="departureDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+<div>
+<label for="departureTime" class="block text-sm font-medium text-gray-700 mb-1">Departure Time</label>
+<input type="time" id="departureTime" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+</div>
 
-        <div id="error-message" class="hidden text-red-600 text-center mb-4 font-medium"></div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label for="arrivalDate" class="block text-sm font-medium text-gray-700 mb-1">Arrival Date</label>
+<input type="date" id="arrivalDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+<div>
+<label for="arrivalTime" class="block text-sm font-medium text-gray-700 mb-1">Arrival Time</label>
+<input type="time" id="arrivalTime" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+</div>
+</div>
+<!-- End of Combined Date/Time fields -->
 
-        <div class="button-group">
-            <button id="preview-btn" class="btn-preview px-8 py-3 text-white text-lg font-bold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all">
-                👁️ Preview
-            </button>
-            <button id="generate-btn" class="btn-generate px-8 py-3 text-white text-lg font-bold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all">
-                🖨️ Generate & Print
-            </button>
-        </div>
+<div class="border-t pt-4 mt-4 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="recommendingName" class="block text-sm font-medium text-gray-700 mb-1">Recommending Approval (Name)</label>
+<input type="text" id="recommendingName" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Engr. Manuel M. Cabungcal">
+</div>
+<div>
+<label for="recommendingTitle" class="block text-sm font-medium text-gray-700 mb-1">Recommending Approval (Title/Office)</label>
+<input type="text" id="recommendingTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Head of Office">
+</div>
+<div>
+<label for="approvedName" class="block text-sm font-medium text-gray-700 mb-1">Approved by (Name)</label>
+<input type="text" id="approvedName" value="RICARDO A. SUBIDO" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+<div>
+<label for="approvedTitle" class="block text-sm font-medium text-gray-700 mb-1">Approved by (Title)</label>
+<input type="text" id="approvedTitle" value="Municipal Administrator" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+</div>
+</div>
+</div>
+</fieldset>
 
-        <p class="text-center text-sm text-gray-500 mt-4">
-            <strong>Note:</strong> Please set paper size to <strong>Legal (8.5" x 13") or Legal (8.5" x 14")</strong> when printing for correct formatting.
-        </p>
-    </div>
+<fieldset class="mb-8">
+<legend class="text-xl font-semibold mb-3 text-gray-700">3. Add Employees</legend>
+<div id="employee-list" class="space-y-4 mb-4">
+</div>
+<button id="add-employee-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
++ Add Employee
+</button>
+</fieldset>
 
-    <div id="preview-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Form Preview</h2>
-                <span id="modal-close" class="modal-close">×</span>
-            </div>
-            <div id="preview-content" class="modal-body">
-            </div>
-        </div>
-    </div>
+<div id="error-message" class="hidden text-red-600 text-center mb-4 font-medium"></div>
 
-    <div id="print-area" class="hidden">
-    </div>
+<div class="button-group">
+<button id="preview-btn" class="btn-preview px-8 py-3 text-white text-lg font-bold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all">
+👁️ Preview
+</button>
+<button id="generate-btn" class="btn-generate px-8 py-3 text-white text-lg font-bold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all">
+🖨️ Generate & Print
+</button>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const radioLocator = document.getElementById('radioLocator');
-            const radioTravel = document.getElementById('radioTravel');
-            const addEmployeeBtn = document.getElementById('add-employee-btn');
-            const employeeList = document.getElementById('employee-list');
-            const generateBtn = document.getElementById('generate-btn');
-            const previewBtn = document.getElementById('preview-btn');
-            const printArea = document.getElementById('print-area');
-            const previewModal = document.getElementById('preview-modal');
-            const previewContent = document.getElementById('preview-content');
-            const modalClose = document.getElementById('modal-close');
-            
-            // Maximum employees that can fit on one half-page slip (for page splitting)
-            // Adjusted from 6 to 5 to prevent content overflow on the fixed 6in height form-half.
-            const MAX_EMPLOYEES_PER_SLIP = 5;
+<p class="text-center text-sm text-gray-500 mt-4">
+<strong>Note:</strong> Please set paper size to <strong>Legal (8.5" x 13") or Legal (8.5" x 14")</strong> when printing for correct formatting.
+</p>
+</div>
 
-            function addEmployee() {
-                const employeeId = Date.now();
-                const employeeDiv = document.createElement('div');
-                employeeDiv.id = `employee-${employeeId}`;
-                employeeDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md';
-                
-                employeeDiv.innerHTML = `
-                    <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="emp-name-${employeeId}" class="block text-sm font-medium text-gray-700 mb-1">Employee Name</label>
-                            <input type="text" id="emp-name-${employeeId}" class="employee-name w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g., John Patrick M. Valerio">
-                        </div>
-                        <div>
-                            <label for="emp-desig-${employeeId}" class="block text-sm font-medium text-gray-700 mb-1">Designation</label>
-                            <input type="text" id="emp-desig-${employeeId}" class="employee-designation w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g., Job Order">
-                        </div>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" data-removeid="${employeeId}" class="remove-employee-btn w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-                            Remove
-                        </button>
-                    </div>
-                `;
-                employeeList.appendChild(employeeDiv);
-            }
+<div id="preview-modal" class="modal-overlay hidden">
+<div class="modal-content">
+<div class="modal-header">
+<h2>Form Preview</h2>
+<span id="modal-close" class="modal-close">×</span>
+</div>
+<div id="preview-content" class="modal-body">
+</div>
+</div>
+</div>
 
-            addEmployeeBtn.addEventListener('click', addEmployee);
-            
-            employeeList.addEventListener('click', (e) => {
-                if (e.target.classList.contains('remove-employee-btn')) {
-                    const removeId = e.target.dataset.removeid;
-                    document.getElementById(`employee-${removeId}`).remove();
-                }
-            });
+<div id="print-area" class="hidden">
+</div>
 
-            function formatDateTime(dateStr, timeStr) {
-                if (!dateStr || !timeStr) {
-                    return '&nbsp;';
-                }
-                
-                try {
-                    const date = new Date(`${dateStr}T${timeStr}`);
-                    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                    // Handle timezone issues to ensure date is correct
-                    const formattedDate = new Date(date.getTime() + (date.getTimezoneOffset() * 60000)).toLocaleDateString('en-US', dateOptions);
-                    const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-                    const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
-                    return `${formattedDate} ${formattedTime}`;
-                } catch (e) {
-                    console.error("Error formatting date/time:", e);
-                    return `${dateStr} ${timeStr}`;
-                }
-            }
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const radioLocator = document.getElementById('radioLocator');
+const radioTravel = document.getElementById('radioTravel');
+const addEmployeeBtn = document.getElementById('add-employee-btn');
+const employeeList = document.getElementById('employee-list');
+const generateBtn = document.getElementById('generate-btn');
+const previewBtn = document.getElementById('preview-btn');
+const printArea = document.getElementById('print-area');
+const previewModal = document.getElementById('preview-modal');
+const previewContent = document.getElementById('preview-content');
+const modalClose = document.getElementById('modal-close');
 
-            function splitEmployees(employees) {
-                const chunks = [];
-                // Split logic remains to ensure forms fit 8.5x13 paper
-                for (let i = 0; i < employees.length; i += MAX_EMPLOYEES_PER_SLIP) {
-                    chunks.push(employees.slice(i, i + MAX_EMPLOYEES_PER_SLIP));
-                }
-                return chunks;
-            }
+// Maximum employees that can fit on one half-page slip (for page splitting)
+// Adjusted from 6 to 5 to prevent content overflow on the fixed 6in height form-half.
+const MAX_EMPLOYEES_PER_SLIP = 5;
 
+function addEmployee() {
+const employeeId = Date.now();
+const employeeDiv = document.createElement('div');
+employeeDiv.id = `employee-${employeeId}`;
+employeeDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md';
 
-            function createFormHTML(formType, copyType, data, employeesChunk, pageNumber, totalPages) {
-                const formTitle = formType === 'locator' ? 'LOCATOR SLIP' : 'TRAVEL ORDER';
+employeeDiv.innerHTML = `
+<div class="md:col-span-2 grid grid-cols-2 gap-4">
+<div>
+<label for="emp-name-${employeeId}" class="block text-sm font-medium text-gray-700 mb-1">Employee Name</label>
+<input type="text" id="emp-name-${employeeId}" class="employee-name w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g., John Patrick M. Valerio">
+</div>
+<div>
+<label for="emp-desig-${employeeId}" class="block text-sm font-medium text-gray-700 mb-1">Designation</label>
+<input type="text" id="emp-desig-${employeeId}" class="employee-designation w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g., Job Order">
+</div>
+</div>
+<div class="flex items-end">
+<button type="button" data-removeid="${employeeId}" class="remove-employee-btn w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+Remove
+</button>
+</div>
+`;
+employeeList.appendChild(employeeDiv);
+}
 
-                // Both Locator Slip and Travel Order now use the detailed Departure/Arrival dates and times
-                const dateFieldsHTML = `
-                    <div class="label full-span">Inclusive Date of Travel:</div>
-                    <div class="label" style="padding-left: 20px;">Departure:</div>
-                    <div class="data data-lined">${data.departure || '&nbsp;'}</div>
-                    <div class="label" style="padding-left: 20px;">Arrival:</div>
-                    <div class="data data-lined">${data.arrival || '&nbsp;'}</div>
-                `;
+addEmployeeBtn.addEventListener('click', addEmployee);
 
-                // Removed empty row padding logic. The table now only contains actual employee rows,
-                // allowing the form to "auto-adjust" its vertical space.
-                const employeeTableHTML = `
-                    <table class="employee-table">
-                        <thead>
-                            <tr>
-                                <th>Name of Employee</th>
-                                <th>Designation</th>
-                                <th>Signature</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${employeesChunk.map(e => `
-                                <tr>
-                                    <td>${e.name}</td>
-                                    <td>${e.designation || '&nbsp;'}</td>
-                                    <td></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
+employeeList.addEventListener('click', (e) => {
+if (e.target.classList.contains('remove-employee-btn')) {
+const removeId = e.target.dataset.removeid;
+document.getElementById(`employee-${removeId}`).remove();
+}
+});
 
-                const copyFooter = `${copyType} (Page ${pageNumber} of ${totalPages})`;
+function formatDateTime(dateStr, timeStr) {
+if (!dateStr || !timeStr) {
+return '&nbsp;';
+}
+
+try {
+// Create a date object with the provided date and time
+const date = new Date(`${dateStr}T${timeStr}`);
+
+// Format options
+const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+
+// Format the date and time without timezone adjustments
+const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+
+return `${formattedDate} ${formattedTime}`;
+} catch (e) {
+console.error("Error formatting date/time:", e);
+return `${dateStr} ${timeStr}`;
+}
+}
+
+function splitEmployees(employees) {
+const chunks = [];
+// Split logic remains to ensure forms fit 8.5x13 paper
+for (let i = 0; i < employees.length; i += MAX_EMPLOYEES_PER_SLIP) {
+chunks.push(employees.slice(i, i + MAX_EMPLOYEES_PER_SLIP));
+}
+return chunks;
+}
 
 
-                return `
-                    <div class="form-half">
-                        <div class="form-header">
-                            <div class="form-header-logo">
-                                <img src="logo.png" alt="Municipality Logo">
-                            </div>
-                            <div class="form-header-content">
-                                <div>Republic of the Philippines</div>
-                                <div>Province of Nueva Ecija</div>
-                                <div><strong>MUNICIPALITY OF GABALDON</strong></div>
-                                <div>-o0o-</div>
-                            </div>
-                        </div>
+function createFormHTML(formType, copyType, data, employeesChunk, pageNumber, totalPages) {
+const formTitle = formType === 'locator' ? 'LOCATOR SLIP' : 'TRAVEL ORDER';
 
-                        <div class="form-title">${formTitle}</div>
+// Both Locator Slip and Travel Order now use the detailed Departure/Arrival dates and times
+const dateFieldsHTML = `
+<div class="label full-span">Inclusive Date of Travel:</div>
+<div class="label" style="padding-left: 20px;">Departure:</div>
+<div class="data data-lined">${data.departure || '&nbsp;'}</div>
+<div class="label" style="padding-left: 20px;">Arrival:</div>
+<div class="data data-lined">${data.arrival || '&nbsp;'}</div>
+`;
 
-                        <div class="form-grid">
-                            <div class="label">Destination:</div>
-                            <div class="data data-lined">${data.destination || '&nbsp;'}</div>
-                            
-                            ${dateFieldsHTML}
-                            
-                            <div class="label">Purpose of travel:</div>
-                            <div class="data data-lined">${data.purpose || '&nbsp;'}</div>
+// Removed empty row padding logic. The table now only contains actual employee rows,
+// allowing the form to "auto-adjust" its vertical space.
+const employeeTableHTML = `
+<table class="employee-table">
+<thead>
+<tr>
+<th>Name of Employee</th>
+<th>Designation</th>
+<th>Signature</th>
+</tr>
+</thead>
+<tbody>
+${employeesChunk.map(e => `
+<tr>
+<td>${e.name}</td>
+<td>${e.designation || '&nbsp;'}</td>
+<td></td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+`;
 
-                            ${employeeTableHTML}
-                        </div>
+const copyFooter = `${copyType} (Page ${pageNumber} of ${totalPages})`;
 
-                        <div class="signature-section">
-                            <div class="signature-block">
-                                <div class="label">Recommending Approval:</div>
-                                <div class="signature-line"></div>
-                                <div class="name">${data.recommendingName || '&nbsp;'}</div>
-                                <div class="title">${data.recommendingTitle || '&nbsp;'}</div>
-                            </div>
-                            <div class="signature-block">
-                                <div class="label">Approved:</div>
-                                <div class="signature-line"></div>
-                                <div class="name">${data.approvedName || '&nbsp;'}</div>
-                                <div class="title">${data.approvedTitle || '&nbsp;'}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="copy-footer">${copyFooter}</div>
-                    </div>
-                `;
-            }
 
-            function getEmployeeData() {
-                const employeeNameNodes = employeeList.querySelectorAll('.employee-name');
-                const designationNodes = employeeList.querySelectorAll('.employee-designation');
-                
-                const employees = [];
-                for (let i = 0; i < employeeNameNodes.length; i++) {
-                    const name = employeeNameNodes[i].value.trim();
-                    const designation = designationNodes[i].value.trim();
-                    if (name) {
-                        employees.push({ name, designation });
-                    }
-                }
-                return employees;
-            }
+return `
+<div class="form-half">
+<div class="form-header">
+<div class="form-header-logo">
+<img src="logo.png" alt="Municipality Logo">
+</div>
+<div class="form-header-content">
+<div>Republic of the Philippines</div>
+<div>Province of Nueva Ecija</div>
+<div><strong>MUNICIPALITY OF GABALDON</strong></div>
+<div>-o0o-</div>
+</div>
+</div>
 
-            function buildFormData() {
-                return {
-                    destination: document.getElementById('destination').value,
-                    purpose: document.getElementById('purpose').value,
-                    departure: formatDateTime(document.getElementById('departureDate').value, document.getElementById('departureTime').value),
-                    arrival: formatDateTime(document.getElementById('arrivalDate').value, document.getElementById('arrivalTime').value),
-                    recommendingName: document.getElementById('recommendingName').value,
-                    recommendingTitle: document.getElementById('recommendingTitle').value,
-                    approvedName: document.getElementById('approvedName').value,
-                    approvedTitle: document.getElementById('approvedTitle').value,
-                };
-            }
+<div class="form-title">${formTitle}</div>
 
-            previewBtn.addEventListener('click', () => {
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.classList.add('hidden');
-                
-                const formType = radioLocator.checked ? 'locator' : 'travel';
-                const allEmployees = getEmployeeData();
-                
-                if (allEmployees.length === 0) {
-                    errorMessage.textContent = 'Please add at least one employee with a name.';
-                    errorMessage.classList.remove('hidden');
-                    return;
-                }
+<div class="form-grid">
+<div class="label">Destination:</div>
+<div class="data data-lined">${data.destination || '&nbsp;'}</div>
 
-                const commonData = buildFormData();
-                const employeeChunks = splitEmployees(allEmployees);
-                const totalPages = employeeChunks.length;
-                
-                let previewHTML = '';
+${dateFieldsHTML}
 
-                employeeChunks.forEach((chunk, index) => {
-                    const pageNumber = index + 1;
-                    previewHTML += `
-                        <div class="preview-form form-container">
-                            ${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages)}
-                            ${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages)}
-                        </div>
-                    `;
-                });
+<div class="label">Purpose of travel:</div>
+<div class="data data-lined">${data.purpose || '&nbsp;'}</div>
 
-                previewContent.innerHTML = previewHTML;
-                previewModal.classList.remove('hidden');
-            });
+${employeeTableHTML}
+</div>
 
-            modalClose.addEventListener('click', () => {
-                previewModal.classList.add('hidden');
-            });
+<div class="signature-section">
+<div class="signature-block">
+<div class="label">Recommending Approval:</div>
+<div class="signature-line"></div>
+<div class="name">${data.recommendingName || '&nbsp;'}</div>
+<div class="title">${data.recommendingTitle || '&nbsp;'}</div>
+</div>
+<div class="signature-block">
+<div class="label">Approved:</div>
+<div class="signature-line"></div>
+<div class="name">${data.approvedName || '&nbsp;'}</div>
+<div class="title">${data.approvedTitle || '&nbsp;'}</div>
+</div>
+</div>
 
-            previewModal.addEventListener('click', (e) => {
-                if (e.target === previewModal) {
-                    previewModal.classList.add('hidden');
-                }
-            });
+<div class="copy-footer">${copyFooter}</div>
+</div>
+`;
+}
 
-            generateBtn.addEventListener('click', () => {
-                printArea.innerHTML = '';
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.classList.add('hidden');
-                
-                const formType = radioLocator.checked ? 'locator' : 'travel';
-                const allEmployees = getEmployeeData();
-                
-                if (allEmployees.length === 0) {
-                    errorMessage.textContent = 'Please add at least one employee with a name.';
-                    errorMessage.classList.remove('hidden');
-                    return;
-                }
+function getEmployeeData() {
+const employeeNameNodes = employeeList.querySelectorAll('.employee-name');
+const designationNodes = employeeList.querySelectorAll('.employee-designation');
 
-                const commonData = buildFormData();
-                const employeeChunks = splitEmployees(allEmployees);
-                const totalPages = employeeChunks.length;
+const employees = [];
+for (let i = 0; i < employeeNameNodes.length; i++) {
+const name = employeeNameNodes[i].value.trim();
+const designation = designationNodes[i].value.trim();
+if (name) {
+employees.push({ name, designation });
+}
+}
+return employees;
+}
 
-                employeeChunks.forEach((chunk, index) => {
-                    const pageNumber = index + 1;
-                    
-                    const pageContainer = document.createElement('div');
-                    pageContainer.className = 'form-container';
-                    
-                    const employeeCopyHTML = createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages);
-                    const hrmoCopyHTML = createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages);
+function buildFormData() {
+return {
+destination: document.getElementById('destination').value,
+purpose: document.getElementById('purpose').value,
+departure: formatDateTime(document.getElementById('departureDate').value, document.getElementById('departureTime').value),
+arrival: formatDateTime(document.getElementById('arrivalDate').value, document.getElementById('arrivalTime').value),
+recommendingName: document.getElementById('recommendingName').value,
+recommendingTitle: document.getElementById('recommendingTitle').value,
+approvedName: document.getElementById('approvedName').value,
+approvedTitle: document.getElementById('approvedTitle').value,
+};
+}
 
-                    pageContainer.innerHTML = employeeCopyHTML + hrmoCopyHTML;
-                    printArea.appendChild(pageContainer);
-                });
+previewBtn.addEventListener('click', () => {
+const errorMessage = document.getElementById('error-message');
+errorMessage.classList.add('hidden');
 
-                window.print();
-            });
+const formType = radioLocator.checked ? 'locator' : 'travel';
+const allEmployees = getEmployeeData();
 
-            addEmployee();
-        });
-    </script>
-</body>
+if (allEmployees.length === 0) {
+errorMessage.textContent = 'Please add at least one employee with a name.';
+errorMessage.classList.remove('hidden');
+return;
+}
+
+const commonData = buildFormData();
+const employeeChunks = splitEmployees(allEmployees);
+const totalPages = employeeChunks.length;
+
+let previewHTML = '';
+
+employeeChunks.forEach((chunk, index) => {
+const pageNumber = index + 1;
+previewHTML += `
+<div class="preview-form form-container">
+${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages)}
+${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages)}
+</div>
+`;
+});
+
+previewContent.innerHTML = previewHTML;
+previewModal.classList.remove('hidden');
+});
+
+modalClose.addEventListener('click', () => {
+previewModal.classList.add('hidden');
+});
+
+previewModal.addEventListener('click', (e) => {
+if (e.target === previewModal) {
+previewModal.classList.add('hidden');
+}
+});
+
+generateBtn.addEventListener('click', () => {
+printArea.innerHTML = '';
+const errorMessage = document.getElementById('error-message');
+errorMessage.classList.add('hidden');
+
+const formType = radioLocator.checked ? 'locator' : 'travel';
+const allEmployees = getEmployeeData();
+
+if (allEmployees.length === 0) {
+errorMessage.textContent = 'Please add at least one employee with a name.';
+errorMessage.classList.remove('hidden');
+return;
+}
+
+const commonData = buildFormData();
+const employeeChunks = splitEmployees(allEmployees);
+const totalPages = employeeChunks.length;
+
+employeeChunks.forEach((chunk, index) => {
+const pageNumber = index + 1;
+
+const pageContainer = document.createElement('div');
+pageContainer.className = 'form-container';
+
+const employeeCopyHTML = createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages);
+const hrmoCopyHTML = createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages);
+
+pageContainer.innerHTML = employeeCopyHTML + hrmoCopyHTML;
+printArea.appendChild(pageContainer);
+});
+
+window.print();
+});
+
+addEmployee();
+});
+</script></body>
 </html>

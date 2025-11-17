@@ -160,7 +160,7 @@
             background-color: #17a2b8;
         }
 
-        /* Update Notification Modal */
+        /* Update Notification Modal - Enhanced for better visibility */
         .update-modal {
             position: fixed;
             top: 0;
@@ -175,6 +175,8 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
+            padding: 20px; /* Added padding to ensure card doesn't touch screen edges */
+            box-sizing: border-box;
         }
         .update-modal.show {
             opacity: 1;
@@ -184,11 +186,14 @@
             background: white;
             border-radius: 15px;
             max-width: 800px;
-            width: 90%;
+            width: 100%;
+            max-height: 90vh; /* Set maximum height to 90% of viewport height */
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
             transform: scale(0.8);
             transition: transform 0.3s;
+            display: flex;
+            flex-direction: column; /* Use flexbox for better content distribution */
         }
         .update-modal.show .update-card {
             transform: scale(1);
@@ -199,6 +204,7 @@
             padding: 25px;
             text-align: center;
             position: relative;
+            flex-shrink: 0; /* Prevent header from shrinking */
         }
         .update-header h2 {
             margin: 0;
@@ -223,6 +229,8 @@
         }
         .update-body {
             padding: 30px;
+            overflow-y: auto; /* Add vertical scrolling if content exceeds height */
+            flex-grow: 1; /* Allow body to grow and fill available space */
         }
         .update-body h3 {
             color: #2d3748;
@@ -263,6 +271,7 @@
             background-color: #f8f9fa;
             text-align: center;
             border-top: 1px solid #e2e8f0;
+            flex-shrink: 0; /* Prevent footer from shrinking */
         }
         .update-footer button {
             background-color: #007bff;
@@ -895,7 +904,7 @@
                            event.target.style.textAlign = 'center';
                     } else {
                         // Ensure edited text is left-aligned unless it's a weekend default
-                        eventTarget.style.textAlign = 'left';
+                        event.target.style.textAlign = 'left';
                     }
                 });
 

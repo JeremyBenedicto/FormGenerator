@@ -676,6 +676,15 @@
             letter-spacing: 0.5px;
         }
 
+        .print-date-time {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #1a3a52;
+            font-weight: 600;
+        }
+
         @media print {
             body {
                 margin: 0;
@@ -884,10 +893,6 @@
                 toast.classList.remove('show');
             });
 
-            setTimeout(() => {
-                showToast('Date/Time issue has been fixed. The form generator is ready to use.', 'Welcome!');
-            }, 500);
-
             function addEmployee() {
                 const employeeId = Date.now();
                 const employeeDiv = document.createElement('div');
@@ -939,13 +944,13 @@
 
             function splitEmployees(employees) {
                 const chunks = [];
-                for (let i = 0; i < employees.length; i += MAX_EMPLOYEES_PER_SLIP) {
+                for (let i = 0; i < Math.max(employees.length, 1); i += MAX_EMPLOYEES_PER_SLIP) {
                     chunks.push(employees.slice(i, i + MAX_EMPLOYEES_PER_SLIP));
                 }
                 return chunks;
             }
 
-            function createFormHTML(formType, copyType, data, employeesChunk, pageNumber, totalPages) {
+            function createFormHTML(formType, copyType, data, employeesChunk, pageNumber, totalPages, printDateTime = '') {
                 const formTitle = formType === 'locator' ? 'LOCATOR SLIP' : 'TRAVEL ORDER';
 
                 const dateFieldsHTML = `
@@ -980,7 +985,7 @@
                 const copyFooter = `${copyType} (Page ${pageNumber} of ${totalPages})`;
 
                 return `
-                    <div class="form-half">
+                        <div class="form-half">
                         <div class="form-header">
                             <div class="form-header-logo">
                                 <img src="logo.png" alt="Municipality Logo">
@@ -993,14 +998,16 @@
                             </div>
                         </div>
 
+                        <div class="print-date-time">${printDateTime}</div>
+
                         <div class="form-title">${formTitle}</div>
 
                         <div class="form-grid">
                             <div class="label">Destination:</div>
                             <div class="data data-lined">${data.destination || '&nbsp;'}</div>
-                            
+
                             ${dateFieldsHTML}
-                            
+
                             <div class="label">Purpose of travel:</div>
                             <div class="data data-lined">${data.purpose || '&nbsp;'}</div>
 
@@ -1058,35 +1065,29 @@
             previewBtn.addEventListener('click', () => {
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.classList.add('hidden');
-                
+
                 const formType = radioLocator.checked ? 'locator' : 'travel';
                 const allEmployees = getEmployeeData();
-                
-                if (allEmployees.length === 0) {
-                    errorMessage.textContent = 'Please add at least one employee with a name.';
-                    errorMessage.classList.remove('hidden');
-                    return;
-                }
 
                 const commonData = buildFormData();
                 const employeeChunks = splitEmployees(allEmployees);
                 const totalPages = employeeChunks.length;
-                
+
                 let previewHTML = '';
 
                 employeeChunks.forEach((chunk, index) => {
                     const pageNumber = index + 1;
                     previewHTML += `
                         <div class="preview-form form-container">
-                            ${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages)}
-                            ${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages)}
+                            ${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages, '')}
+                            ${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages, '')}
                         </div>
                     `;
                 });
 
                 previewContent.innerHTML = previewHTML;
                 previewModal.classList.remove('hidden');
-                
+
                 showToast('Date/Time issue has been fixed. Your form preview has been generated correctly.', 'Preview Generated!');
             });
 
@@ -1104,35 +1105,38 @@
                 printArea.innerHTML = '';
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.classList.add('hidden');
-                
+
                 const formType = radioLocator.checked ? 'locator' : 'travel';
                 const allEmployees = getEmployeeData();
-                
-                if (allEmployees.length === 0) {
-                    errorMessage.textContent = 'Please add at least one employee with a name.';
-                    errorMessage.classList.remove('hidden');
-                    return;
-                }
 
                 const commonData = buildFormData();
                 const employeeChunks = splitEmployees(allEmployees);
                 const totalPages = employeeChunks.length;
 
+                const printDateTime = new Date().toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+
                 employeeChunks.forEach((chunk, index) => {
                     const pageNumber = index + 1;
-                    
+
                     const pageContainer = document.createElement('div');
                     pageContainer.className = 'form-container';
-                    
-                    const employeeCopyHTML = createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages);
-                    const hrmoCopyHTML = createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages);
+
+                    const employeeCopyHTML = createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages, printDateTime);
+                    const hrmoCopyHTML = createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages, printDateTime);
 
                     pageContainer.innerHTML = employeeCopyHTML + hrmoCopyHTML;
                     printArea.appendChild(pageContainer);
                 });
 
                 window.print();
-                
+
                 showToast('Date/Time issue has been fixed. Your form has been generated and is ready for printing.', 'Form Generated!');
             });
 

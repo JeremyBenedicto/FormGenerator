@@ -4,16 +4,343 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driver's Trip Ticket Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%), 
+                        radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.15) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, rgba(160, 147, 255, 0.15) 0, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* GLASSMORPHIC CONTROL PANEL */
+        .control-panel {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            padding: 45px 40px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .control-panel h1 {
+            text-align: center;
+            color: #111827;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .control-panel > p {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            border-radius: 25px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        legend {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            padding: 0 15px;
+            margin-bottom: 10px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .input-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-field label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-field input[type="text"],
+        .form-field input[type="date"],
+        .form-field input[type="time"],
+        .form-field input[type="number"],
+        .form-field textarea {
+            padding: 14px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #1F2937;
+            font-weight: 500;
+        }
+
+        .form-field textarea {
+            border-radius: 20px;
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-field input[readonly] {
+            background: rgba(229, 231, 235, 0.5);
+            cursor: not-allowed;
+        }
+
+        /* Passenger rows */
+        .passenger-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .passenger-row input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .passenger-row input:focus {
+            outline: none;
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Glass buttons */
+        .btn {
+            padding: 14px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            color: #1F2937;
+        }
+
+        .btn:hover {
+            background-color: #111827;
+            color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+            backdrop-filter: none;
+            border-color: #111827;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-remove {
+            padding: 8px 12px;
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        .btn-remove:hover {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        .btn-add {
+            width: 100%;
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #1e40af;
+            margin-top: 12px;
+        }
+
+        .btn-add:hover {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 35px;
+        }
+
+        .btn-preview {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-color: rgba(102, 126, 234, 0.4);
+            padding: 16px 35px;
+            font-size: 1.05rem;
+        }
+
+        .btn-preview:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+            border-color: rgba(16, 185, 129, 0.4);
+            padding: 16px 35px;
+            font-size: 1.05rem;
+        }
+
+        .btn-generate:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+            padding: 15px 25px;
+            border-radius: 999px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(17, 24, 39, 0.15);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* GLASSMORPHIC MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            max-width: 750px;
+            width: 95%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        #preview-content {
+            padding: 25px;
+            overflow-y: auto;
+            flex-grow: 1;
+            background: rgba(249, 250, 251, 0.5);
+        }
+
+        /* FORM STYLING (UNCHANGED - FOR PRINTING) */
         .page-container {
             width: 8.5in; 
             height: 11in;
@@ -115,34 +442,6 @@
         .passenger-section {
             margin: 2px 0;
             font-size: 8.5pt;
-        }
-
-        .passenger-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 8.5pt;
-        }
-
-        .passenger-table th {
-            border: 1.5px solid #2c3e50;
-            padding: 2px 3px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            color: white;
-            text-align: left;
-            font-size: 7.5pt;
-            text-transform: uppercase;
-        }
-
-        .passenger-table td {
-            border: 1px solid #2c3e50;
-            padding: 1px 3px;
-            height: 1.3em;
-            font-weight: 600;
-        }
-
-        .passenger-table tbody tr:nth-child(even) {
-            background: #ecf0f1;
         }
 
         .passenger-columns-container {
@@ -296,219 +595,170 @@
             }
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(2px);
-        }
+        @media (max-width: 768px) {
+            .control-panel {
+                padding: 30px 20px;
+                border-radius: 30px;
+            }
 
-        .passenger-row {
-            margin-bottom: 4px;
-        }
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .control-panel {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
-            backdrop-filter: blur(10px);
-            border-left: 5px solid #3498db;
-        }
+            .button-group {
+                flex-direction: column;
+            }
 
-        .control-panel h1 {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        fieldset {
-            border: 1px solid #ddd !important;
-            border-radius: 8px !important;
-        }
-
-        fieldset legend {
-            color: #3498db !important;
-            font-weight: 700 !important;
-        }
-
-        input, textarea {
-            font-family: 'Roboto', sans-serif;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #3498db !important;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
-        }
-
-        #preview-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            transition: all 0.3s ease;
-        }
-
-        #preview-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-        }
-
-        #generate-btn {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            transition: all 0.3s ease;
-        }
-
-        #generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div class="max-w-4xl mx-auto control-panel p-6 md:p-8 rounded-xl shadow-2xl no-print">
-        <h1 class="text-3xl font-bold text-center mb-1">Driver's Trip Ticket</h1>
-        <p class="text-center text-gray-600 mb-8 font-medium">Professional vehicle trip documentation system</p>
+    <div class="control-panel no-print">
+        <h1>Driver's Trip Ticket</h1>
+        <p>Professional vehicle trip documentation system</p>
 
-        <fieldset class="mb-6 p-5 border rounded-lg">
-            <legend class="text-lg font-semibold px-2">Trip & Personnel Details</legend>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="driverName" class="block text-sm font-semibold text-gray-700 mb-2">Driver Name</label>
-                    <input type="text" id="driverName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Juan Dela Cruz" style="font-weight: 500;">
+        <fieldset>
+            <legend>Trip & Personnel Details</legend>
+            <div class="input-grid">
+                <div class="form-field">
+                    <label for="driverName">Driver Name</label>
+                    <input type="text" id="driverName" placeholder="Juan Dela Cruz">
                 </div>
-                <div>
-                    <label for="plateNo" class="block text-sm font-semibold text-gray-700 mb-2">Vehicle Plate Number</label>
-                    <input type="text" id="plateNo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="SJD 1234" style="font-weight: 500;">
+                <div class="form-field">
+                    <label for="plateNo">Vehicle Plate Number</label>
+                    <input type="text" id="plateNo" placeholder="SJD 1234">
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Passenger(s)</label>
-                    <div id="passengerInputs" class="space-y-2"></div>
-                    <button type="button" id="addPassengerBtn" class="mt-2 w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150 font-medium">
-                        + Add Passenger
-                    </button>
+            </div>
+
+            <div class="form-field" style="margin-top: 20px;">
+                <label>Passenger(s)</label>
+                <div id="passengerInputs"></div>
+                <button type="button" id="addPassengerBtn" class="btn btn-add">+ Add Passenger</button>
+            </div>
+
+            <div class="input-grid" style="margin-top: 20px;">
+                <div class="form-field">
+                    <label for="ticketDate">Ticket Date</label>
+                    <input type="date" id="ticketDate">
                 </div>
-                
-                <div>
-                    <label for="ticketDate" class="block text-sm font-semibold text-gray-700 mb-2">Ticket Date</label>
-                    <input type="date" id="ticketDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <div class="form-field">
+                    <label for="placeVisited">Destination</label>
+                    <input type="text" id="placeVisited" placeholder="PDRRMO, Cabanatuan City">
                 </div>
-                <div>
-                    <label for="placeVisited" class="block text-sm font-semibold text-gray-700 mb-2">Destination</label>
-                    <input type="text" id="placeVisited" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="PDRRMO, Cabanatuan City" style="font-weight: 500;">
-                </div>
-                <div class="md:col-span-2">
-                    <label for="purpose" class="block text-sm font-semibold text-gray-700 mb-2">Purpose of Travel</label>
-                    <textarea id="purpose" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Describe the purpose of this trip..." style="font-weight: 500;"></textarea>
+            </div>
+
+            <div class="input-grid full" style="margin-top: 20px;">
+                <div class="form-field">
+                    <label for="purpose">Purpose of Travel</label>
+                    <textarea id="purpose" placeholder="Describe the purpose of this trip..."></textarea>
                 </div>
             </div>
         </fieldset>
 
-        <fieldset class="mb-6 p-5 border rounded-lg">
-            <legend class="text-lg font-semibold px-2">Time & Fuel Information</legend>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                    <label for="departureTime" class="block text-sm font-semibold text-gray-700 mb-2">Departure Time</label>
-                    <input type="time" id="departureTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <fieldset>
+            <legend>Time & Fuel Information</legend>
+            <div class="input-grid">
+                <div class="form-field">
+                    <label for="departureTime">Departure Time</label>
+                    <input type="time" id="departureTime">
                 </div>
-                <div>
-                    <label for="arrivalTime" class="block text-sm font-semibold text-gray-700 mb-2">Arrival Time</label>
-                    <input type="time" id="arrivalTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <h3 class="font-semibold text-gray-700">Fuel / Diesel (Liters)</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                        <label for="fuelBalance" class="block text-sm font-medium text-gray-600 mb-1">Balance in Tank</label>
-                        <input type="number" id="fuelBalance" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div>
-                        <label for="fuelIssue" class="block text-sm font-medium text-gray-600 mb-1">Issue from Stock</label>
-                        <input type="number" id="fuelIssue" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div>
-                        <label for="fuelPurchased" class="block text-sm font-medium text-gray-600 mb-1">Purchased</label>
-                        <input type="number" id="fuelPurchased" value="0" min="0" step="0.1" class="fuel-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div class="flex flex-col justify-end">
-                        <label for="fuelTotal" class="block text-sm font-semibold text-gray-700 mb-1">TOTAL</label>
-                        <input type="text" id="fuelTotal" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 font-bold">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div>
-                        <label for="fuelUse" class="block text-sm font-medium text-gray-600 mb-1">Used During Trip</label>
-                        <input type="number" id="fuelUse" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div>
-                        <label for="fuelEndBalance" class="block text-sm font-medium text-gray-600 mb-1">End Balance</label>
-                        <input type="number" id="fuelEndBalance" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
+                <div class="form-field">
+                    <label for="arrivalTime">Arrival Time</label>
+                    <input type="time" id="arrivalTime">
                 </div>
             </div>
 
-            <div class="space-y-4 pt-6">
-                <h3 class="font-semibold text-gray-700">Lubricant (Liters)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="oilMotor" class="block text-sm font-medium text-gray-600 mb-1">Motor Oil</label>
-                        <input type="number" id="oilMotor" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
-                    <div>
-                        <label for="oilGear" class="block text-sm font-medium text-gray-600 mb-1">Gear Oil</label>
-                        <input type="number" id="oilGear" value="0" min="0" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    </div>
+            <div class="section-subtitle">Fuel / Diesel (Liters)</div>
+            <div class="input-grid">
+                <div class="form-field">
+                    <label for="fuelBalance">Balance in Tank</label>
+                    <input type="number" id="fuelBalance" value="0" min="0" step="0.1" class="fuel-input">
+                </div>
+                <div class="form-field">
+                    <label for="fuelIssue">Issue from Stock</label>
+                    <input type="number" id="fuelIssue" value="0" min="0" step="0.1" class="fuel-input">
+                </div>
+                <div class="form-field">
+                    <label for="fuelPurchased">Purchased</label>
+                    <input type="number" id="fuelPurchased" value="0" min="0" step="0.1" class="fuel-input">
+                </div>
+                <div class="form-field">
+                    <label for="fuelTotal">TOTAL</label>
+                    <input type="text" id="fuelTotal" readonly>
+                </div>
+            </div>
+
+            <div class="input-grid" style="margin-top: 20px;">
+                <div class="form-field">
+                    <label for="fuelUse">Used During Trip</label>
+                    <input type="number" id="fuelUse" value="0" min="0" step="0.1">
+                </div>
+                <div class="form-field">
+                    <label for="fuelEndBalance">End Balance</label>
+                    <input type="number" id="fuelEndBalance" value="0" min="0" step="0.1">
+                </div>
+            </div>
+
+            <div class="section-subtitle">Lubricant (Liters)</div>
+            <div class="input-grid">
+                <div class="form-field">
+                    <label for="oilMotor">Motor Oil</label>
+                    <input type="number" id="oilMotor" value="0" min="0" step="0.1">
+                </div>
+                <div class="form-field">
+                    <label for="oilGear">Gear Oil</label>
+                    <input type="number" id="oilGear" value="0" min="0" step="0.1">
                 </div>
             </div>
         </fieldset>
 
-        <fieldset class="mb-8 p-5 border rounded-lg">
-            <legend class="text-lg font-semibold px-2">Approvals</legend>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
-                <div>
-                    <label for="recommendedName" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By (Name)</label>
-                    <input type="text" id="recommendedName" value="JENNELYN D. DALACAT" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+        <fieldset>
+            <legend>Approvals</legend>
+            <div class="input-grid">
+                <div class="form-field">
+                    <label for="recommendedName">Recommended By (Name)</label>
+                    <input type="text" id="recommendedName" value="JENNELYN D. DALACAT">
                 </div>
-                <div>
-                    <label for="recommendedTitle" class="block text-sm font-semibold text-gray-700 mb-2">Recommended By (Position)</label>
-                    <input type="text" id="recommendedTitle" value="HRMO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                <div class="form-field">
+                    <label for="recommendedTitle">Recommended By (Position)</label>
+                    <input type="text" id="recommendedTitle" value="HRMO">
                 </div>
-                <div>
-                    <label for="approvedName" class="block text-sm font-semibold text-gray-700 mb-2">Approved By (Name)</label>
-                    <input type="text" id="approvedName" value="RICARDO A. SUBIDO" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                <div class="form-field">
+                    <label for="approvedName">Approved By (Name)</label>
+                    <input type="text" id="approvedName" value="RICARDO A. SUBIDO">
                 </div>
-                <div>
-                    <label for="approvedTitle" class="block text-sm font-semibold text-gray-700 mb-2">Approved By (Position)</label>
-                    <input type="text" id="approvedTitle" value="Municipal Administrator" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="font-weight: 500;">
+                <div class="form-field">
+                    <label for="approvedTitle">Approved By (Position)</label>
+                    <input type="text" id="approvedTitle" value="Municipal Administrator">
                 </div>
             </div>
         </fieldset>
 
-        <div id="error-message" class="hidden text-red-600 text-center mb-4 font-medium p-3 bg-red-50 rounded-lg border border-red-200"></div>
+        <div id="error-message" class="error-message hidden"></div>
 
-        <div class="flex justify-center space-x-4">
-            <button id="preview-btn" class="px-8 py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-150">
-                👁️ Preview
-            </button>
-            <button id="generate-btn" class="px-8 py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-150">
-                🖨️ Print (2 Copies)
-            </button>
+        <div class="button-group">
+            <button id="preview-btn" class="btn btn-preview">👁️ Preview</button>
+            <button id="generate-btn" class="btn btn-generate">🖨️ Print (2 Copies)</button>
         </div>
     </div>
 
     <div id="preview-modal" class="modal-overlay hidden">
-        <div class="modal-content bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 my-8">
-            <div class="modal-header flex justify-between items-center p-5 border-b bg-gradient-to-r from-blue-600 to-blue-800">
-                <h2 class="text-xl font-bold text-white">Trip Ticket Preview</h2>
-                <button id="modal-close" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Trip Ticket Preview</h2>
+                <span id="modal-close" class="modal-close">×</span>
             </div>
-            <div id="preview-content" class="p-4 overflow-y-auto" style="max-height: 80vh;"></div>
+            <div style="padding: 15px 25px; background: rgba(249, 250, 251, 0.8); border-bottom: 1px solid rgba(0,0,0,0.1);">
+                <div class="form-field" style="margin: 0;">
+                    <label for="editDate">Edit Date (optional)</label>
+                    <input type="date" id="editDate" style="margin: 0;">
+                </div>
+            </div>
+            <div id="preview-content"></div>
         </div>
     </div>
 
@@ -544,21 +794,23 @@
             const modalClose = document.getElementById('modal-close');
             const passengerInputsContainer = document.getElementById('passengerInputs');
             const addPassengerBtn = document.getElementById('addPassengerBtn');
+            const editDateInput = document.getElementById('editDate');
+
+            let currentData = null;
 
             function createPassengerRow(initialValue = '') {
                 const row = document.createElement('div');
-                row.className = 'flex space-x-2 items-center passenger-row';
+                row.className = 'passenger-row';
                 
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.value = initialValue;
                 input.placeholder = 'Passenger Name';
-                input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm';
                 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.type = 'button';
-                deleteBtn.className = 'text-red-500 hover:text-red-700 p-1 rounded-full transition duration-150';
-                deleteBtn.innerHTML = '&#10005;';
+                deleteBtn.className = 'btn btn-remove';
+                deleteBtn.innerHTML = '×';
                 deleteBtn.onclick = () => row.remove();
                 
                 row.appendChild(input);
@@ -576,8 +828,6 @@
             }
 
             addPassengerBtn.addEventListener('click', () => createPassengerRow());
-            createPassengerRow('PEDRO REYES');
-            createPassengerRow('MARIA SANTOS');
 
             function calculateTotalFuel() {
                 const balance = parseFloat(fuelBalanceInput.value) || 0;
@@ -798,17 +1048,6 @@
             }
 
             function validateForm() {
-                const data = getFormData();
-                if (!data.driverName || !data.plateNo || !data.purpose || !data.placeVisited) {
-                    errorMessageDiv.textContent = 'Please fill in the Driver, Vehicle, Place Visited, and Purpose fields.';
-                    errorMessageDiv.classList.remove('hidden');
-                    return false;
-                }
-                if (data.passengerNames.length === 0) {
-                    errorMessageDiv.textContent = 'Please add at least one passenger.';
-                    errorMessageDiv.classList.remove('hidden');
-                    return false;
-                }
                 errorMessageDiv.classList.add('hidden');
                 return true;
             }
@@ -816,6 +1055,8 @@
             function handlePreview() {
                 if (validateForm()) {
                     const data = getFormData();
+                    currentData = { ...data };
+                    editDateInput.value = ticketDateInput.value;
                     previewContent.innerHTML = `<div class="trip-ticket-container">${createTripTicketHTML(data, "PREVIEW COPY")}</div>`;
                     previewModal.classList.remove('hidden');
                 }
@@ -843,6 +1084,14 @@
             previewModal.addEventListener('click', (e) => {
                 if (e.target === previewModal) {
                     previewModal.classList.add('hidden');
+                }
+            });
+
+            editDateInput.addEventListener('change', () => {
+                if (currentData && editDateInput.value) {
+                    const newDate = new Date(editDateInput.value).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
+                    currentData.date = newDate;
+                    previewContent.innerHTML = `<div class="trip-ticket-container">${createTripTicketHTML(currentData, "PREVIEW COPY")}</div>`;
                 }
             });
         });

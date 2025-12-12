@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Forms Generator (Form 4, 13 & 32)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Document Setup */
+        .document-container {
+            width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 2rem auto;
+            padding: 1in;
+            background-color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+            color: #000;
+            line-height: 1.6;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Print Specifics */
+        @media print {
+            body {
+                background: none;
+            }
+
+            .form-section,
+            .print-btn {
+                display: none !important;
+            }
+
+            .preview-section {
+                width: 100% !important;
+            }
+
+            .document-container {
+                width: 100%;
+                margin: 0;
+                padding: .5in;
+                /* Adjusted padding for print */
+                box-shadow: none;
+                border: none;
+                page-break-after: always;
+                /* Forces new page for next form */
+            }
+
+            .no-print-break {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Shared Styles */
+        .fill-line {
+            border-bottom: 1px solid black;
+            font-weight: bold;
+            padding: 0 1px;
+            margin: 0;
+            text-align: center;
+            line-height: 1;
+        }
+
+        /* --- FORM 4 STYLES --- */
+        .form4-header-top-left {
+            font-style: italic;
+            font-weight: bold;
+            font-size: 8pt;
+            line-height: 1;
+            position: absolute;
+            top: 0.4in;
+            left: 0.6in;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .form4-footer-box {
+            border: 2px solid black;
+            padding: 8px;
+            width: 220px;
+            font-style: italic;
+            font-size: 9pt;
+            text-align: center;
+            float: right;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* --- FORM 32 (OATH) STYLES --- */
+        .form32-top-left {
+            position: absolute;
+            top: 0.5in;
+            left: 0.8in;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 10pt;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .oath-body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+            text-align: justify;
+            line-height: 1.1;
+            /* Tighter line height for the interlinear look */
+        }
+
+        .oath-filipino {
+            font-size: 12pt;
+            color: #000;
+        }
+
+        .oath-english {
+            font-style: italic;
+            font-size: 9pt;
+            display: block;
+            /* Forces new line */
+            margin-bottom: 8px;
+            /* Space between lines */
+            color: #333;
+        }
+
+        .oath-fill {
+            border-bottom: 1px solid black;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* --- FORM 13 STYLES --- */
+        .form13-header-top-left {
+            font-style: italic;
+            font-size: 10pt;
+            line-height: 1.2;
+            position: absolute;
+            top: 0.5in;
+            left: 0.8in;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .cert-text {
+            line-height: 2;
+        }
+
+        .fill-line-large {
+            border-bottom: 1px solid black;
+            font-weight: bold;
+            padding: 0 1px;
+            margin: 0;
+            text-align: center;
+            line-height: 1;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div id="app" class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+
+        <div
+            class="form-section lg:w-1/3 p-6 bg-white rounded-lg shadow-xl h-fit sticky top-8 overflow-y-auto max-h-screen">
+            <h2 class="text-xl font-bold mb-4 text-blue-900 border-b pb-2">Data Entry</h2>
+
+            <form id="certification-form" class="space-y-3 text-sm">
+
+                <div class="bg-blue-50 p-3 rounded border border-blue-100 mb-2">
+                    <p class="font-bold text-blue-800 text-xs uppercase mb-2 tracking-wider">I. Common Details</p>
+                    <div>
+                        <label class="block font-medium text-gray-700">Name of Agency</label>
+                        <input type="text" id="agency_name" value="MUNICIPALITY OF GABALDON"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <div class="w-1/3">
+                            <label class="block font-medium text-gray-700">Prefix</label>
+                            <select id="prefix" class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                                <option value="Ms./Mr.">Ms./Mr.</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Ms.">Ms.</option>
+                            </select>
+                        </div>
+                        <div class="w-2/3">
+                            <label class="block font-medium text-gray-700">Appointee Name</label>
+                            <input type="text" id="emp_name" value="FERMIN E. FANG"
+                                class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase font-bold">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Position Title</label>
+                        <input type="text" id="position" value="Planning Officer I"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Monthly Compensation</label>
+                        <input type="text" id="monthly_compensation" value="15000.00"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">SG/JG/PG</label>
+                        <input type="text" id="sg_grade" value="11/1"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                </div>
+
+                <div class="bg-green-50 p-3 rounded border border-green-100 mb-2">
+                    <p class="font-bold text-green-800 text-xs uppercase mb-2 tracking-wider">II. Assumption (Form 4)</p>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Office/Department</label>
+                        <input type="text" id="office" value="Municipal Planning and Development Office"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+
+                    <div class="flex gap-2 mt-2">
+                        <div class="w-1/2">
+                            <label class="block font-medium text-gray-700">Effective Date</label>
+                            <input type="date" id="eff_date" value="2025-09-01"
+                                class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block font-medium text-gray-700">Date Issued</label>
+                            <input type="date" id="date_issued" value="2025-09-01"
+                                class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Head of Office (Signatory)</label>
+                        <input type="text" id="head_name" value="JENNELYN D. DALACAT"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                        <label class="text-xs text-gray-500">Position: Head of Office/Dept</label>
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">HRMO (Attested By)</label>
+                        <input type="text" id="hrmo_name" value="JENNELYN D. DALACAT"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Attestation Date</label>
+                        <input type="date" id="attest_date" value="2025-09-02"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                </div>
+
+                <div class="bg-red-50 p-3 rounded border border-red-100 mb-2">
+                    <p class="font-bold text-red-800 text-xs uppercase mb-2 tracking-wider">III. Appointments & Funds (Form 13)</p>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Date Appointments Issued (for Form 13)</label>
+                        <input type="date" id="appt_issue_date_13" value="2025-09-01"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Appointing Authority (Signatory)</label>
+                        <input type="text" id="appointing_auth_name" value="ATTY. JOBBY PETINES EMATA"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                        <label class="text-xs text-gray-500">Position: Mayor/Governor, etc.</label>
+                    </div>
+
+                    <hr class="border-red-200 my-3">
+                    
+                    <div>
+                        <label class="block font-medium text-gray-700">Appropriation Ordinance No.</label>
+                        <input type="text" id="ord_no" value="02"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                    
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Ordinance Series No.</label>
+                        <input type="text" id="ord_series" value="2025"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Accountant (Signatory)</label>
+                        <input type="text" id="accountant_name" value="JELINA P. MENDOZA"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Fund Certification Date</label>
+                        <input type="date" id="fund_cert_date" value="2025-09-02"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-3 rounded border border-yellow-100 mb-2">
+                    <p class="font-bold text-yellow-800 text-xs uppercase mb-2 tracking-wider">IV. Oath (Form 32)</p>
+
+                    <div>
+                        <label class="block font-medium text-gray-700">Home Address</label>
+                        <input type="text" id="address" value="South Poblacion, Gabaldon"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+
+                    <div class="mt-2 grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-medium text-gray-700">Government ID</label>
+                            <input type="text" id="gov_id_type" value="PRC ID" placeholder="e.g. Passport"
+                                class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700">ID Number</label>
+                            <input type="text" id="gov_id_num" value="0123456"
+                                class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Date Issued (ID)</label>
+                        <input type="date" id="gov_id_date" value="2024-01-12"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+
+                    <hr class="border-yellow-200 my-3">
+
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Administering Officer Name</label>
+                        <input type="text" id="admin_officer_name" value="ATTY. JOBBY PETINES EMATA"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5 uppercase">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Officer Position</label>
+                        <input type="text" id="admin_officer_pos" value="Municipal Mayor"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block font-medium text-gray-700">Date of Oath</label>
+                        <input type="date" id="oath_date" value="2025-09-01"
+                            class="mt-1 block w-full border border-gray-300 rounded p-1.5">
+                    </div>
+                </div>
+
+            </form>
+
+            <button onclick="window.print()"
+                class="print-btn mt-6 w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded shadow transition">
+                PRINT ALL FORMS
+            </button>
+
+            <button onclick="window.open('checklist.html', '_blank')"
+                class="mt-2 w-full bg-green-900 hover:bg-green-800 text-white font-semibold py-3 rounded shadow transition">
+                OPEN CHECKLIST
+            </button>
+        </div>
+
+        <div class="lg:w-2/3 flex flex-col items-center preview-section gap-8">
+
+            <div class="document-container">
+                <div class="form13-header-top-left">
+                    CS Form No. 13<br>
+                    Series of 2025
+                </div>
+
+                <div class="text-center mt-8 mb-16 font-sans">
+                    <p class="text-lg">Republic of the Philippines</p>
+                    <p class="text-lg font-bold underline uppercase" id="out13_agency">(Name of Agency)</p>
+                    <p class=" text-lg">LOCAL GOVERNMENT UNIT</p>
+                </div>
+
+                <div class="text-center font-bold uppercase text-base mb-16 font-sans">
+                    CERTIFICATION FOR APPOINTMENTS ISSUED IN<br>
+                    LOCAL GOVERNMENT UNITS (LGUS)
+                </div>
+
+                <div class="mb-20 text-justify leading-loose font-sans cert-text indent-12">
+                    This is to certify that all pertinent provisions of Sec. 325 of RA No. 7160 (Local<br>
+                    Government Code of 1991) have been complied with relative to the appointments<br>
+                    issued on <span id="out13_appt_date" class="fill-line-large min-w-[200px]"></span>.
+                </div>
+
+                <div class="flex justify-end items-end mt-16 font-sans">
+                    <div class="w-1/2 text-center">
+                        <span id="out13_appointing_auth" class="font-bold uppercase text-base"></span>
+                        <div class="border-t border-black mt-1"></div>
+                        <p class="text-sm">Governor/Mayor/Vice-Governor/Vice-Mayor</p>
+                    </div>
+                </div>
+
+                <div class="flex items-end mt-12 mb-24 font-sans">
+                    <span class="mr-2">Date:</span>
+                    <span id="out13_date_signed" class="fill-line-large min-w-[150px] text-left"></span>
+                </div>
+
+                <div class="text-center font-bold uppercase text-base mb-16 font-sans">
+                    CERTIFICATION ON AVAILABILITY OF FUNDS
+                </div>
+
+                <div class="mb-20 text-justify leading-loose font-sans cert-text indent-12">
+                    This is to certify that funds are available pursuant to Appropriation Ordinance<br>
+                    No. <span id="out13_ord_no" class="fill-line-large min-w-[50px]"></span> Series of <span id="out13_ord_series" class="fill-line-large min-w-[50px]"></span> or Special Education Fund.
+                </div>
+
+                <div class="flex justify-end items-end mt-16 font-sans">
+                    <div class="w-1/2 text-center">
+                        <span id="out13_accountant_name" class="font-bold uppercase text-base"></span>
+                        <div class="border-t border-black mt-1"></div>
+                        <p class="text-sm">Accountant</p>
+                    </div>
+                </div>
+
+                <div class="flex items-end mt-12 font-sans">
+                    <span class="mr-2">Date:</span>
+                    <span id="out13_fund_date" class="fill-line-large min-w-[150px] text-left"></span>
+                </div>
+            </div>
+            
+            <div class="document-container">
+                <div class="form4-header-top-left">
+                    CS Form No. 4<br>
+                    Revised 2018
+                </div>
+
+                <div class="text-center mt-8 mb-12 font-sans">
+                    <p class="text-lg">Republic of the Philippines</p>
+                    <p class="text-lg font-bold underline uppercase" id="out4_agency">(Name of Agency)</p>
+                    <p class="text-lg">LOCAL GOVERNMENT UNIT</p>
+                </div>
+
+                <div class="text-center font-bold uppercase text-xl mb-12 font-sans">
+                    CERTIFICATION OF ASSUMPTION TO DUTY
+                </div>
+
+                <div class="mb-8 text-justify leading-loose font-sans indent-12">
+                    This is to certify that
+                    <span id="out4_name_1" class="fill-line min-w-[250px] uppercase"></span>
+                    has assumed the duties and responsibilities as
+                    <span id="out4_pos_1" class="fill-line min-w-[200px]"></span>
+                    of
+                    <span id="out4_office" class="fill-line min-w-[250px]"></span>
+                    effective
+                    <span id="out4_eff_date" class="fill-line min-w-[150px]"></span>.
+                </div>
+
+                <div class="mb-12 text-justify leading-loose font-sans indent-12">
+                    This certification is issued in connection with the issuance of the appointment of
+                    <span id="out4_name_2" class="fill-line min-w-[250px] uppercase"></span>
+                    as
+                    <span id="out4_pos_2" class="fill-line min-w-[200px]"></span>.
+                </div>
+
+                <div class="mb-20 font-sans indent-12">
+                    Done this
+                    <span id="out4_day" class="fill-line min-w-[50px]"></span>
+                    day of
+                    <span id="out4_month_year" class="fill-line min-w-[150px]"></span>
+                    in
+                    <span class="fill-line min-w-[200px]">Gabaldon, Nueva Ecija</span>.
+                </div>
+
+                <div class="flex justify-between items-end mt-16 font-sans">
+                    <div class="w-1/2"></div>
+                    <div class="w-1/2 text-center">
+                        <span id="out4_head_name" class="font-bold uppercase text-base"></span>
+                        <div class="border-t border-black mt-1"></div>
+                        <p class="text-sm">Head of Office/Department/Unit</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-start mt-12 font-sans">
+                    <div class="w-5/12">
+                        <p class="mb-8">Attested by:</p>
+                        <div class="text-center">
+                            <span id="out4_hrmo_name" class="font-bold uppercase text-base"></span>
+                            <div class="border-t border-black mt-1"></div>
+                            <p class="text-sm">HRMO</p>
+                        </div>
+                        <div class="mt-8 flex items-end">
+                            <span class="mr-2">Date:</span>
+                            <span id="out4_attest_date" class="fill-line min-w-[150px] text-left"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-24 relative font-sans">
+                    <div class="absolute bottom-0 left-0 text-xs italic leading-tight">
+                        201 file<br>Admin<br>COA<br>CSC
+                    </div>
+                    <div class="form4-footer-box">
+                        For submission to CSC FO within 30 days from the date of assumption of the appointee
+                    </div>
+                </div>
+            </div>
+
+            <div class="document-container">
+                <div class="form32-top-left">
+                    SS Porma Blg. 32<br>
+                    CS Form No. 32<br><br>
+                    Narebisa 2025<br>
+                    Revised 2025
+                </div>
+
+                <div class="text-center mt-4 mb-8">
+                    <p class="font-serif text-lg">REPUBLIKA NG PILIPINAS</p>
+                    <p class="font-serif italic text-sm mb-2">REPUBLIC OF THE PHILIPPINES</p>
+                    <p class="font-serif text-lg font-bold underline uppercase" id="out32_agency">(Name of Agency)</p>
+                    <p class="text-lg">LOCAL GOVERNMENT UNIT</p>
+                    <p class="font-serif italic text-sm"></p>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h1 class="font-serif font-bold text-2xl uppercase tracking-wide">PANUNUMPA SA KATUNGKULAN</h1>
+                    <p class="font-serif italic text-sm">OATH OF OFFICE</p>
+                </div>
+
+                <div class="oath-body mb-8">
+                    <div class="indent-12">
+                        <span class="oath-filipino ">Ako si</span>
+                        <span id="out32_name" class="oath-fill uppercase min-w-[100px] px-2"></span>
+                        <span class="oath-filipino">, ng</span>
+                        <span id="out32_address" class="oath-fill min-w-[200px] px-2"></span>
+                        <span class="oath-filipino">, na</span>
+                    </div>
+                    <div class="oath-english indent-12">
+                        I, <span class="pl-12">(Name of Appointee)</span> <span class="pl-32">(Address)</span>, having
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">itinalaga bilang</span>
+                        <span id="out32_pos" class="oath-fill min-w-[150px] px-2"></span>
+                        <span class="oath-filipino">, ay taimtim na nanunumpa na tutuparin ko nang</span>
+                    </div>
+                    <div class="oath-english">
+                        been appointed to <span class="pl-12">(Position)</span>, hereby solemnly swear, that I will faithfully
+                        discharge
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">buong husay at katapatan, sa abot ng aking kakayahan, ang mga katungkulang pinagtalagahan</span>
+                    </div>
+                    <div class="oath-english">
+                        to the best of my ability, the duties of my present position
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">sa akin at sa dapat gampanan sa iba pang pagkaraan nito'y gagampanan ko sa ilalim ng</span>
+                    </div>
+                    <div class="oath-english">
+                        and of all others that I may hereafter hold under the
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">Republika ng Pilipinas; na aking itataguyod at ipagtatanggol ang Saligang Batas ng Pilipinas;</span>
+                    </div>
+                    <div class="oath-english">
+                        Republic of the Philippines; to uphold and defend the Constitution,
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">na tunay na mananalig at tatalima ako rito; na susundin ko ang mga batas at mga kautusang</span>
+                    </div>
+                    <div class="oath-english">
+                        that I will bear true faith and allegiance to the same; that I will obey the laws, legal orders, and
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">legal, at mga dekretong pinaiiral ng mga sadyang itinakdang maykapangyarihan ng Republika</span>
+                    </div>
+                    <div class="oath-english">
+                        decrees promulgated by the duly constituted authorities of the Republic
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">ng Pilipinas; at kusa kong babalikatin ang pananagutang ito nang walang ano mang pasubali</span>
+                    </div>
+                    <div class="oath-english">
+                        of the Philippines; and that I impose this obligation upon myself voluntarily, without mental
+                        reservation
+                    </div>
+
+                    <div>
+                        <span class="oath-filipino">o hangaring umiwas.</span>
+                    </div>
+                    <div class="oath-english">
+                        or purpose of evasion.
+                    </div>
+
+                    <div class="mt-6 text-left">
+                        <span class="oath-filipino block font-bold indent-12">KASIHAN NAWA AKO NG DIYOS.</span>
+                        <span class="oath-english block indent-12">SO HELP ME GOD.</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-12 mb-8">
+                    <div class="text-center w-[300px]">
+                        <span id="out32_name_sign" class="font-bold uppercase text-base block border-b border-black"></span>
+                        <p class="font-serif text-sm">(Lagda sa itaas ng pangalan ng hinirang)</p>
+                    </div>
+                </div>
+
+                <div class="mb-8 font-serif text-sm">
+                    <div class="flex mb-1">
+                        <span class="w-[150px]">Government ID:</span>
+                        <span id="out32_id_type" class="border-b border-black w-[200px]"></span>
+                    </div>
+                    <div class="flex mb-1">
+                        <span class="w-[150px]">Numero ng ID:</span>
+                        <span id="out32_id_num" class="border-b border-black w-[200px]"></span>
+                    </div>
+                    <div class="flex mb-1">
+                        <span class="w-[150px]">Araw ng Pagkakaloob:</span>
+                        <span id="out32_id_date" class="border-b border-black w-[200px]"></span>
+                    </div>
+                </div>
+
+                <hr class="border-black border-2 my-6">
+
+                <div class="mb-4 font-serif text-justify indent-12 text-lg">
+                    Nilagdaan at pinanumpaan sa harap ko ngayong ika <span id="out32_day"
+                        class="border-b border-black font-bold px-2"></span>
+                    ng <span id="out32_month" class="border-b border-black font-bold px-2 uppercase"></span>,
+                    20<span id="out32_year" class="border-b border-black font-bold px-2"></span>
+                    sa <span class="border-b border-black font-bold px-2">GABALDON, NUEVA ECIJA</span>, Pilipinas.
+                </div>
+
+                <div class="flex justify-end mt-16">
+                    <div class="text-center w-[350px]">
+                        <span id="out32_admin_name"
+                            class="font-bold uppercase text-base block border-b border-black"></span>
+
+                        <span id="out32_admin_pos" class="uppercase text-sm block"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Save data to localStorage
+        function saveData() {
+            const inputs = ['agency_name', 'prefix', 'emp_name', 'position', 'monthly_compensation', 'sg_grade', 'office', 'eff_date', 'date_issued', 'head_name', 'hrmo_name', 'attest_date', 'appt_issue_date_13', 'appointing_auth_name', 'ord_no', 'ord_series', 'accountant_name', 'fund_cert_date', 'address', 'gov_id_type', 'gov_id_num', 'gov_id_date', 'admin_officer_name', 'admin_officer_pos', 'oath_date'];
+            inputs.forEach(id => {
+                localStorage.setItem(id, document.getElementById(id).value);
+            });
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const inputs = ['agency_name', 'prefix', 'emp_name', 'position', 'monthly_compensation', 'sg_grade', 'office', 'eff_date', 'date_issued', 'head_name', 'hrmo_name', 'attest_date', 'appt_issue_date_13', 'appointing_auth_name', 'ord_no', 'ord_series', 'accountant_name', 'fund_cert_date', 'address', 'gov_id_type', 'gov_id_num', 'gov_id_date', 'admin_officer_name', 'admin_officer_pos', 'oath_date'];
+            inputs.forEach(id => {
+                const value = localStorage.getItem(id);
+                if (value !== null) {
+                    document.getElementById(id).value = value;
+                }
+            });
+        }
+
+        const getOrdinal = (n) => {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        };
+
+        const formatDateText = (dateStr) => {
+            if (!dateStr) return { day: '', month: '', year: '', monthYear: '', full: '' };
+            const d = new Date(dateStr);
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            return {
+                day: d.getDate(), // Number for Oath
+                ordinalDay: getOrdinal(d.getDate()), // Ordinal for Form 4
+                month: months[d.getMonth()],
+                month_upper: months[d.getMonth()].toUpperCase(),
+                year: d.getFullYear().toString().slice(-2), // Last 2 digits
+                fullYear: d.getFullYear(), // Full 4 digits for other forms
+                monthYear: `${months[d.getMonth()]} ${d.getFullYear()}`,
+                full: d.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })
+            };
+        };
+
+        const updateDoc = () => {
+            // Inputs
+            const agency = document.getElementById('agency_name').value;
+            const prefix = document.getElementById('prefix').value;
+            const empName = document.getElementById('emp_name').value;
+            const pos = document.getElementById('position').value;
+
+            // Form 4 Inputs
+            const office = document.getElementById('office').value;
+            const effDate = document.getElementById('eff_date').value;
+            const dateIssued = document.getElementById('date_issued').value;
+            const headName = document.getElementById('head_name').value;
+            const hrmoName = document.getElementById('hrmo_name').value;
+            const attestDate = document.getElementById('attest_date').value;
+
+            // Form 13 Inputs
+            const apptIssueDate13 = document.getElementById('appt_issue_date_13').value;
+            const appointingAuthName = document.getElementById('appointing_auth_name').value;
+            const ordNo = document.getElementById('ord_no').value;
+            const ordSeries = document.getElementById('ord_series').value;
+            const accountantName = document.getElementById('accountant_name').value;
+            const fundCertDate = document.getElementById('fund_cert_date').value;
+
+            // Form 32 Inputs
+            const address = document.getElementById('address').value;
+            const govIdType = document.getElementById('gov_id_type').value;
+            const govIdNum = document.getElementById('gov_id_num').value;
+            const govIdDate = document.getElementById('gov_id_date').value;
+            const adminName = document.getElementById('admin_officer_name').value;
+            const adminPos = document.getElementById('admin_officer_pos').value;
+            const oathDate = document.getElementById('oath_date').value;
+
+            // Date Processing
+            const effObj = formatDateText(effDate);
+            const issueObj = formatDateText(dateIssued);
+            const attestObj = formatDateText(attestDate);
+            const oathObj = formatDateText(oathDate);
+            const govIdObj = formatDateText(govIdDate);
+            const appt13Obj = formatDateText(apptIssueDate13);
+            const fundCertObj = formatDateText(fundCertDate);
+
+            // --- POPULATE FORM 4 ---
+            document.getElementById('out4_agency').innerText = agency;
+            document.getElementById('out4_name_1').innerText = `${prefix} ${empName}`;
+            document.getElementById('out4_pos_1').innerText = pos;
+            document.getElementById('out4_office').innerText = office;
+            document.getElementById('out4_eff_date').innerText = effObj.full;
+            document.getElementById('out4_name_2').innerText = `${prefix} ${empName}`;
+            document.getElementById('out4_pos_2').innerText = pos;
+            document.getElementById('out4_day').innerText = issueObj.ordinalDay;
+            document.getElementById('out4_month_year').innerText = issueObj.monthYear;
+            document.getElementById('out4_head_name').innerText = headName;
+            document.getElementById('out4_hrmo_name').innerText = hrmoName;
+            document.getElementById('out4_attest_date').innerText = attestObj.full;
+
+            // --- POPULATE FORM 13 ---
+            document.getElementById('out13_agency').innerText = agency;
+            document.getElementById('out13_appt_date').innerText = appt13Obj.full;
+            document.getElementById('out13_appointing_auth').innerText = appointingAuthName;
+            document.getElementById('out13_date_signed').innerText = appt13Obj.full;
+            document.getElementById('out13_ord_no').innerText = ordNo;
+            document.getElementById('out13_ord_series').innerText = ordSeries;
+            document.getElementById('out13_accountant_name').innerText = accountantName;
+            document.getElementById('out13_fund_date').innerText = fundCertObj.full;
+
+
+            // --- POPULATE FORM 32 ---
+            document.getElementById('out32_agency').innerText = agency;
+            document.getElementById('out32_name').innerText = empName; // Usually just name without Prefix in Oath
+            document.getElementById('out32_address').innerText = address;
+            document.getElementById('out32_pos').innerText = pos;
+
+            // Signatures & ID
+            document.getElementById('out32_name_sign').innerText = empName;
+            document.getElementById('out32_id_type').innerText = govIdType;
+            document.getElementById('out32_id_num').innerText = govIdNum;
+            document.getElementById('out32_id_date').innerText = govIdObj.full;
+
+            // Administering Officer Section
+            document.getElementById('out32_day').innerText = oathObj.day;
+            document.getElementById('out32_month').innerText = oathObj.month_upper;
+            document.getElementById('out32_year').innerText = oathObj.year;
+            document.getElementById('out32_admin_name').innerText = adminName;
+            document.getElementById('out32_admin_pos').innerText = adminPos;
+
+            // Save data to localStorage
+            saveData();
+
+            // Save data for checklist
+            const checklistData = {
+                name: empName,
+                position: pos,
+                agency: agency,
+                hrmoName: hrmoName,
+                dateOfSigning: appt13Obj.full,
+                monthlyCompensation: document.getElementById('monthly_compensation').value,
+                sgGrade: document.getElementById('sg_grade').value,
+            };
+            sessionStorage.setItem('checklistData', JSON.stringify(checklistData));
+        };
+
+        document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", updateDoc));
+        loadData();
+        updateDoc();
+    </script>
+
+</body>
+
+</html>

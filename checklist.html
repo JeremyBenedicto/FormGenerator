@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments Processing Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            font-size: 10pt;
+            background-color: #f8f9fa;
+        }
+        /* Adjusted container for better screen preview */
+        .container {
+            max-width: 7.5in;
+            margin: auto;
+            padding: 0.5in;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+            font-weight: bold;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+            margin-bottom: 1.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        td, th {
+            border: 1px solid black;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            text-align: center;
+        }
+        .header-table td {
+            font-weight: bold;
+            border: 1px solid black;
+        }
+        /* Fixed widths to ensure the table fits on one page */
+        .header-table td:nth-child(3) {
+            width: 15%;
+        }
+        .header-table td:nth-child(4) {
+            width: 25%;
+        }
+        .content-table .criteria {
+            width: 40%;
+        }
+        .content-table .area {
+            width: 18%;
+            font-weight: bold;
+        }
+        /* Centering content in the YES/NO columns */
+        .content-table tbody td:nth-child(3),
+        .content-table tbody td:nth-child(4) {
+            text-align: center;
+            padding: 4px 0px; 
+        }
+        .content-table .remarks {
+            width: 27%;
+        }
+        /* Styling for the new interactive checkboxes */
+        .content-table input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            margin: 0 auto; 
+            display: block;
+            transform: scale(1.1);
+        }
+        /* Styling for the editable TEXTAREAS */
+        .content-table textarea {
+            width: 98%; 
+            border: 1px dashed #666; /* Use dashed border to signify it's editable/fillable */
+            padding: 2px;
+            box-sizing: border-box; 
+            resize: vertical; /* Allow vertical resizing only */
+            min-height: 1.5em; /* Ensure min height for visual consistency */
+        }
+
+        .text-center {
+            text-align: start;
+            margin-left: 0;
+        }
+        .footer {
+            margin-top: 1rem;
+        }
+        
+        /* New Footer Styles - Using Tables for precise alignment */
+        .signature-table {
+            width: 100%;
+            margin-top: 1rem;
+            border: none;
+        }
+        .signature-table td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 0;
+            vertical-align: top;
+            height: 60px;
+            box-sizing: border-box;
+        }
+        .signature-table .label-row td {
+            height: auto;
+            border-top: none;
+            padding: 2px 5px;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+        .signature-table .signed-name {
+            font-weight: bold;
+            border-bottom: 1px solid black;
+            display: block;
+            margin: 15px 10px 0 10px;
+        }
+        
+        .cscfo-recommendation {
+            border: 1px solid black;
+            margin-top: 1.5rem;
+            padding: 5px;
+        }
+        .cscfo-recommendation strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11pt;
+            border-bottom: 1px solid black;
+            padding-bottom: 3px;
+        }
+        .cscfo-recommendation div {
+            margin-bottom: 5px;
+            font-size: 10pt;
+        }
+        .cscfo-recommendation .checkbox-container {
+             display: inline-flex;
+             align-items: center;
+             margin-right: 15px;
+        }
+        .cscfo-recommendation input[type="checkbox"] {
+            width: 12px;
+            height: 12px;
+            margin: 0 5px 0 0;
+            display: inline-block;
+            transform: none;
+        }
+        .cscfo-recommendation p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 9pt;
+        }
+        .cscfo-recommendation .remarks-box {
+            border: 1px solid black;
+            height: 50px;
+            margin-bottom: 5px;
+        }
+        
+        /* New table for the last three signature boxes (Evaluated/Verified/Recommended) */
+        .final-signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .final-signature-table td {
+            border: 1px solid black;
+            vertical-align: top;
+            text-align: center;
+            height: 35px; /* For the blank signature area */
+        }
+        .final-signature-table .header-row td {
+            font-size: 10pt;
+            font-weight: bold;
+            height: auto;
+            padding: 5px;
+        }
+        .final-signature-table .date-row td {
+            height: 20px;
+            font-size: 9pt;
+            padding-top: 5px;
+        }
+        /* Specific column widths for the three-column layout */
+        .final-signature-table colgroup col:nth-child(1) { width: 33.33%; }
+        .final-signature-table colgroup col:nth-child(2) { width: 33.33%; }
+        .final-signature-table colgroup col:nth-child(3) { width: 33.33%; }
+
+
+        /* === Print-specific styles for US Letter Page === */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt;
+                background-color: white;
+            }
+            .container {
+                /* Set page size to US Letter with 0.5in margins */
+                max-width: 8.5in;
+                width: 7.5in; /* 8.5in - (0.5in * 2) = 7.5in usable width */
+                min-height: 10in; /* 11in - (0.5in * 2) = 10in usable height */
+                margin: 0;
+                padding: 0.5in;
+                border: none;
+                box-shadow: none;
+            }
+            /* Ensure inputs and textareas are legible and don't show dashed lines when printed */
+            .content-table textarea {
+                border: none !important;
+                border-bottom: 1px dashed black !important;
+                padding: 0px 2px;
+                resize: none !important; /* Disable resizing in print view */
+                -webkit-print-color-adjust: exact;
+                color: black !important;
+            }
+            /* Hide non-essential screen elements on print */
+            .content-table input[type="checkbox"] {
+                border: 1px solid black !important; /* Ensure checkboxes show up */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>APPOINTMENTS PROCESSING CHECKLIST</h1>
+        <h2>LOCAL GOVERNMENT UNITS-FOR REGULATED AGENCIES</h2>
+
+        <table class="header-table">
+            <tbody>
+                <tr>
+                    <td>NAME</td>
+                    <td id="name-cell">[NAME]</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>POSITION</td>
+                    <td id="position-cell">[POSITION]</td>
+                    <td>SG/JG/PG</td>
+                    <td id="sg-grade-cell">11/1</td>
+                </tr>
+                <tr>
+                    <td>MONTHLY COMPENSATION</td>
+                    <td id="compensation-cell">[MONTHLY COMPENSATION]</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>AGENCY</td>
+                    <td id="agency-cell">[AGENCY]</td>
+                    <td>SECTOR</td>
+                    <td>LGU</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>AREA</th>
+                    <th class="criteria">CRITERIA (POSITION TITLE)</th>
+                    <th>YES</th>
+                    <th>NO</th>
+                    <th class="remarks">APPOINTEE/REMARKS</th> </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="6" class="area">Qualification Standard<br><br>Does the Appointee meet the minimum qualification requirements of the position?</td>
+                    <td>1. Education: <span id="education-req-cell"></span></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td rowspan="2"><textarea id="appointee-education-cell" rows="3"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Bachelor's Degree Relevant to the Job</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>2. Experience: <span id="experience-req-cell"></span></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td rowspan="2"><textarea id="appointee-experience-cell" rows="3"></textarea></td>
+                </tr>
+                <tr>
+                    <td>None Required</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>3. Training: <span id="training-req-cell"></span></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td rowspan="2"><textarea id="appointee-training-cell" rows="3"></textarea></td>
+                </tr>
+                <tr>
+                    <td>None Required</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2" class="area"></td>
+                    <td>4. Eligibility: <span id="eligibility-req-cell"></span></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea id="appointee-eligibility-cell" rows="3"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Career service (Professional) Second level eligibility</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td rowspan="2" class="area"></td>
+                    <td>5. Other requirements <span id="other-req-cell"></span></td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td rowspan="2"><textarea class="remarks-input" rows="3"></textarea></td> </tr>
+                <tr>
+                    <td>(e.g. Age; Residency for LGU Dept. Heads)</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <th>APPOINTMENT FORMS</th>
+                    <th></th>
+                    <th>YES</th>
+                    <th>NO</th>
+                    <th>REMARKS</th>
+                </tr>
+                <tr>
+                    <td rowspan="6" class="area">Common requirements for Regular Appointments<br><br>Are the following requirements</td>
+                    <td>6. REGULATED AGENCIES:</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>6. CS Form 33-A (revised 2018) in triplicate (regular)<br>7. CS form 34-C (revised 2018) in triplicate (casual)</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>7. Employment Status</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>8. Nature of Appointment</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>9. Signature of Appointing Authority</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>10. Date of Signing</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td id="signing-date-cell">[Date of Signing]</td>
+                </tr>
+                <tr>
+                    <td rowspan="3" class="area"></td>
+                    <td>11. Certification of Publication/Posting of Vacant Position</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td rowspan="3"><textarea class="remarks-input" rows="5"></textarea></td> </tr>
+                <tr>
+                    <td>12. Certification by HRMPSB Chairman (at the back of appointment) or copy of the proceesing of HRMPSB deliberation</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>13. Personal Data Sheet CS Form 212 (revised 2017)</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td rowspan="3" class="area">Submission and Effectivity of Appointment</td>
+                    <td>14. Is the Agency accredited?</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>15. If accredited, was the appointment submitted to the CSC within 15 days of the succeding month?</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>16. If not accredited, was the appointment submitted to the CSC within 30 calendar days from date of issuance?</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td rowspan="5" class="area">Additional Requirements in Specific Cases<br><br>courses applicable?</td>
+                    <td>17. Erasures or alteration on the appointment and other supporting documents changes should be duly initialed by authorized officials and accompanied by a communication authentication changes made</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>18. With decided administrative/criminal case certified true copy of the decision rendered</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>19. Discrepancy in name/place of birth Requirements and procedures based on Section 105 and 106 of the 2017 Rules on Administrative Cases in the Civil Service</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>20. COMELEC Ban Exemption from the COMELEC</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>CRITERIA</td>
+                    <th>YES</th>
+                    <th>NO</th>
+                    <th>REMARKS</th>
+                </tr>
+                <tr>
+                    <td rowspan="4" class="area">21. LGU Appointment Requirements</td>
+                    <td>21. LGU Appointment<br>-Certification by the proper appointing authority re: compliance with Local Government Code</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>-Certification by the Municipal/City/Provincial Accountant/Budget Officer on availability of funds</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>-For appointment to Department Head, Sanggunian Resolution embodying the concurrence of the majority of its members</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>For appointments issued as a result of reorganization/creation of new position, Sangguniang Resolution approving the new organizational structure/creation of positions</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                
+                <tr>
+                    <td rowspan="4" class="area">22. Change of Status (MC 11, s. 1996)</td>
+                    <td>22. Appointment Involving change of status from temporary to permanent under categories specified in MC 11, s. 1996</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>Category I-TESDA Certification and corresponding CS Eligibility</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                <tr>
+                    <td>Category II - Performance rating for 2 rating periods during temporary appointment certified by appointing authority</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>Category III - Appropriate valid license</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+
+                <tr>
+                    <td rowspan="2" class="area">23. Nondisciplinary Demotion</td>
+                    <td>23. Nondisciplinary -demotion: Certification of the agency head that the demotion is not a result of an administrative case</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="2"></textarea></td> </tr>
+                <tr>
+                    <td>Written consent by the employee interposing no objection to the demotion</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+
+                <tr>
+                    <td class="area">24. License Requirement</td>
+                    <td>24. License required by special law for the exercise of profession or vocation</td>
+                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox"></td>
+                    <td><textarea class="remarks-input" rows="1"></textarea></td> </tr>
+                
+                <tr>
+                    <td class="area">Other Documents Submitted</td>
+                    <td colspan="4"><textarea rows="2" style="width: 100%; border: none; padding: 0; resize: none;"></textarea></td>
+                </tr>
+                </tbody>
+        </table>
+
+        <div class="footer">
+            
+            <table class="signature-table">
+                <colgroup>
+                    <col style="width: 50%;">
+                    <col style="width: 50%;">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td style="border-bottom: none; border-right: none;">Prepared By:</td>
+                        <td style="border-bottom: none; border-left: none;">Reviewed By:</td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: none;">
+                            <span id="prepared-by-name" class="signed-name"></span>
+                            <div style="font-size: 9pt; margin-top: 5px;">Head of HRMO</div>
+                        </td>
+                        <td style="border-left: none;">
+                            <span id="reviewed-by-name" class="signed-name"></span>
+                            <div style="font-size: 9pt; margin-top: 5px;"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div class="cscfo-recommendation">
+                <strong>CSCFO Recommendation</strong>
+                <div>
+                    <span class="checkbox-container">
+                        <input type="checkbox" id="approval-check">
+                        <label for="approval-check">APPROVAL/VALIDATION</label>
+                    </span>
+                    <span class="checkbox-container">
+                        <input type="checkbox" id="disapproval-check">
+                        <label for="disapproval-check">DISAPPROVAL/INVALIDATION</label>
+                    </span>
+                    <span class="checkbox-container">
+                        <input type="checkbox" id="others-check">
+                        <label for="others-check">OTHERS, specify: <span style="border-bottom: 1px dashed black; padding-bottom: 2px; display: inline-block; min-width: 100px;"></span></label>
+                    </span>
+                </div>
+                <p>REMARKS (include the reason/s for disapproval/invalidation)</p>
+                <div class="remarks-box"></div>
+            </div>
+
+            <table class="final-signature-table">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr class="header-row">
+                        <td>Evaluated by:</td>
+                        <td>Verified by:</td>
+                        <td>Recommended by:</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="date-row">
+                        <td style="border-top: 1px solid black;">Date</td>
+                        <td style="border-top: 1px solid black;">Date</td>
+                        <td style="border-top: 1px solid black;">Date</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checklistDataString = sessionStorage.getItem('checklistData');
+        if (checklistDataString) {
+            const data = JSON.parse(checklistDataString);
+
+            document.getElementById('name-cell').textContent = data.name || '[NAME]';
+            document.getElementById('position-cell').textContent = data.position || '[POSITION]';
+            document.getElementById('compensation-cell').textContent = data.monthlyCompensation || '[MONTHLY COMPENSATION]';
+            document.getElementById('agency-cell').textContent = data.agency || '[AGENCY]';
+            document.getElementById('signing-date-cell').textContent = data.dateOfSigning || '[Date of Signing]';
+            
+            // HRMO Name is correctly applied here
+            document.getElementById('prepared-by-name').textContent = data.hrmoName || '';
+            
+            // Added placeholder for Reviewed By Name
+            document.getElementById('reviewed-by-name').textContent = data.reviewerName || '';
+
+            // Populate qualification standards section
+            document.getElementById('sg-grade-cell').textContent = data.sgGrade || 'SG/JG/PG';
+            document.getElementById('education-req-cell').textContent = data.educationReq ? `: ${data.educationReq}` : '';
+            // Use .value for the editable TEXTAREA field (Education - 1)
+            document.getElementById('appointee-education-cell').value = data.appointeeEducation || '';
+            document.getElementById('experience-req-cell').textContent = data.experienceReq ? `: ${data.experienceReq}` : '';
+            // Use .value for the editable TEXTAREA field (Experience - 2)
+            document.getElementById('appointee-experience-cell').value = data.appointeeExperience || '';
+            document.getElementById('training-req-cell').textContent = data.trainingReq ? `: ${data.trainingReq}` : '';
+            // Use .value for the editable TEXTAREA field (Training - 3)
+            document.getElementById('appointee-training-cell').value = data.appointeeTraining || '';
+            document.getElementById('eligibility-req-cell').textContent = data.eligibilityReq ? `: ${data.eligibilityReq}` : '';
+            // Use .value for the editable TEXTAREA field (Eligibility - 4)
+            document.getElementById('appointee-eligibility-cell').value = data.appointeeEligibility || '';
+            document.getElementById('other-req-cell').textContent = data.otherReq ? `: ${data.otherReq}` : '';
+        }
+
+        // Add exclusive click behavior to checkboxes (if you check 'YES', 'NO' must be unchecked, and vice versa)
+        const contentTable = document.querySelector('.content-table tbody');
+        
+        // Target all table rows that contain two checkboxes (a "YES" and a "NO" column)
+        const rowsWithCheckboxes = Array.from(contentTable.querySelectorAll('tr')).filter(row => 
+            row.querySelectorAll('td:nth-child(3) input[type="checkbox"]').length > 0 && 
+            row.querySelectorAll('td:nth-child(4) input[type="checkbox"]').length > 0
+        );
+
+        rowsWithCheckboxes.forEach(row => {
+            const yesCheckbox = row.querySelector('td:nth-child(3) input[type="checkbox"]');
+            const noCheckbox = row.querySelector('td:nth-child(4) input[type="checkbox"]');
+
+            if (yesCheckbox && noCheckbox) {
+                yesCheckbox.addEventListener('change', () => {
+                    if (yesCheckbox.checked) {
+                        noCheckbox.checked = false;
+                    }
+                });
+
+                noCheckbox.addEventListener('change', () => {
+                    if (noCheckbox.checked) {
+                        yesCheckbox.checked = false;
+                    }
+                });
+            }
+        });
+
+        // CSCFO Recommendation checkboxes: make them exclusive
+        const approval = document.getElementById('approval-check');
+        const disapproval = document.getElementById('disapproval-check');
+        const others = document.getElementById('others-check');
+
+        const exclusiveCheckboxes = [approval, disapproval, others];
+
+        exclusiveCheckboxes.forEach(box => {
+            box.addEventListener('change', () => {
+                if (box.checked) {
+                    exclusiveCheckboxes.forEach(otherBox => {
+                        if (otherBox !== box) {
+                            otherBox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

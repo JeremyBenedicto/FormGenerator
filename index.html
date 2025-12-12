@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Generator Hub - LGU Gabaldon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,253 +13,131 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            /* A vibrant background is essential for the glass effect to be visible */
+            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%), 
+                        radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.15) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, rgba(160, 147, 255, 0.15) 0, transparent 50%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            position: relative;
-            overflow-x: hidden;
         }
 
-        /* Animated background particles */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
+        /* --- Glassmorphism Container --- */
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 50px;
-            border-radius: 25px;
+            /* Transparency */
+            background: rgba(255, 255, 255, 0.45); 
+            /* The "Frosted" effect */
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            
+            padding: 50px 40px;
+            border-radius: 40px;
+            
+            /* High-definition border (the 'shine') */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            
             box-shadow: 
-                0 25px 60px rgba(0, 0, 0, 0.2),
-                0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-            max-width: 700px;
+                0 8px 32px 0 rgba(31, 38, 135, 0.07),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+                
+            max-width: 550px;
             width: 100%;
-            position: relative;
-            animation: slideUp 0.6s ease-out;
+            text-align: center;
+            animation: fadeUp 0.6s ease-out;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Decorative corner accents */
-        .container::before,
-        .container::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 3px solid #667eea;
-            opacity: 0.3;
-        }
-
-        .container::before {
-            top: -10px;
-            left: -10px;
-            border-right: none;
-            border-bottom: none;
-            border-radius: 25px 0 0 0;
-        }
-
-        .container::after {
-            bottom: -10px;
-            right: -10px;
-            border-left: none;
-            border-top: none;
-            border-radius: 0 0 25px 0;
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 35px;
-            padding-bottom: 25px;
-            border-bottom: 2px solid #e2e8f0;
-            position: relative;
-        }
-
-        .logo-wrapper {
-            position: relative;
+            margin-bottom: 45px;
         }
 
         .logo {
-            height: 80px;
-            width: 80px;
+            height: 90px;
+            width: 90px;
             border-radius: 50%;
-            border: 4px solid #667eea;
+            background: rgba(255, 255, 255, 0.7);
             padding: 5px;
-            background: white;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .header-text {
-            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin: 0 auto 25px;
+            display: block;
         }
 
         h1 {
-            color: #1a3a52;
-            font-size: 2.5rem;
+            color: #111827;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #1a3a52 0%, #667eea 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            color: #5a677d;
-            font-size: 1rem;
+            color: #4B5563;
+            font-size: 1.05rem;
             font-weight: 500;
-            font-family: 'Roboto', sans-serif;
         }
 
-        .intro-text {
-            color: #4a5568;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-        }
-
+        /* --- Glass Buttons --- */
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 15px;
         }
 
         .btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 22px 30px;
-            border: none;
-            border-radius: 15px;
-            color: white;
-            font-size: 1.15rem;
-            font-weight: 600;
+            padding: 18px 30px;
+            border-radius: 9999px; 
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            outline: none;
-            position: relative;
-            overflow: hidden;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Glass styling for buttons */
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            color: #1F2937;
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
+        /* --- Hover State (Ref: Black Pill from Image) --- */
         .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            background-color: #111827; /* Dark transition from image */
+            color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+            backdrop-filter: none;
+            border-color: #111827;
         }
 
-        .btn:active {
-            transform: translateY(-2px) scale(0.98);
+        .btn-icon-right {
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
         }
 
-        .btn:focus-visible {
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.4), 0 15px 40px rgba(0, 0, 0, 0.25);
-            transform: translateY(-5px);
-        }
-
-        .btn-icon {
-            font-size: 1.5rem;
-            margin-left: 10px;
-        }
-
-        .btn-accomplishment {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        }
-
-        .btn-accomplishment:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-        }
-
-        .btn-slip {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
-
-        .btn-slip:hover {
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-        }
-
-        .btn-ticket {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .btn-ticket:hover {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
-
-        .btn-appointment {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-
-        .btn-appointment:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        .btn:hover .btn-icon-right {
+            transform: translateX(5px) scale(1.1);
         }
 
         .footer-note {
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-            color: #64748b;
-            font-size: 0.9rem;
-            font-family: 'Roboto', sans-serif;
+            margin-top: 40px;
+            color: #6B7280;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
-        /* Modal styles */
+        /* --- Glass Modal --- */
         .modal {
             display: none;
             position: fixed;
@@ -268,142 +146,90 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 300px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 35px;
+            width: 90%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #1a3a52;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
         }
 
         .modal-content input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 16px 24px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 999px;
             font-size: 1rem;
-        }
-
-        .modal-content button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
 
         .modal-content .submit-btn {
-            background-color: #667eea;
+            background: #111827;
             color: white;
-        }
-
-        .modal-content .cancel-btn {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .new-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #ef4444;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 14px 28px;
+            border-radius: 999px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
         }
 
         @media (max-width: 480px) {
-            .container {
-                padding: 35px 25px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-text {
-                text-align: center;
-            }
-
-            .btn {
-                font-size: 1rem;
-                padding: 18px 25px;
-            }
-
-            .logo {
-                height: 70px;
-                width: 70px;
-            }
+            .container { padding: 35px 20px; border-radius: 30px; }
         }
     </style>
 </head>
 <body>
-    <div class="container" role="main">
+    <div class="container">
         <header class="header">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="LGU Gabaldon Municipal Government Logo" class="logo">
-            </div>
-            <div class="header-text">
-                <h1>Form Generator Hub</h1>
-                <p class="subtitle">LGU Gabaldon Document Services</p>
-            </div>
+            <img src="logo.png" alt="LGU Gabaldon Logo" class="logo">
+            <h1>Form Generator Hub</h1>
+            <p class="subtitle">LGU Gabaldon Document Services</p>
         </header>
 
-        <p class="intro-text">Choose a form template to generate your document quickly and efficiently.</p>
-
-        <nav class="button-group" aria-label="Form Generation Options">
-            <a href="accomplishment-generator.html" class="btn btn-accomplishment">
+        <nav class="button-group">
+            <a href="accomplishment-generator.html" class="btn">
                 <span>Accomplishment Report</span>
-                <span class="btn-icon">📊</span>
+                <span class="btn-icon-right">📊</span>
             </a>
-            <a href="TravelOrder_LocatorSlip.html" class="btn btn-slip">
+            <a href="TravelOrder_LocatorSlip.html" class="btn">
                 <span>Travel Order / Locator Slip</span>
-                <span class="btn-icon">✈️</span>
+                <span class="btn-icon-right">✈️</span>
             </a>
-            <a href="driversTripTicket.html" class="btn btn-ticket">
+            <a href="driversTripTicket.html" class="btn">
                 <span>Driver's Trip Ticket</span>
-                <span class="btn-icon">🚗</span>
+                <span class="btn-icon-right">🚗</span>
             </a>
-            <a href="#" id="appointment-btn" class="btn btn-appointment">
+            <a href="#" id="appointment-btn" class="btn">
                 <span>Appointment Letter</span>
-                <span class="btn-icon">📄</span>
+                <span class="btn-icon-right">🔒</span>
             </a>
         </nav>
 
-        <div class="footer-note">
-            Mabuhay!
-        </div>
+        <div class="footer-note">MABUHAY! 🇵🇭</div>
     </div>
 
-    <!-- Authentication Modal -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
-            <h2>🔒</h2>
+            <h2 style="font-size: 2.5rem; margin-bottom: 10px;">🔒</h2>
+            <p style="margin-bottom: 20px; color: #4B5563; font-weight: 500;">Authorized Personnel Only</p>
             <input type="password" id="auth-password" placeholder="Enter password">
-            <button class="submit-btn" id="auth-submit">Submit</button>
-            <button class="cancel-btn" id="auth-cancel">Cancel</button>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeModal()" style="flex:1; background:#E5E7EB; border:none; padding:14px; border-radius:999px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button id="auth-submit" class="submit-btn" style="flex:2;">Confirm Access</button>
+            </div>
         </div>
     </div>
 
@@ -411,45 +237,28 @@
         const modal = document.getElementById('auth-modal');
         const passwordInput = document.getElementById('auth-password');
         const submitBtn = document.getElementById('auth-submit');
-        const cancelBtn = document.getElementById('auth-cancel');
 
-        document.getElementById('appointment-btn').addEventListener('click', function(e) {
+        document.getElementById('appointment-btn').addEventListener('click', (e) => {
             e.preventDefault();
             modal.style.display = 'flex';
             passwordInput.focus();
         });
 
-        submitBtn.addEventListener('click', function() {
-            const password = passwordInput.value;
-            if (password === atob('aHJtbzIwMjU=')) {
-                modal.style.display = 'none';
-                window.location.href = 'lettergenerator.html';
-            } else {
-                alert('Incorrect password. Access denied.');
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
-        });
-
-        cancelBtn.addEventListener('click', function() {
+        function closeModal() {
             modal.style.display = 'none';
             passwordInput.value = '';
-        });
+        }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.style.display = 'none';
+        submitBtn.addEventListener('click', () => {
+            if (passwordInput.value === atob('aHJtbzIwMjU=')) {
+                window.location.href = 'lettergenerator.html';
+            } else {
+                alert('Access Denied');
                 passwordInput.value = '';
             }
         });
 
-        // Allow Enter key to submit
-        passwordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                submitBtn.click();
-            }
-        });
+        window.onclick = (e) => { if (e.target === modal) closeModal(); };
     </script>
 </body>
 </html>

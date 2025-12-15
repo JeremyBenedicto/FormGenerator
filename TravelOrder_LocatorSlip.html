@@ -1225,7 +1225,7 @@
                             ${data.dateRanges.map(range => `
                                 <div class="date-range-item">
                                     <span>${formatDate(range.start)} - ${formatDate(range.end)}</span>
-                    <span>${formatTime(data.departureTime)} - ${formatTime(data.arrivalTime)}</span>
+                    <span>Departure: ${formatTime(data.departureTime)} - Arrival: ${formatTime(data.arrivalTime)}</span>
                                 </div>
                             `).join('')}
                         </div>

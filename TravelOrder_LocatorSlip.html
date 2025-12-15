@@ -1081,17 +1081,11 @@
                     singleDateSection.classList.add('hidden');
                     multipleDateSection.classList.remove('hidden');
                     timeFields.classList.add('hidden');
-                    
+
                     // Add initial date range if none exist
                     if (dateRangeList.children.length === 0) {
                         addDateRange();
                     }
-                    
-                    // Show notification when enabling multiple dates
-                    showPopup(
-                        'Multiple Dates Feature Activated',
-                        'Multiple date ranges enabled. Add date ranges and set departure/arrival times that apply to all ranges.'
-                    );
                 } else {
                     singleDateSection.classList.remove('hidden');
                     multipleDateSection.classList.add('hidden');
@@ -1119,17 +1113,6 @@
                     </button>
                 `;
                 dateRangeList.appendChild(rangeDiv);
-                
-                // Show notification for first date range
-                if (!firstDateRangeAdded) {
-                    firstDateRangeAdded = true;
-                    setTimeout(() => {
-                        showPopup(
-                            'First Date Range Added',
-                            'Enter the start and end dates for this travel period. The same departure/arrival times will apply to all date ranges.'
-                        );
-                    }, 500);
-                }
             }
 
             addDateRangeBtn.addEventListener('click', addDateRange);
@@ -1409,11 +1392,6 @@
 
                 previewContent.innerHTML = previewHTML;
                 previewModal.classList.remove('hidden');
-
-                showPopup(
-                    'Preview Generated!',
-                    'Your form preview has been generated correctly. You can review it before printing.'
-                );
             });
 
             modalClose.addEventListener('click', () => {
@@ -1461,11 +1439,6 @@
                 });
 
                 window.print();
-
-                showPopup(
-                    'Form Generated!',
-                    'Your form has been generated and is ready for printing. Make sure to set your paper size to Legal (8.5" x 13") or Legal (8.5" x 14") for correct formatting.'
-                );
             });
 
             addEmployee();

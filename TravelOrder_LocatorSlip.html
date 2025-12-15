@@ -94,6 +94,29 @@
             cursor: pointer;
         }
 
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
         /* Glass input styling */
         .input-group {
             display: grid;
@@ -153,6 +176,20 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 25px;
             padding: 25px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        /* Date range cards */
+        .date-range-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 20px;
             margin-bottom: 15px;
             display: grid;
             grid-template-columns: 1fr 1fr auto;
@@ -335,75 +372,137 @@
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
         }
 
-        /* TOAST NOTIFICATION */
-        .toast {
+        /* POPUP NOTIFICATION CARD */
+        .popup-overlay {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-radius: 999px;
-            padding: 16px 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
-            gap: 12px;
-            transform: translateX(400px);
-            transition: transform 0.3s ease-out;
-            z-index: 2000;
-            max-width: 380px;
+            justify-content: center;
+            z-index: 3000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .toast.show {
-            transform: translateX(0);
+        .popup-overlay.show .popup-card {
+            transform: scale(1) translateY(0);
         }
 
-        .toast-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        .popup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .popup-header-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            margin: 0 auto 15px;
+            backdrop-filter: blur(10px);
         }
 
-        .toast-icon svg {
-            width: 20px;
-            height: 20px;
+        .popup-header-icon svg {
+            width: 30px;
+            height: 30px;
             color: white;
         }
 
-        .toast-content {
-            flex: 1;
+        .popup-title {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 0.5px;
         }
 
-        .toast-title {
-            font-weight: 700;
-            color: #111827;
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-
-        .toast-message {
-            color: #4b5563;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .toast-close {
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            color: #9ca3af;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            color: white;
             font-size: 20px;
-            line-height: 1;
-            font-weight: 600;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
         }
 
-        .toast-close:hover {
-            color: #4b5563;
+        .popup-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .popup-body {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .popup-message {
+            color: #374151;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .popup-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .popup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .popup-button:active {
+            transform: translateY(0);
         }
 
         .hidden {
@@ -606,6 +705,18 @@
             grid-column: 1 / -1;
         }
 
+        .date-range-list {
+            grid-column: 1 / -1;
+            margin-top: 5px;
+        }
+
+        .date-range-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            font-size: 0.85rem;
+        }
+
         .signature-section {
             margin-top: auto;
             padding-top: 8px;
@@ -731,7 +842,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .employee-card {
+            .employee-card, .date-range-card {
                 grid-template-columns: 1fr;
             }
 
@@ -741,6 +852,22 @@
 
             .btn {
                 width: 100%;
+            }
+
+            .popup-card {
+                max-width: 90%;
+            }
+
+            .popup-header {
+                padding: 20px 25px;
+            }
+
+            .popup-title {
+                font-size: 1.2rem;
+            }
+
+            .popup-body {
+                padding: 25px 20px;
             }
         }
     </style>
@@ -778,22 +905,47 @@
                     <textarea id="purpose" placeholder="e.g., Attend training/workshop..."></textarea>
                 </div>
                 
-                <div class="form-field">
-                    <label for="departureDate">Departure Date</label>
-                    <input type="date" id="departureDate">
-                </div>
-                <div class="form-field">
-                    <label for="departureTime">Departure Time</label>
-                    <input type="time" id="departureTime">
+                <div class="checkbox-group" style="grid-column: 1 / -1;">
+                    <input type="checkbox" id="multipleDatesCheckbox">
+                    <label for="multipleDatesCheckbox">Use Multiple Date Ranges</label>
                 </div>
                 
-                <div class="form-field">
-                    <label for="arrivalDate">Arrival Date</label>
-                    <input type="date" id="arrivalDate">
+                <!-- Single Date Range Section (Default) -->
+                <div id="singleDateSection">
+                    <div class="form-field">
+                        <label for="departureDate">Departure Date</label>
+                        <input type="date" id="departureDate">
+                    </div>
+                    <div class="form-field">
+                        <label for="arrivalDate">Arrival Date</label>
+                        <input type="date" id="arrivalDate">
+                    </div>
                 </div>
-                <div class="form-field">
-                    <label for="arrivalTime">Arrival Time</label>
-                    <input type="time" id="arrivalTime">
+                
+                <!-- Multiple Date Ranges Section (Hidden by Default) -->
+                <div id="multipleDateSection" class="hidden" style="grid-column: 1 / -1;">
+                    <div class="form-field">
+                        <label>Departure Time</label>
+                        <input type="time" id="departureTime">
+                    </div>
+                    <div class="form-field">
+                        <label>Arrival Time</label>
+                        <input type="time" id="arrivalTime">
+                    </div>
+                    <div id="date-range-list"></div>
+                    <button id="add-date-range-btn" class="btn btn-add">+ Add Date Range</button>
+                </div>
+                
+                <!-- Time Fields for Single Date Range -->
+                <div id="timeFields">
+                    <div class="form-field">
+                        <label for="departureTime">Departure Time</label>
+                        <input type="time" id="departureTime">
+                    </div>
+                    <div class="form-field">
+                        <label for="arrivalTime">Arrival Time</label>
+                        <input type="time" id="arrivalTime">
+                    </div>
                 </div>
 
                 <div class="form-field">
@@ -845,17 +997,23 @@
 
     <div id="print-area" class="hidden"></div>
 
-    <div id="toast" class="toast">
-        <div class="toast-icon">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+    <!-- POPUP NOTIFICATION CARD -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-card">
+            <div class="popup-header">
+                <div class="popup-header-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="popup-title" id="popup-title">Notification</h3>
+                <span id="popup-close" class="popup-close">×</span>
+            </div>
+            <div class="popup-body">
+                <p class="popup-message" id="popup-message">Message goes here</p>
+                <button id="popup-button" class="popup-button">Got it!</button>
+            </div>
         </div>
-        <div class="toast-content">
-            <div class="toast-title">Welcome!</div>
-            <div class="toast-message">Date/Time issue has been fixed. The form generator is ready to use.</div>
-        </div>
-        <span class="toast-close">&times;</span>
     </div>
 
     <script>
@@ -870,27 +1028,117 @@
             const previewModal = document.getElementById('preview-modal');
             const previewContent = document.getElementById('preview-content');
             const modalClose = document.getElementById('modal-close');
-            const toast = document.getElementById('toast');
-            const toastClose = toast.querySelector('.toast-close');
+            
+            // Popup notification elements
+            const popupOverlay = document.getElementById('popup-overlay');
+            const popupTitle = document.getElementById('popup-title');
+            const popupMessage = document.getElementById('popup-message');
+            const popupClose = document.getElementById('popup-close');
+            const popupButton = document.getElementById('popup-button');
+            
+            // Multiple date range elements
+            const multipleDatesCheckbox = document.getElementById('multipleDatesCheckbox');
+            const singleDateSection = document.getElementById('singleDateSection');
+            const multipleDateSection = document.getElementById('multipleDateSection');
+            const timeFields = document.getElementById('timeFields');
+            const addDateRangeBtn = document.getElementById('add-date-range-btn');
+            const dateRangeList = document.getElementById('date-range-list');
             
             const MAX_EMPLOYEES_PER_SLIP = 5;
+            let firstDateRangeAdded = false;
 
-            function showToast(message, title = 'Success!') {
-                const toastMessage = toast.querySelector('.toast-message');
-                const toastTitle = toast.querySelector('.toast-title');
-                
-                toastMessage.textContent = message;
-                toastTitle.textContent = title;
-                
-                toast.classList.add('show');
-                
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 5000);
+            // Show welcome notification with new feature info
+            setTimeout(() => {
+                showPopup(
+                    'Welcome to the Updated Form Generator!',
+                    'New feature added! You can now create forms with multiple date ranges while keeping the same departure/arrival times. Check the "Use Multiple Date Ranges" option in the form details section.'
+                );
+            }, 1000);
+
+            function showPopup(title, message) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupOverlay.classList.add('show');
             }
 
-            toastClose.addEventListener('click', () => {
-                toast.classList.remove('show');
+            function hidePopup() {
+                popupOverlay.classList.remove('show');
+            }
+
+            popupClose.addEventListener('click', hidePopup);
+            popupButton.addEventListener('click', hidePopup);
+            
+            // Close popup when clicking outside
+            popupOverlay.addEventListener('click', (e) => {
+                if (e.target === popupOverlay) {
+                    hidePopup();
+                }
+            });
+
+            // Toggle between single and multiple date ranges
+            multipleDatesCheckbox.addEventListener('change', () => {
+                if (multipleDatesCheckbox.checked) {
+                    singleDateSection.classList.add('hidden');
+                    multipleDateSection.classList.remove('hidden');
+                    timeFields.classList.add('hidden');
+                    
+                    // Add initial date range if none exist
+                    if (dateRangeList.children.length === 0) {
+                        addDateRange();
+                    }
+                    
+                    // Show notification when enabling multiple dates
+                    showPopup(
+                        'Multiple Dates Feature Activated',
+                        'Multiple date ranges enabled. Add date ranges and set departure/arrival times that apply to all ranges.'
+                    );
+                } else {
+                    singleDateSection.classList.remove('hidden');
+                    multipleDateSection.classList.add('hidden');
+                    timeFields.classList.remove('hidden');
+                }
+            });
+
+            function addDateRange() {
+                const rangeId = Date.now();
+                const rangeDiv = document.createElement('div');
+                rangeDiv.id = `date-range-${rangeId}`;
+                rangeDiv.className = 'date-range-card';
+                
+                rangeDiv.innerHTML = `
+                    <div class="form-field">
+                        <label for="range-start-${rangeId}">Start Date</label>
+                        <input type="date" id="range-start-${rangeId}" class="range-start">
+                    </div>
+                    <div class="form-field">
+                        <label for="range-end-${rangeId}">End Date</label>
+                        <input type="date" id="range-end-${rangeId}" class="range-end">
+                    </div>
+                    <button type="button" data-removerangeid="${rangeId}" class="btn btn-remove remove-date-range-btn">
+                        Remove
+                    </button>
+                `;
+                dateRangeList.appendChild(rangeDiv);
+                
+                // Show notification for first date range
+                if (!firstDateRangeAdded) {
+                    firstDateRangeAdded = true;
+                    setTimeout(() => {
+                        showPopup(
+                            'First Date Range Added',
+                            'Enter the start and end dates for this travel period. The same departure/arrival times will apply to all date ranges.'
+                        );
+                    }, 500);
+                }
+            }
+
+            addDateRangeBtn.addEventListener('click', addDateRange);
+            
+            dateRangeList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-date-range-btn')) {
+                    const removeId = e.target.dataset.removerangeid;
+                    document.getElementById(`date-range-${removeId}`).remove();
+                }
             });
 
             function addEmployee() {
@@ -928,7 +1176,7 @@
                 if (!dateStr || !timeStr) {
                     return '&nbsp;';
                 }
-                
+
                 try {
                     const date = new Date(`${dateStr}T${timeStr}`);
                     const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -939,6 +1187,37 @@
                 } catch (e) {
                     console.error("Error formatting date/time:", e);
                     return `${dateStr} ${timeStr}`;
+                }
+            }
+
+            function formatTime(timeStr) {
+                if (!timeStr) {
+                    return '&nbsp;';
+                }
+
+                try {
+                    const [hours, minutes] = timeStr.split(':');
+                    const date = new Date();
+                    date.setHours(hours, minutes);
+                    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                } catch (e) {
+                    console.error("Error formatting time:", e);
+                    return timeStr;
+                }
+            }
+
+            function formatDate(dateStr) {
+                if (!dateStr) {
+                    return '&nbsp;';
+                }
+                
+                try {
+                    const date = new Date(dateStr);
+                    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                    return date.toLocaleDateString('en-US', dateOptions);
+                } catch (e) {
+                    console.error("Error formatting date:", e);
+                    return dateStr;
                 }
             }
 
@@ -953,13 +1232,30 @@
             function createFormHTML(formType, copyType, data, employeesChunk, pageNumber, totalPages, printDateTime = '') {
                 const formTitle = formType === 'locator' ? 'LOCATOR SLIP' : 'TRAVEL ORDER';
 
-                const dateFieldsHTML = `
-                    <div class="label full-span">Inclusive Date of Travel:</div>
-                    <div class="label" style="padding-left: 20px;">Departure:</div>
-                    <div class="data data-lined">${data.departure || '&nbsp;'}</div>
-                    <div class="label" style="padding-left: 20px;">Arrival:</div>
-                    <div class="data data-lined">${data.arrival || '&nbsp;'}</div>
-                `;
+                // Generate date ranges HTML
+                let dateFieldsHTML = '';
+                
+                if (data.multipleDates && data.dateRanges && data.dateRanges.length > 0) {
+                    dateFieldsHTML = `
+                        <div class="label full-span">Inclusive Date of Travel:</div>
+                        <div class="date-range-list">
+                            ${data.dateRanges.map(range => `
+                                <div class="date-range-item">
+                                    <span>${formatDate(range.start)} - ${formatDate(range.end)}</span>
+                    <span>${formatTime(data.departureTime)} - ${formatTime(data.arrivalTime)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    dateFieldsHTML = `
+                        <div class="label full-span">Inclusive Date of Travel:</div>
+                        <div class="label" style="padding-left: 20px;">Departure:</div>
+                        <div class="data data-lined">${data.departure || '&nbsp;'}</div>
+                        <div class="label" style="padding-left: 20px;">Arrival:</div>
+                        <div class="data data-lined">${data.arrival || '&nbsp;'}</div>
+                    `;
+                }
 
                 const employeeTableHTML = `
                     <table class="employee-table">
@@ -1049,12 +1345,38 @@
                 return employees;
             }
 
+            function getDateRanges() {
+                if (!multipleDatesCheckbox.checked) {
+                    return null;
+                }
+                
+                const rangeStartNodes = dateRangeList.querySelectorAll('.range-start');
+                const rangeEndNodes = dateRangeList.querySelectorAll('.range-end');
+                
+                const dateRanges = [];
+                for (let i = 0; i < rangeStartNodes.length; i++) {
+                    const startDate = rangeStartNodes[i].value;
+                    const endDate = rangeEndNodes[i].value;
+                    if (startDate && endDate) {
+                        dateRanges.push({ start: startDate, end: endDate });
+                    }
+                }
+                return dateRanges;
+            }
+
             function buildFormData() {
+                const isMultipleDates = multipleDatesCheckbox.checked;
+                const dateRanges = getDateRanges();
+                
                 return {
                     destination: document.getElementById('destination').value,
                     purpose: document.getElementById('purpose').value,
-                    departure: formatDateTime(document.getElementById('departureDate').value, document.getElementById('departureTime').value),
-                    arrival: formatDateTime(document.getElementById('arrivalDate').value, document.getElementById('arrivalTime').value),
+                    multipleDates: isMultipleDates,
+                    dateRanges: dateRanges,
+                    departureTime: document.getElementById('departureTime').value,
+                    arrivalTime: document.getElementById('arrivalTime').value,
+                    departure: isMultipleDates ? null : formatDateTime(document.getElementById('departureDate').value, document.getElementById('departureTime').value),
+                    arrival: isMultipleDates ? null : formatDateTime(document.getElementById('arrivalDate').value, document.getElementById('arrivalTime').value),
                     recommendingName: document.getElementById('recommendingName').value,
                     recommendingTitle: document.getElementById('recommendingTitle').value,
                     approvedName: document.getElementById('approvedName').value,
@@ -1088,7 +1410,10 @@
                 previewContent.innerHTML = previewHTML;
                 previewModal.classList.remove('hidden');
 
-                showToast('Date/Time issue has been fixed. Your form preview has been generated correctly.', 'Preview Generated!');
+                showPopup(
+                    'Preview Generated!',
+                    'Your form preview has been generated correctly. You can review it before printing.'
+                );
             });
 
             modalClose.addEventListener('click', () => {
@@ -1137,7 +1462,10 @@
 
                 window.print();
 
-                showToast('Date/Time issue has been fixed. Your form has been generated and is ready for printing.', 'Form Generated!');
+                showPopup(
+                    'Form Generated!',
+                    'Your form has been generated and is ready for printing. Make sure to set your paper size to Legal (8.5" x 13") or Legal (8.5" x 14") for correct formatting.'
+                );
             });
 
             addEmployee();

@@ -922,20 +922,6 @@
                     </div>
                 </div>
                 
-                <!-- Multiple Date Ranges Section (Hidden by Default) -->
-                <div id="multipleDateSection" class="hidden" style="grid-column: 1 / -1;">
-                    <div class="form-field">
-                        <label>Departure Time</label>
-                        <input type="time" id="departureTime">
-                    </div>
-                    <div class="form-field">
-                        <label>Arrival Time</label>
-                        <input type="time" id="arrivalTime">
-                    </div>
-                    <div id="date-range-list"></div>
-                    <button id="add-date-range-btn" class="btn btn-add">+ Add Date Range</button>
-                </div>
-                
                 <!-- Time Fields for Single Date Range -->
                 <div id="timeFields">
                     <div class="form-field">
@@ -946,6 +932,20 @@
                         <label for="arrivalTime">Arrival Time</label>
                         <input type="time" id="arrivalTime">
                     </div>
+                </div>
+                
+                <!-- Multiple Date Ranges Section (Hidden by Default) -->
+                <div id="multipleDateSection" class="hidden" style="grid-column: 1 / -1;">
+                    <div class="form-field">
+                        <label>Departure Time</label>
+                        <input type="time" id="departureTimeMultiple">
+                    </div>
+                    <div class="form-field">
+                        <label>Arrival Time</label>
+                        <input type="time" id="arrivalTimeMultiple">
+                    </div>
+                    <div id="date-range-list"></div>
+                    <button id="add-date-range-btn" class="btn btn-add">+ Add Date Range</button>
                 </div>
 
                 <div class="form-field">
@@ -1351,13 +1351,17 @@
                 const isMultipleDates = multipleDatesCheckbox.checked;
                 const dateRanges = getDateRanges();
                 
+                // Use appropriate time fields based on single or multiple dates mode
+                const departureTimeId = isMultipleDates ? 'departureTimeMultiple' : 'departureTime';
+                const arrivalTimeId = isMultipleDates ? 'arrivalTimeMultiple' : 'arrivalTime';
+                
                 return {
                     destination: document.getElementById('destination').value,
                     purpose: document.getElementById('purpose').value,
                     multipleDates: isMultipleDates,
                     dateRanges: dateRanges,
-                    departureTime: document.getElementById('departureTime').value,
-                    arrivalTime: document.getElementById('arrivalTime').value,
+                    departureTime: document.getElementById(departureTimeId).value,
+                    arrivalTime: document.getElementById(arrivalTimeId).value,
                     departure: isMultipleDates ? null : formatDateTime(document.getElementById('departureDate').value, document.getElementById('departureTime').value),
                     arrival: isMultipleDates ? null : formatDateTime(document.getElementById('arrivalDate').value, document.getElementById('arrivalTime').value),
                     recommendingName: document.getElementById('recommendingName').value,
@@ -1378,14 +1382,23 @@
                 const employeeChunks = splitEmployees(allEmployees);
                 const totalPages = employeeChunks.length;
 
+                const printDateTime = new Date().toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+
                 let previewHTML = '';
 
                 employeeChunks.forEach((chunk, index) => {
                     const pageNumber = index + 1;
                     previewHTML += `
                         <div class="preview-form form-container">
-                            ${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages, '')}
-                            ${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages, '')}
+                            ${createFormHTML(formType, "Employee's Copy", commonData, chunk, pageNumber, totalPages, printDateTime)}
+                            ${createFormHTML(formType, "HRMO Copy", commonData, chunk, pageNumber, totalPages, printDateTime)}
                         </div>
                     `;
                 });

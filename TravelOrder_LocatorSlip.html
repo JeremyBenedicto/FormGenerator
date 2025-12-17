@@ -907,7 +907,7 @@
                 
                 <div class="checkbox-group" style="grid-column: 1 / -1;">
                     <input type="checkbox" id="multipleDatesCheckbox">
-                    <label for="multipleDatesCheckbox">Use Multiple Date Ranges</label>
+                    <label for="multipleDatesCheckbox">Check if travel is for 2 or more days</label>
                 </div>
                 
                 <!-- Single Date Range Section (Default) -->
@@ -926,11 +926,11 @@
                 <div id="timeFields">
                     <div class="form-field">
                         <label for="departureTime">Departure Time</label>
-                        <input type="time" id="departureTime">
+                        <input type="time" id="departureTime" value="08:00">
                     </div>
                     <div class="form-field">
                         <label for="arrivalTime">Arrival Time</label>
-                        <input type="time" id="arrivalTime">
+                        <input type="time" id="arrivalTime" value="17:00">
                     </div>
                 </div>
                 
@@ -938,11 +938,11 @@
                 <div id="multipleDateSection" class="hidden" style="grid-column: 1 / -1;">
                     <div class="form-field">
                         <label>Departure Time</label>
-                        <input type="time" id="departureTimeMultiple">
+                        <input type="time" id="departureTimeMultiple" value="08:00">
                     </div>
                     <div class="form-field">
                         <label>Arrival Time</label>
-                        <input type="time" id="arrivalTimeMultiple">
+                        <input type="time" id="arrivalTimeMultiple" value="17:00">
                     </div>
                     <div id="date-range-list"></div>
                     <button id="add-date-range-btn" class="btn btn-add">+ Add Date Range</button>

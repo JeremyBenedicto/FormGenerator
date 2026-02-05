@@ -3,325 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personnel List - Job Order & Consultants</title>
+    <title>Kiosk Employee Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 850px;
-            margin: auto;
-            background: #fff;
-            padding: 40px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        header {
-            text-align: center;
-            border-bottom: 3px double #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-        h1 { margin: 0; font-size: 22px; text-transform: uppercase; }
-        .date { font-size: 14px; color: #666; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; background: #f8f9fa; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #333; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #000;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .num-col { width: 50px; text-align: center; }
+        button { padding: 0.75rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .save-btn { background: #007bff; color: white; width: 100%; font-size: 1.1rem; }
+        .qr-btn { background: #28a745; color: white; }
+        .delete-btn { background: #dc3545; color: white; }
         
-        .category-header {
-            background-color: #333 !important;
-            color: #fff !important;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .no-print {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .print-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+        li { background: white; margin: 10px 0; padding: 1rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
         
-        @media print {
-            .no-print { display: none; }
-            body { background: none; padding: 0; }
-            .container { box-shadow: none; max-width: 100%; padding: 0; }
-            th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; }
-            .category-header { background-color: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; }
-        }
+        /* Modal for Kiosk QR Display */
+        #qrModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; flex-direction: column; color: white; }
+        #qrContainer { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .close-modal { background: white; color: black; padding: 10px 20px; }
     </style>
 </head>
 <body>
 
-<div class="no-print">
-    <button class="print-btn" onclick="window.print()">Print Document</button>
+<div class="card" id="mainContent">
+    <h1>Kiosk Data Entry</h1>
+    <form id="employeeForm">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label>Birthday</label>
+            <input type="date" id="birthday" required>
+        </div>
+        <button type="submit" class="save-btn">Save Employee</button>
+    </form>
+
+    <h2>Recent Entries</h2>
+    <ul id="employeeList"></ul>
 </div>
 
-<div class="container">
-    <header>
-        <h1>Official List of Personnel</h1>
-        <div class="date">Job Order and Consultant Summary</div>
-    </header>
-
-    <table>
-        <thead>
-            <tr>
-                <th class="num-col">No.</th>
-                <th>Full Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="category-header"><td colspan="2">JOB ORDER</td></tr>
-            <tr><td class="num-col">1</td><td>BEA GYWNE C. DELA CRUZ</td></tr>
-            <tr><td class="num-col">2</td><td>CHRISTIAN C.  DELOS SANTOS</td></tr>
-            <tr><td class="num-col">3</td><td>AR-JAY BUGARIN</td></tr>
-            <tr><td class="num-col">4</td><td>CAROLYN A. ALONZO</td></tr>
-            <tr><td class="num-col">5</td><td>DANICA HAYRE B. BERMUNDO</td></tr>
-            <tr><td class="num-col">6</td><td>SAM RUSSEL CABALTICA</td></tr>
-            <tr><td class="num-col">7</td><td>MIA MAY M. MERADIOS</td></tr>
-            <tr><td class="num-col">8</td><td>MARIVIC N. SANTOS</td></tr>
-            <tr><td class="num-col">9</td><td>IRENE R. DELA CRUZ</td></tr>
-            <tr><td class="num-col">10</td><td>TERESITA B. DARACAN</td></tr>
-            <tr><td class="num-col">11</td><td>ARNOLD JACOB</td></tr>
-            <tr><td class="num-col">12</td><td>JOHN LOYD D. ORENIA</td></tr>
-            <tr><td class="num-col">13</td><td>AVELINO VALDEZ</td></tr>
-            <tr><td class="num-col">14</td><td>JENELVIE C. BACTAD</td></tr>
-            <tr><td class="num-col">15</td><td>JOAN D. DALACAT</td></tr>
-            <tr><td class="num-col">16</td><td>ROMMEL M. DUCO</td></tr>
-            <tr><td class="num-col">17</td><td>MERLYBEL A. ALVEZ</td></tr>
-            <tr><td class="num-col">18</td><td>EDMUNDO MADRONIO</td></tr>
-            <tr><td class="num-col">19</td><td>MELCHOR ABULOG</td></tr>
-            <tr><td class="num-col">20</td><td>DENNIS D. JUAN</td></tr>
-            <tr><td class="num-col">21</td><td>VAN JOE S. MALLARI</td></tr>
-            <tr><td class="num-col">22</td><td>ZARJAMES U. UNGRIANO</td></tr>
-            <tr><td class="num-col">23</td><td>HILARIO J. SISOR</td></tr>
-            <tr><td class="num-col">24</td><td>JOANNA MARIE DG. RAMONES</td></tr>
-            <tr><td class="num-col">25</td><td>CHRISTIAN M. VALENZUELA</td></tr>
-            <tr><td class="num-col">26</td><td>BRYAN L. CASAMIS</td></tr>
-            <tr><td class="num-col">27</td><td>JAREEM ROSS C. ANDRES</td></tr>
-            <tr><td class="num-col">28</td><td>LEONIDES F. DACANAY</td></tr>
-            <tr><td class="num-col">29</td><td>NIEVES M. GARCIA</td></tr>
-            <tr><td class="num-col">30</td><td>ROGER F. BARROGO</td></tr>
-            <tr><td class="num-col">31</td><td>CRISANTO V. VEGIGA</td></tr>
-            <tr><td class="num-col">32</td><td>ROSALIE D. BAUTISTA</td></tr>
-            <tr><td class="num-col">33</td><td>BLAS V. SABINO JR</td></tr>
-            <tr><td class="num-col">34</td><td>RODELIO MARTIN</td></tr>
-            <tr><td class="num-col">35</td><td>FRANCISCO E. JORNADAL</td></tr>
-            <tr><td class="num-col">36</td><td>DOLORES V. SANTIAGO</td></tr>
-            <tr><td class="num-col">37</td><td>ALDRIN CONCEPCION</td></tr>
-            <tr><td class="num-col">38</td><td>ALFREDO A. SABINO JR</td></tr>
-            <tr><td class="num-col">39</td><td>JOSE M. SANTIAGO</td></tr>
-            <tr><td class="num-col">40</td><td>CRIS G. HILA</td></tr>
-            <tr><td class="num-col">41</td><td>JEREMY BENEDICTO</td></tr>
-            <tr><td class="num-col">42</td><td>JOHN PATRICK VALERIO</td></tr>
-            <tr><td class="num-col">43</td><td>JESTONI A. ALONZO</td></tr>
-            <tr><td class="num-col">44</td><td>BARTOLOME G. AQUINO</td></tr>
-            <tr><td class="num-col">45</td><td>FRANK D. DACUMOS JR</td></tr>
-            <tr><td class="num-col">46</td><td>FREDERICK P. SIMEON</td></tr>
-            <tr><td class="num-col">47</td><td>JOCELYN D. DELA CRUZ</td></tr>
-            <tr><td class="num-col">48</td><td>ANALYN S. GALVEZ</td></tr>
-            <tr><td class="num-col">49</td><td>MICHAEL DC. MANUEL</td></tr>
-            <tr><td class="num-col">50</td><td>ROMEO J. BUNAG</td></tr>
-            <tr><td class="num-col">51</td><td>ROLANDO ALISOT</td></tr>
-            <tr><td class="num-col">52</td><td>MARK JOSEPH R. LEONARDO</td></tr>
-            <tr><td class="num-col">53</td><td>SHALIN G. SAMONTE</td></tr>
-            <tr><td class="num-col">54</td><td>CONRADO P. SICAT JR</td></tr>
-            <tr><td class="num-col">55</td><td>ERNEZ LOUIE OWERA</td></tr>
-            <tr><td class="num-col">56</td><td>LYNDON D. BATI</td></tr>
-            <tr><td class="num-col">57</td><td>ELVIN JANEL M. MATUTINO</td></tr>
-            <tr><td class="num-col">58</td><td>MARISSA A. SABINO</td></tr>
-            <tr><td class="num-col">59</td><td>R-JAY TABLIGA</td></tr>
-            <tr><td class="num-col">60</td><td>LEOLITO R. TABLANG</td></tr>
-            <tr><td class="num-col">61</td><td>RANDY S. VALENZUELA</td></tr>
-            <tr><td class="num-col">62</td><td>JIMSON H. ALFARO</td></tr>
-            <tr><td class="num-col">63</td><td>JOVEN R. DIOZON</td></tr>
-            <tr><td class="num-col">64</td><td>MARLON P. GERONIMO</td></tr>
-            <tr><td class="num-col">65</td><td>JOVELYN P. DAMASO</td></tr>
-            <tr><td class="num-col">66</td><td>NICANOR A. DOMINGO</td></tr>
-            <tr><td class="num-col">67</td><td>CEDRIC RAMONES</td></tr>
-            <tr><td class="num-col">68</td><td>JOHN MARC Q. PINTO</td></tr>
-            <tr><td class="num-col">69</td><td>JENNYLYN G. NICOLAS</td></tr>
-            <tr><td class="num-col">70</td><td>ROWENA P. SANTIAGO</td></tr>
-            <tr><td class="num-col">71</td><td>DEINIS PAOLO DELA CRUZ</td></tr>
-            <tr><td class="num-col">72</td><td>ELDRIN M. MATUTINO</td></tr>
-            <tr><td class="num-col">73</td><td>ARLENE M. GAPASIN</td></tr>
-            <tr><td class="num-col">74</td><td>ROSITA D. SOLITARIO</td></tr>
-            <tr><td class="num-col">75</td><td>AUBREY M. ALGODON</td></tr>
-            <tr><td class="num-col">76</td><td>MOSES ABRAM P. DALACAT</td></tr>
-            <tr><td class="num-col">77</td><td>ELMERSON H. CABANDING</td></tr>
-            <tr><td class="num-col">78</td><td>JENINE F. HALILI</td></tr>
-            <tr><td class="num-col">79</td><td>MAYLANIE G. ALALID</td></tr>
-            <tr><td class="num-col">80</td><td>KEVIN JOHN M. JIMENEZ</td></tr>
-            <tr><td class="num-col">81</td><td>ARTURO S. SANTIAGO</td></tr>
-            <tr><td class="num-col">82</td><td>REYNALDO S. ARINDAIN</td></tr>
-            <tr><td class="num-col">83</td><td>JULIUS P. LEVANTINO</td></tr>
-            <tr><td class="num-col">84</td><td>JOEY G. BAZAR</td></tr>
-            <tr><td class="num-col">85</td><td>JIMMY DG. LALATA</td></tr>
-            <tr><td class="num-col">86</td><td>RONALDO C. MAGSANOC</td></tr>
-            <tr><td class="num-col">87</td><td>MARK ANTHONY M. BALBIDO</td></tr>
-            <tr><td class="num-col">88</td><td>JOEY L. CASTRO</td></tr>
-            <tr><td class="num-col">89</td><td>GLEMER T. BONITA</td></tr>
-            <tr><td class="num-col">90</td><td>MICHAEL ANGELO R. LEONARDO</td></tr>
-            <tr><td class="num-col">91</td><td>BOYET M. BERNARDO</td></tr>
-            <tr><td class="num-col">92</td><td>JAYSON E. CUSTODIO</td></tr>
-            <tr><td class="num-col">93</td><td>CHRISTIAN PAUL S. MANALAD</td></tr>
-            <tr><td class="num-col">94</td><td>JOEL MANALAD</td></tr>
-            <tr><td class="num-col">95</td><td>MELCHOR A. COSTANILLA</td></tr>
-            <tr><td class="num-col">96</td><td>VIRGILIO M. DELIZO JR</td></tr>
-            <tr><td class="num-col">97</td><td>DANILO L. TABAGO</td></tr>
-            <tr><td class="num-col">98</td><td>ENRICO G. VILLACILLO</td></tr>
-            <tr><td class="num-col">99</td><td>GUILLERMO F. ROXAS JR</td></tr>
-            <tr><td class="num-col">100</td><td>ROLANDO DIAZ</td></tr>
-            <tr><td class="num-col">101</td><td>RENATO E. JORNADAL</td></tr>
-            <tr><td class="num-col">102</td><td>JAIME A. MAKILING</td></tr>
-            <tr><td class="num-col">103</td><td>NESTOR DC TABLIGA</td></tr>
-            <tr><td class="num-col">104</td><td>RUDY DC TABLIGA</td></tr>
-            <tr><td class="num-col">105</td><td>ROGELIO D. GARCIA</td></tr>
-            <tr><td class="num-col">106</td><td>MELCHOR S. ABULOG</td></tr>
-            <tr><td class="num-col">107</td><td>MARCIAL A. BARTOLOME</td></tr>
-            <tr><td class="num-col">108</td><td>VIRGILIO G. CONCEPCION</td></tr>
-            <tr><td class="num-col">109</td><td>ROEL C. LAINA</td></tr>
-            <tr><td class="num-col">110</td><td>ROMEO B. LOPEZ</td></tr>
-            <tr><td class="num-col">111</td><td>SEVERINO B. MADRONIO</td></tr>
-            <tr><td class="num-col">112</td><td>GUILLERMO G. MAURICIO</td></tr>
-            <tr><td class="num-col">113</td><td>NESTOR N. NOVILLA</td></tr>
-            <tr><td class="num-col">114</td><td>ERIBERTO L. PAPA</td></tr>
-            <tr><td class="num-col">115</td><td>RENEE BOY L. PAPA</td></tr>
-            <tr><td class="num-col">116</td><td>FERNANDO SOTTO</td></tr>
-            <tr><td class="num-col">117</td><td>MICHAEL E. NARVANTE</td></tr>
-            <tr><td class="num-col">118</td><td>TOM H. GERONIMO</td></tr>
-            <tr><td class="num-col">119</td><td>GENER T. REYES</td></tr>
-            <tr><td class="num-col">120</td><td>LORENZO V. SOTTO</td></tr>
-            <tr><td class="num-col">121</td><td>GUILLERMO V. BAUTISTA JR</td></tr>
-            <tr><td class="num-col">122</td><td>PEPITO P. SALCEDO</td></tr>
-            <tr><td class="num-col">123</td><td>RODOLFO D. ALMUETE</td></tr>
-            <tr><td class="num-col">124</td><td>EDMUNDO M. RIRAO</td></tr>
-            <tr><td class="num-col">125</td><td>ANDERSON A. FERNANDEZ</td></tr>
-            <tr><td class="num-col">126</td><td>ROLANDO F. AGUSTIN</td></tr>
-            <tr><td class="num-col">127</td><td>REYNALDO V. FERNANDEZ</td></tr>
-            <tr><td class="num-col">128</td><td>ALVIN F. OBEDOZA</td></tr>
-            <tr><td class="num-col">129</td><td>DARWIN PEÑARANDA</td></tr>
-            <tr><td class="num-col">130</td><td>LARRY G. MATUTINO</td></tr>
-            <tr><td class="num-col">131</td><td>ZENAIDA V MANALO</td></tr>
-            <tr><td class="num-col">132</td><td>JOEL F. BARROGO</td></tr>
-            <tr><td class="num-col">133</td><td>ARTHUR F. BARROGO</td></tr>
-            <tr><td class="num-col">134</td><td>MICHAEL BERMUDEZ</td></tr>
-            <tr><td class="num-col">135</td><td>BENEDICTA V. GARCIA</td></tr>
-            <tr><td class="num-col">136</td><td>GIL G. LAURENTE</td></tr>
-            <tr><td class="num-col">137</td><td>ROMEO E. MADRONIO</td></tr>
-            <tr><td class="num-col">138</td><td>TEDDY E. CORPUZ</td></tr>
-            <tr><td class="num-col">139</td><td>ROLANDO G. ALDEZA</td></tr>
-            <tr><td class="num-col">140</td><td>OLIVIO S. SANTOS</td></tr>
-            <tr><td class="num-col">141</td><td>ROGER A. PORTIN</td></tr>
-            <tr><td class="num-col">142</td><td>GUILLERMO T. BATO</td></tr>
-            <tr><td class="num-col">143</td><td>VIRGILIO S. CONCEPCION JR</td></tr>
-            <tr><td class="num-col">144</td><td>MARIO S. ESPIRITU</td></tr>
-            <tr><td class="num-col">145</td><td>ARIEL DS. PAGAD</td></tr>
-            <tr><td class="num-col">146</td><td>RAFFY U MANAWES</td></tr>
-            <tr><td class="num-col">147</td><td>ARNEL A. NOVILLA</td></tr>
-            <tr><td class="num-col">148</td><td>EDUARDO M. PACLEB</td></tr>
-            <tr><td class="num-col">149</td><td>FERDINAND ANTONIO</td></tr>
-            <tr><td class="num-col">150</td><td>RICHARD VEGIGA</td></tr>
-            <tr><td class="num-col">151</td><td>JOEL PALOMO</td></tr>
-            <tr><td class="num-col">152</td><td>JOSE DL GUTTIERREZ</td></tr>
-            <tr><td class="num-col">153</td><td>MICHELLE F. FERNANDEZ</td></tr>
-            <tr><td class="num-col">154</td><td>MARIO B. SABINO</td></tr>
-            <tr><td class="num-col">155</td><td>SUSANA C. MARTIN</td></tr>
-            <tr><td class="num-col">156</td><td>FLORDELIZA P. JUAN</td></tr>
-            <tr><td class="num-col">157</td><td>BABYLYN V. COSTALES</td></tr>
-            <tr><td class="num-col">158</td><td>LANIE S. GALVEZ</td></tr>
-            <tr><td class="num-col">159</td><td>GENILYN C. ALIÑO</td></tr>
-            <tr><td class="num-col">160</td><td>JANICE D. ALIÑO</td></tr>
-            <tr><td class="num-col">161</td><td>JULIETA F. AQUINO</td></tr>
-            <tr><td class="num-col">162</td><td>NOVELYN B. ESTANES</td></tr>
-            <tr><td class="num-col">163</td><td>LUZVIMINDA E. MAKILING</td></tr>
-            <tr><td class="num-col">164</td><td>FERING I. TUMALE</td></tr>
-            <tr><td class="num-col">165</td><td>EMELITO B. SOTTO</td></tr>
-            <tr><td class="num-col">166</td><td>JOVI B. MACABANTE</td></tr>
-            <tr><td class="num-col">167</td><td>ANGELO CAPUNO</td></tr>
-            <tr><td class="num-col">168</td><td>CLARISS GAGALA</td></tr>
-            <tr><td class="num-col">169</td><td>SAMUEL A. PLANADA</td></tr>
-            <tr><td class="num-col">170</td><td>FREDA E. GALAPON</td></tr>
-            <tr><td class="num-col">171</td><td>MONALISA E. BENDIOLA</td></tr>
-            <tr><td class="num-col">172</td><td>RHUEL JOHN S. SICAT</td></tr>
-            <tr><td class="num-col">173</td><td>RHEA MARIE V. LAPITAN</td></tr>
-            <tr><td class="num-col">174</td><td>CESARIO S. ROXAS JR</td></tr>
-            <tr><td class="num-col">175</td><td>RON ELBERT C. ANDRES</td></tr>
-            <tr><td class="num-col">176</td><td>MANOLETTE B. SALAZAR</td></tr>
-            <tr><td class="num-col">177</td><td>IMELDA B. BERNARDO</td></tr>
-            <tr><td class="num-col">178</td><td>JAYSON B. ALAO</td></tr>
-            <tr><td class="num-col">179</td><td>JONAS Q. PINTO</td></tr>
-            <tr><td class="num-col">180</td><td>BENJAMIN G. JUAN</td></tr>
-            <tr><td class="num-col">181</td><td>ALVIN GLEN B. PRONTO</td></tr>
-            <tr><td class="num-col">182</td><td>DENNIS LUSTER D. WALICAN</td></tr>
-            <tr><td class="num-col">183</td><td>MELITA ROSE A. ABALOS</td></tr>
-            <tr><td class="num-col">184</td><td>JOLINA R. PINLAC</td></tr>
-            <tr><td class="num-col">185</td><td>JENNYROSE S. TORRES</td></tr>
-            <tr><td class="num-col">186</td><td>MELKY B. LACANDOZA</td></tr>
-            <tr><td class="num-col">187</td><td>LLOYD HARDY R. MIGUEL</td></tr>
-            <tr><td class="num-col">188</td><td>RENATO DG. VICENCIO</td></tr>
-            <tr><td class="num-col">189</td><td>FERDINAND M. CAMILON</td></tr>
-            <tr><td class="num-col">190</td><td>NIÑO A. FLORECE</td></tr>
-            <tr><td class="num-col">191</td><td>JOHN IROLD B. ARROYO</td></tr>
-            <tr><td class="num-col">192</td><td>FREDDIE T. ABUAN</td></tr>
-            <tr><td class="num-col">193</td><td>JOMER S. DE GUZMAN</td></tr>
-            <tr><td class="num-col">194</td><td>MARVIN L. TABAGO</td></tr>
-            <tr><td class="num-col">195</td><td>DANTE F. TABAGO</td></tr>
-            <tr><td class="num-col">196</td><td>ARJHUNEL G. ESTACIO</td></tr>
-            <tr><td class="num-col">197</td><td>DENNIS M. TALCO</td></tr>
-            <tr><td class="num-col">198</td><td>GERALD H. DONA</td></tr>
-            <tr><td class="num-col">199</td><td>JULIETA H. GALAPON</td></tr>
-            <tr><td class="num-col">200</td><td>APRIL JOY GONZALES</td></tr>
-            <tr><td class="num-col">201</td><td>HARVIN TOLENTINO</td></tr>
-            <tr><td class="num-col">202</td><td>JEROME C. BARROGA</td></tr>
-            <tr><td class="num-col">203</td><td>CARLO VALENZUELA</td></tr>
-            <tr><td class="num-col">204</td><td>REIGNER SARMIENTO</td></tr>
-            <tr><td class="num-col">205</td><td>MARK RENMEL SOTTO</td></tr>
-            <tr class="category-header"><td colspan="2">CONSULTANT</td></tr>
-            <tr><td class="num-col">206</td><td>ARIS BARBOSA</td></tr>
-            <tr><td class="num-col">207</td><td>CRISTOPHER M. ARINDAIN</td></tr>
-            <tr><td class="num-col">208</td><td>CHRISTOPHER T. MENDOZA</td></tr>
-            <tr><td class="num-col">209</td><td>MICHAEL B. ESPE</td></tr>
-            <tr><td class="num-col">210</td><td>MERLYBEL ALONZO ALVEZ</td></tr>
-            <tr><td class="num-col">211</td><td>ANGELEREE MANGALINAO</td></tr>
-            <tr><td class="num-col">212</td><td>GEORGE ESTABILLO</td></tr>
-            <tr><td class="num-col">213</td><td>DANILO GONZALES</td></tr>
-            <tr><td class="num-col">214</td><td>CHRISTIAN PINEDA</td></tr>
-            <tr><td class="num-col">215</td><td>AGNES PINEDA</td></tr>
-            <tr><td class="num-col">216</td><td>TESSIE BALAE</td></tr>
-            <tr><td class="num-col">217</td><td>CECILIO R NUNAG JR.</td></tr>
-            <tr><td class="num-col">218</td><td>ALBERTO MAKILING</td></tr>
-            <tr><td class="num-col">219</td><td>MANDY LOPEZ</td></tr>
-            <tr><td class="num-col">220</td><td>SHYRISS E. MALGAPO</td></tr>
-            <tr><td class="num-col">221</td><td>STEPHANIE LOVE JOAQUIN</td></tr>
-            <tr><td class="num-col">222</td><td>VICTOR DACUMOS</td></tr>
-        </tbody>
-    </table>
+<div id="qrModal">
+    <h2 style="margin-bottom: 10px;">Scan to Download PDF</h2>
+    <div id="qrContainer"></div>
+    <button class="close-modal" onclick="closeModal()">Close</button>
 </div>
 
+<script>
+    const dbName = 'KioskDB';
+    const storeName = 'employees';
+    let db;
+
+    // --- 1. MOBILE LOGIC: Check if URL has download data ---
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('download')) {
+            // Hide the UI for the mobile user
+            document.getElementById('mainContent').innerHTML = "<h1>Generating PDF...</h1><p>Your download should start automatically.</p>";
+            
+            const empData = {
+                name: params.get('name'),
+                birthday: params.get('birthday')
+            };
+            
+            // Generate PDF on the phone
+            setTimeout(() => {
+                generatePDF(empData);
+            }, 500);
+        } else {
+            initDB();
+        }
+    };
+
+    function initDB() {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = e => e.target.result.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+        request.onsuccess = e => { db = e.target.result; displayEmployees(); };
+    }
+
+    // --- 2. KIOSK LOGIC: Save and Display ---
+    document.getElementById('employeeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const entry = { 
+            name: document.getElementById('name').value, 
+            birthday: document.getElementById('birthday').value 
+        };
+        const transaction = db.transaction([storeName], 'readwrite');
+        transaction.objectStore(storeName).add(entry).onsuccess = () => {
+            e.target.reset();
+            displayEmployees();
+        };
+    });
+
+    function displayEmployees() {
+        const list = document.getElementById('employeeList');
+        list.innerHTML = '';
+        db.transaction([storeName], 'readonly').objectStore(storeName).getAll().onsuccess = (e) => {
+            e.target.result.forEach(emp => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span><strong>${emp.name}</strong></span>`;
+                
+                const btnGroup = document.createElement('div');
+                const qrBtn = document.createElement('button');
+                qrBtn.textContent = 'Get QR';
+                qrBtn.className = 'qr-btn';
+                qrBtn.onclick = () => showKioskQR(emp);
+                
+                btnGroup.appendChild(qrBtn);
+                li.appendChild(btnGroup);
+                list.appendChild(li);
+            });
+        };
+    }
+
+    // --- 3. QR GENERATION (The Bridge) ---
+    function showKioskQR(emp) {
+        const qrContainer = document.getElementById('qrContainer');
+        qrContainer.innerHTML = '';
+        
+        // Build the URL that the phone will open
+        // It points back to this page but adds the employee data in the URL
+        const baseUrl = window.location.origin + window.location.pathname;
+        const scanUrl = `${baseUrl}?download=true&name=${encodeURIComponent(emp.name)}&birthday=${emp.birthday}`;
+        
+        new QRCode(qrContainer, {
+            text: scanUrl,
+            width: 250,
+            height: 250
+        });
+        
+        document.getElementById('qrModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // --- 4. PDF GENERATION (Shared by Kiosk and Phone) ---
+    function generatePDF(emp) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(22);
+        doc.text("Employee Document", 20, 20);
+        doc.setFontSize(14);
+        doc.text(`Name: ${emp.name}`, 20, 40);
+        doc.text(`Birthday: ${emp.birthday}`, 20, 50);
+        doc.text(`Date Exported: ${new Date().toLocaleDateString()}`, 20, 60);
+        
+        doc.save(`Record_${emp.name}.pdf`);
+    }
+</script>
 </body>
 </html>

@@ -920,12 +920,16 @@
 
                 return `
                     <div class="trip-ticket-half">
-                        <div class="header-box">
+<div class="header-box">
                             <div class="institution">Republic of the Philippines</div>
                             <div class="institution">Province of Nueva Ecija</div>
                             <div class="institution">Municipality of Gabaldon</div>
                             <div class="title">DRIVER'S TRIP TICKET</div>
                             <div class="copy-type">(${copyType})</div>
+                        </div>
+
+                        <div style="text-align: center; font-size: 7pt; color: #666; margin-top: 2px;">
+                            Printed: ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </div>
 
                         <div class="info-row">

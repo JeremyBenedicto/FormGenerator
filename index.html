@@ -137,6 +137,27 @@
             letter-spacing: 1px;
         }
 
+        /* --- Update Badge --- */
+        .update-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+
         /* --- Glass Modal --- */
         .modal {
             display: none;
@@ -209,7 +230,7 @@
                 <span class="btn-icon-right">✈️</span>
             </a>
             <a href="driversTripTicket.html" class="btn">
-                <span>Driver's Trip Ticket</span>
+                <span>Driver's Trip Ticket <span class="update-badge">New Format</span></span>
                 <span class="btn-icon-right">🚗</span>
             </a>
             <a href="#" id="appointment-btn" class="btn">

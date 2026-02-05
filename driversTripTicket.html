@@ -6,612 +6,240 @@
     <title>Driver's Trip Ticket Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* --- UI STYLES (Screen Only) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%), 
-                        radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.15) 0, transparent 50%), 
-                        radial-gradient(at 100% 0%, rgba(160, 147, 255, 0.15) 0, transparent 50%);
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);
             min-height: 100vh;
             padding: 30px 20px;
         }
 
-        /* GLASSMORPHIC CONTROL PANEL */
+        /* Control Panel Styles */
         .control-panel {
             max-width: 1000px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(12px) saturate(160%);
-            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
             padding: 45px 40px;
             border-radius: 40px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07),
-                        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-            animation: fadeUp 0.6s ease-out;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
         }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .control-panel h1 {
-            text-align: center;
-            color: #111827;
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .control-panel > p {
-            text-align: center;
-            color: #6B7280;
-            margin-bottom: 35px;
-            font-weight: 500;
-        }
-
+        .control-panel h1 { text-align: center; color: #111827; font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
+        .control-panel > p { text-align: center; color: #6B7280; margin-bottom: 35px; font-weight: 500; }
+        
         fieldset {
-            border: none;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(8px);
-            border-radius: 25px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none; margin-bottom: 30px; background: rgba(255, 255, 255, 0.4);
+            border-radius: 25px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        legend { font-size: 1.1rem; font-weight: 700; color: #111827; padding: 0 15px; margin-bottom: 10px; }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .input-grid.full { grid-template-columns: 1fr; }
+        
+        .form-field { display: flex; flex-direction: column; }
+        .form-field label { margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
+        .form-field input, .form-field textarea {
+            padding: 14px 20px; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6); font-family: 'Inter', sans-serif;
+        }
+        .form-field input:focus, .form-field textarea:focus {
+            outline: none; border-color: #111827; background: #fff;
         }
 
-        legend {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-            padding: 0 15px;
-            margin-bottom: 10px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .input-grid.full {
-            grid-template-columns: 1fr;
-        }
-
-        .form-field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-field label {
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.9rem;
-        }
-
-        .form-field input[type="text"],
-        .form-field input[type="date"],
-        .form-field input[type="time"],
-        .form-field input[type="number"],
-        .form-field textarea {
-            padding: 14px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(4px);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: #1F2937;
-            font-weight: 500;
-        }
-
-        .form-field textarea {
-            border-radius: 20px;
-            resize: vertical;
-            min-height: 70px;
-        }
-
-        .form-field input:focus,
-        .form-field textarea:focus {
-            outline: none;
-            border-color: #111827;
-            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .form-field input[readonly] {
-            background: rgba(229, 231, 235, 0.5);
-            cursor: not-allowed;
-        }
-
-        /* Passenger rows */
-        .passenger-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .passenger-row input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(4px);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-        }
-
-        .passenger-row input:focus {
-            outline: none;
-            border-color: #111827;
-            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Glass buttons */
+        /* Passenger Inputs */
+        .passenger-row { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+        .passenger-row input { flex: 1; border-radius: 99px; }
+        
+        /* Buttons */
         .btn {
-            padding: 14px 28px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 9999px;
-            font-weight: 600;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(4px);
-            color: #1F2937;
+            padding: 14px 28px; border: none; border-radius: 99px; font-weight: 600;
+            cursor: pointer; transition: transform 0.2s; background: #fff;
         }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-remove { background: #fee2e2; color: #991b1b; padding: 8px 14px; }
+        .btn-add { width: 100%; background: #dbeafe; color: #1e40af; margin-top: 12px; }
+        .button-group { display: flex; gap: 15px; justify-content: center; margin-top: 35px; }
+        .btn-preview { background: #4f46e5; color: white; }
+        .btn-generate { background: #059669; color: white; }
 
-        .btn:hover {
-            background-color: #111827;
-            color: #FFFFFF;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
-            backdrop-filter: none;
-            border-color: #111827;
-        }
+        .hidden { display: none !important; }
 
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-remove {
-            padding: 8px 12px;
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #991b1b;
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        .btn-remove:hover {
-            background-color: #dc2626;
-            color: white;
-            border-color: #dc2626;
-        }
-
-        .btn-add {
-            width: 100%;
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.3);
-            color: #1e40af;
-            margin-top: 12px;
-        }
-
-        .btn-add:hover {
-            background-color: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 35px;
-        }
-
-        .btn-preview {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
-            border-color: rgba(102, 126, 234, 0.4);
-            padding: 16px 35px;
-            font-size: 1.05rem;
-        }
-
-        .btn-preview:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .btn-generate {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
-            border-color: rgba(16, 185, 129, 0.4);
-            padding: 16px 35px;
-            font-size: 1.05rem;
-        }
-
-        .btn-generate:hover {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #991b1b;
-            padding: 15px 25px;
-            border-radius: 999px;
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 20px;
-            backdrop-filter: blur(8px);
-        }
-
-        .section-subtitle {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 25px 0 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid rgba(17, 24, 39, 0.15);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* GLASSMORPHIC MODAL */
+        /* Modal */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
-
         .modal-content {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: 35px;
-            max-width: 750px;
-            width: 95%;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            display: flex;
-            flex-direction: column;
+            background: white; border-radius: 20px; max-width: 800px; width: 95%;
+            max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
         }
+        .modal-header { padding: 20px; background: #1f2937; color: white; display: flex; justify-content: space-between; }
+        #preview-content { padding: 20px; overflow-y: auto; background: #f3f4f6; }
 
-        .modal-header {
-            background: linear-gradient(135deg, #111827, #374151);
-            color: white;
-            padding: 25px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .modal-header h2 {
-            font-size: 1.4rem;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-        }
-
-        .modal-close {
-            cursor: pointer;
-            font-size: 32px;
-            font-weight: bold;
-            line-height: 1;
-            opacity: 0.9;
-            transition: opacity 0.2s;
-        }
-
-        .modal-close:hover {
-            opacity: 1;
-        }
-
-        #preview-content {
-            padding: 25px;
-            overflow-y: auto;
-            flex-grow: 1;
-            background: rgba(249, 250, 251, 0.5);
-        }
-
-        /* FORM STYLING (UNCHANGED - FOR PRINTING) */
+        /* --- PRINT STYLING --- */
         .page-container {
-            width: 8.5in; 
-            height: 11in;
-            margin: 0 auto;
-            box-sizing: border-box;
-            background: white;
-            color: #1a1a1a;
-            font-family: 'Roboto', sans-serif;
-            font-size: 9pt;
-            display: flex;
-            flex-direction: column;
-            line-height: 1.15;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 8.5in; height: 11in; margin: 0 auto; background: white;
+            display: flex; flex-direction: column;
         }
         
         .trip-ticket-half {
             height: 5.5in;
-            flex-shrink: 0;
-            padding: 0.15in 0.55in;
+            width: 100%;
+            padding: 0.35in 0.5in;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            border-bottom: 2px dashed #999;
-            overflow: hidden;
-            font-size: 9pt;
-            background: white;
+            border-bottom: 1px dashed #999;
+            font-family: 'Roboto', sans-serif;
+            color: #1a1a1a;
             position: relative;
         }
-
-        .trip-ticket-half::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2.5px;
-            background: linear-gradient(90deg, #2c3e50 0%, #3498db 50%, #2c3e50 100%);
-        }
         
-        .trip-ticket-half:last-child {
-            border-bottom: none;
-        }
+        .trip-ticket-half:last-child { border-bottom: none; }
 
-        .header-box {
+        /* Header Section */
+        .p-header {
             text-align: center;
-            margin-bottom: 2px;
-            padding-bottom: 2px;
-            border-bottom: 2px solid #3498db;
-            font-size: 8pt;
-            line-height: 1.2;
+            border-bottom: 2px solid #111;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
         }
-
-        .header-box .institution {
-            font-weight: 700;
-            font-size: 8pt;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            color: #2c3e50;
+        .p-header .republic { font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; }
+        .p-header .province { font-size: 8pt; font-weight: 700; text-transform: uppercase; }
+        .p-header .title { 
+            font-size: 14pt; font-weight: 900; text-transform: uppercase; 
+            margin-top: 4px; letter-spacing: 0.5px;
         }
-
-        .header-box .title {
-            font-weight: 700;
-            font-size: 11pt;
-            margin-top: 2px;
-            letter-spacing: 1.2px;
-            color: #2c3e50;
-            text-transform: uppercase;
+        .p-header .meta { 
+            display: flex; justify-content: space-between; align-items: flex-end; font-size: 7pt; margin-top: 2px;
         }
+        .copy-label { font-weight: bold; color: #444; text-transform: uppercase; }
 
-        .header-box .copy-type {
-            font-weight: 600;
-            font-size: 7pt;
-            color: #e74c3c;
-            margin-top: 1px;
-            letter-spacing: 0.5px;
-        }
-
-        .info-row {
+        /* Main Content Grid */
+        .p-body {
             display: flex;
-            margin-bottom: 1px;
-            font-size: 9pt;
-            line-height: 1.3;
+            flex-grow: 1;
+            gap: 10px;
+            overflow: hidden;
         }
 
-        .info-label {
-            width: 50px;
-            font-weight: 700;
-            flex-shrink: 0;
-            color: #2c3e50;
+        .p-col-left { flex: 1.6; display: flex; flex-direction: column; }
+        .p-col-right { flex: 1; display: flex; flex-direction: column; }
+
+        /* Generic Field Styles */
+        .p-row { display: flex; margin-bottom: 3px; font-size: 9pt; align-items: baseline; }
+        .p-label { font-weight: 700; margin-right: 5px; white-space: nowrap; font-size: 8pt; color: #333; }
+        .p-value { 
+            flex: 1; border-bottom: 1px solid #333; font-weight: 600; padding-left: 5px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        .info-value {
-            flex: 1;
-            border-bottom: 1px solid #2c3e50;
-            padding: 0 4px;
-            font-weight: 600;
-        }
-
-        .passenger-section {
-            margin: 2px 0;
-            font-size: 8.5pt;
-        }
-
-        .passenger-columns-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            margin: 2px 0;
-        }
-
-        .passenger-column-wrapper {
+        /* --- PASSENGER TABLE --- */
+        .passenger-container {
+            margin-top: 8px;
+            border: 1px solid #333;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
+            padding: 0;
         }
-
-        .passenger-column-table {
+        .passenger-label { 
+            background: #eee; font-size: 7pt; font-weight: 700; text-align: center; 
+            border-bottom: 1px solid #333; padding: 2px 0; text-transform: uppercase;
+        }
+        
+        .passenger-columns-container {
+            display: grid; 
+            gap: 0;
             width: 100%;
-            border-collapse: collapse;
-            font-size: 8pt;
+            height: 100%;
         }
-
-        .passenger-column-table th {
-            border: 1.5px solid #2c3e50;
-            padding: 2px 3px;
+        .passenger-column-wrapper { 
+            border-right: 1px solid #333; 
+            display: flex; 
+            flex-direction: column;
+        }
+        .passenger-column-wrapper:last-child { border-right: none; }
+        
+        .passenger-column-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        .passenger-column-table th { 
+            font-size: 6pt; 
+            text-align: center; 
+            padding: 2px; 
+            background: #fff; 
+            border-bottom: 1px solid #333; 
+            border-right: 1px solid #ccc;
             font-weight: 700;
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            color: white;
-            text-align: left;
-            font-size: 6.5pt;
             text-transform: uppercase;
         }
+        .passenger-column-table th:last-child { border-right: none; }
 
-        .passenger-column-table td {
-            border: 1px solid #2c3e50;
-            padding: 1px 2px;
-            height: 1.2em;
-            font-weight: 600;
-            font-size: 7.5pt;
+        .passenger-column-table td { 
+            font-size: 7.5pt; 
+            padding: 2px 4px; 
+            border-bottom: 1px solid #ddd; 
+            height: 18px;
+            vertical-align: middle;
         }
 
-        .passenger-column-table tbody tr:nth-child(even) {
-            background: #ecf0f1;
-        }
-
-        .section-title {
-            font-weight: 700;
+        .passenger-column-table td:first-child { border-right: 1px solid #ccc; font-weight: 600; }
+        
+        /* Right Column: Stats Box */
+        .stats-box {
+            border: 1px solid #111;
             font-size: 8pt;
-            margin-top: 2px;
-            margin-bottom: 1px;
-            color: #2c3e50;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+        }
+        .stats-header { 
+            background: #111; color: #fff; text-align: center; font-weight: 700; 
+            padding: 2px; font-size: 7.5pt; text-transform: uppercase;
+        }
+        .stats-row { display: flex; border-bottom: 1px solid #ccc; }
+        .stats-row:last-child { border-bottom: none; }
+        .stats-label { width: 50%; padding: 2px 4px; border-right: 1px solid #ccc; font-weight: 600; font-size: 7.5pt; }
+        .stats-val { width: 50%; padding: 2px 4px; text-align: right; font-family: monospace; font-weight: 700; min-height: 18px; }
+        
+        .sub-header { 
+            background: #ddd; font-size: 7pt; font-weight: 700; padding: 1px 4px; 
+            border-top: 1px solid #111; border-bottom: 1px solid #111;
         }
 
-        .time-row {
-            display: flex;
-            margin-bottom: 2px;
-            font-size: 8.5pt;
-            align-items: center;
+        /* Footer / Signatories */
+        .p-footer {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 2px solid #111;
+        }
+        
+        .certification {
+            font-size: 6.5pt; font-style: italic; text-align: center; margin-bottom: 10px;
         }
 
-        .time-label {
-            width: 45px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .time-value {
-            border-bottom: 1px solid #2c3e50;
-            padding: 0 3px;
-            min-width: 50px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .time-unit {
-            width: 30px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 7.5pt;
-            margin-left: 3px;
-        }
-
-        .fuel-grid {
+        .sig-grid {
             display: grid;
-            grid-template-columns: auto 1fr auto auto;
-            gap: 1px 3px;
-            margin-left: 2px;
-            font-size: 8pt;
-            line-height: 1.3;
-        }
-
-        .fuel-item-label {
-            font-weight: 700;
-            font-size: 8pt;
-            color: #2c3e50;
-        }
-
-        .fuel-item-value {
-            border-bottom: 1px solid #2c3e50;
-            padding: 0 2px;
-            text-align: right;
-            font-weight: 600;
-            font-size: 8pt;
-        }
-
-        .fuel-item-unit {
-            font-size: 7.5pt;
-            font-weight: 600;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
             text-align: center;
-            min-width: 15px;
         }
-
-        .total-row {
-            font-weight: 700;
-            margin: 1px 0;
+        
+        .sig-box { display: flex; flex-direction: column; align-items: center; }
+        .sig-line { 
+            width: 100%; border-bottom: 1px solid #111; height: 20px; margin-bottom: 2px; 
+            font-weight: 700; font-size: 8pt; display: flex; align-items: flex-end; justify-content: center;
         }
-
-        .signature-line-inner {
-            border-bottom: 1px solid #2c3e50;
-            height: 1.2em;
-            margin-bottom: 1px;
-        }
-
-        .signature-label {
-            font-weight: 700;
-            font-size: 7.5pt;
-            text-transform: uppercase;
-        }
+        .sig-title { font-size: 6.5pt; text-transform: uppercase; color: #444; }
+        .sig-role { font-size: 6pt; font-weight: 700; margin-top: 2px; }
 
         @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                background: #fff;
-            }
-            .no-print {
-                display: none !important;
-            }
-            #print-area {
-                display: block !important;
-                margin: 0;
-                width: 8.5in;
-                padding: 0;
-            }
-            .page-container {
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-                page-break-after: always;
-                break-inside: avoid;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .control-panel {
-                padding: 30px 20px;
-                border-radius: 30px;
-            }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
+            body { margin: 0; padding: 0; background: white; }
+            .no-print { display: none !important; }
+            #print-area { display: block !important; }
+            .page-container { margin: 0; page-break-after: always; box-shadow: none; }
         }
     </style>
 </head>
@@ -672,7 +300,7 @@
                 </div>
             </div>
 
-            <div class="section-subtitle">Fuel / Diesel (Liters)</div>
+            <div style="font-weight: bold; margin: 15px 0 10px;">Fuel / Diesel (Liters)</div>
             <div class="input-grid">
                 <div class="form-field">
                     <label for="fuelBalance">Balance in Tank</label>
@@ -703,7 +331,7 @@
                 </div>
             </div>
 
-            <div class="section-subtitle">Lubricant (Liters)</div>
+            <div style="font-weight: bold; margin: 15px 0 10px;">Lubricant (Liters)</div>
             <div class="input-grid">
                 <div class="form-field">
                     <label for="oilMotor">Motor Oil</label>
@@ -720,7 +348,7 @@
             <legend>Approvals</legend>
             <div class="input-grid">
                 <div class="form-field">
-                    <label for="recommendedName">Recommended By (Name)</label>
+                    <label for="recommendedName">Recommended By/Department Head (Name)</label>
                     <input type="text" id="recommendedName" value="JENNELYN D. DALACAT">
                 </div>
                 <div class="form-field">
@@ -750,9 +378,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Trip Ticket Preview</h2>
-                <span id="modal-close" class="modal-close">×</span>
+                <span id="modal-close" style="cursor:pointer; font-size: 24px;">×</span>
             </div>
-            <div style="padding: 15px 25px; background: rgba(249, 250, 251, 0.8); border-bottom: 1px solid rgba(0,0,0,0.1);">
+            <div style="padding: 15px 25px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
                 <div class="form-field" style="margin: 0;">
                     <label for="editDate">Edit Date (optional)</label>
                     <input type="date" id="editDate" style="margin: 0;">
@@ -766,338 +394,308 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const driverNameInput = document.getElementById('driverName');
-            const plateNoInput = document.getElementById('plateNo');
-            const placeVisitedInput = document.getElementById('placeVisited');
-            const ticketDateInput = document.getElementById('ticketDate');
-            const purposeInput = document.getElementById('purpose');
-            const departureTimeInput = document.getElementById('departureTime');
-            const arrivalTimeInput = document.getElementById('arrivalTime');
-            const fuelBalanceInput = document.getElementById('fuelBalance');
-            const fuelIssueInput = document.getElementById('fuelIssue');
-            const fuelPurchasedInput = document.getElementById('fuelPurchased');
-            const fuelTotalInput = document.getElementById('fuelTotal');
-            const fuelUseInput = document.getElementById('fuelUse');
-            const fuelEndBalanceInput = document.getElementById('fuelEndBalance');
-            const oilMotorInput = document.getElementById('oilMotor');
-            const oilGearInput = document.getElementById('oilGear');
-            const recommendedNameInput = document.getElementById('recommendedName');
-            const recommendedTitleInput = document.getElementById('recommendedTitle');
-            const approvedNameInput = document.getElementById('approvedName');
-            const approvedTitleInput = document.getElementById('approvedTitle');
-            const previewBtn = document.getElementById('preview-btn');
-            const generateBtn = document.getElementById('generate-btn');
-            const errorMessageDiv = document.getElementById('error-message');
-            const previewModal = document.getElementById('preview-modal');
-            const previewContent = document.getElementById('preview-content');
-            const printArea = document.getElementById('print-area');
-            const modalClose = document.getElementById('modal-close');
+            const inputs = {
+                driverName: document.getElementById('driverName'),
+                plateNo: document.getElementById('plateNo'),
+                placeVisited: document.getElementById('placeVisited'),
+                ticketDate: document.getElementById('ticketDate'),
+                purpose: document.getElementById('purpose'),
+                departureTime: document.getElementById('departureTime'),
+                arrivalTime: document.getElementById('arrivalTime'),
+                fuelBalance: document.getElementById('fuelBalance'),
+                fuelIssue: document.getElementById('fuelIssue'),
+                fuelPurchased: document.getElementById('fuelPurchased'),
+                fuelTotal: document.getElementById('fuelTotal'),
+                fuelUse: document.getElementById('fuelUse'),
+                fuelEndBalance: document.getElementById('fuelEndBalance'),
+                oilMotor: document.getElementById('oilMotor'),
+                oilGear: document.getElementById('oilGear'),
+                recommendedName: document.getElementById('recommendedName'),
+                recommendedTitle: document.getElementById('recommendedTitle'),
+                approvedName: document.getElementById('approvedName'),
+                approvedTitle: document.getElementById('approvedTitle'),
+            };
+            
             const passengerInputsContainer = document.getElementById('passengerInputs');
             const addPassengerBtn = document.getElementById('addPassengerBtn');
-            const editDateInput = document.getElementById('editDate');
-
+            const fuelInputs = document.querySelectorAll('.fuel-input');
             let currentData = null;
+
+            inputs.ticketDate.valueAsDate = new Date();
 
             function createPassengerRow(initialValue = '') {
                 const row = document.createElement('div');
                 row.className = 'passenger-row';
-                
                 const input = document.createElement('input');
-                input.type = 'text';
-                input.value = initialValue;
-                input.placeholder = 'Passenger Name';
-                
+                input.type = 'text'; input.value = initialValue; input.placeholder = 'Passenger Name';
                 const deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.className = 'btn btn-remove';
-                deleteBtn.innerHTML = '×';
+                deleteBtn.type = 'button'; deleteBtn.className = 'btn btn-remove'; deleteBtn.innerHTML = '×';
                 deleteBtn.onclick = () => row.remove();
-                
-                row.appendChild(input);
-                row.appendChild(deleteBtn);
+                row.appendChild(input); row.appendChild(deleteBtn);
                 passengerInputsContainer.appendChild(row);
-            }
-
-            function getPassengerData() {
-                const passengers = [];
-                document.querySelectorAll('#passengerInputs input[type="text"]').forEach(input => {
-                    const name = input.value.trim().toUpperCase();
-                    if (name) passengers.push(name);
-                });
-                return passengers;
             }
 
             addPassengerBtn.addEventListener('click', () => createPassengerRow());
 
+            function getPassengerData() {
+                const passengers = [];
+                document.querySelectorAll('#passengerInputs input[type="text"]').forEach(input => {
+                    if (input.value.trim()) passengers.push(input.value.trim().toUpperCase());
+                });
+                return passengers;
+            }
+
             function calculateTotalFuel() {
-                const balance = parseFloat(fuelBalanceInput.value) || 0;
-                const issue = parseFloat(fuelIssueInput.value) || 0;
-                const purchased = parseFloat(fuelPurchasedInput.value) || 0;
+                const balance = parseFloat(inputs.fuelBalance.value) || 0;
+                const issue = parseFloat(inputs.fuelIssue.value) || 0;
+                const purchased = parseFloat(inputs.fuelPurchased.value) || 0;
                 const total = balance + issue + purchased;
-                fuelTotalInput.value = total.toFixed(2);
+                inputs.fuelTotal.value = total.toFixed(2);
                 return total.toFixed(2);
             }
 
-            document.querySelectorAll('.fuel-input').forEach(input => {
-                input.addEventListener('input', calculateTotalFuel);
-            });
+            fuelInputs.forEach(input => input.addEventListener('input', calculateTotalFuel));
 
-            calculateTotalFuel();
+function getFormData() {
+                const d = new Date(inputs.ticketDate.value || new Date());
+                const dateStr = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-            function getFormData() {
-                const ticketDate = ticketDateInput.value ? new Date(ticketDateInput.value).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-                const formatTime = (time24) => {
-                    if (!time24) return '';
-                    try {
-                        const [hours, minutes] = time24.split(':');
-                        let h = parseInt(hours, 10);
-                        const m = minutes;
-                        const ampm = h >= 12 ? 'pm' : 'am';
-                        h = h % 12;
-                        h = h ? h : 12;
-                        return `${h}:${m} ${ampm}`;
-                    } catch (e) {
-                        return time24;
-                    }
+                const formatTime = (t) => {
+                    if(!t) return '';
+                    const [h, m] = t.split(':');
+                    let hr = parseInt(h);
+                    const ampm = hr >= 12 ? 'PM' : 'AM';
+                    hr = hr % 12 || 12;
+                    return `${hr}:${m} ${ampm}`;
                 };
 
-                return {
-                    driverName: driverNameInput.value.toUpperCase().trim(),
-                    plateNo: plateNoInput.value.toUpperCase().trim(),
+                // Set default times if not provided
+                if (!inputs.departureTime.value) inputs.departureTime.value = '08:00';
+                if (!inputs.arrivalTime.value) inputs.arrivalTime.value = '17:00';
+
+                // Helper to hide 0 values
+                const getFuelVal = (val) => {
+                    const num = parseFloat(val);
+                    // If NaN, 0, or 0.00, return empty string
+                    if (!num || num === 0) return '';
+                    return num.toFixed(2);
+                };
+
+return {
+                    driverName: inputs.driverName.value.toUpperCase().trim(),
+                    plateNo: inputs.plateNo.value.toUpperCase().trim(),
                     passengerNames: getPassengerData(),
-                    placeVisited: placeVisitedInput.value.toUpperCase().trim(),
-                    purpose: purposeInput.value.toUpperCase().trim(),
-                    departureTime: formatTime(departureTimeInput.value).trim(),
-                    arrivalTime: formatTime(arrivalTimeInput.value).trim(),
-                    date: ticketDate.toUpperCase(),
-                    fuelBalance: (parseFloat(fuelBalanceInput.value) || 0).toFixed(2),
-                    fuelIssue: (parseFloat(fuelIssueInput.value) || 0).toFixed(2),
-                    fuelPurchased: (parseFloat(fuelPurchasedInput.value) || 0).toFixed(2),
-                    fuelTotal: calculateTotalFuel(),
-                    fuelUse: (parseFloat(fuelUseInput.value) || 0).toFixed(2),
-                    fuelEndBalance: (parseFloat(fuelEndBalanceInput.value) || 0).toFixed(2),
-                    oilMotor: (parseFloat(oilMotorInput.value) || 0).toFixed(2),
-                    oilGear: (parseFloat(oilGearInput.value) || 0).toFixed(2),
-                    recommendedName: recommendedNameInput.value.toUpperCase().trim(),
-                    recommendedTitle: recommendedTitleInput.value.toUpperCase().trim(),
-                    approvedName: approvedNameInput.value.toUpperCase().trim(),
-                    approvedTitle: approvedTitleInput.value.toUpperCase().trim(),
+                    placeVisited: inputs.placeVisited.value.toUpperCase().trim(),
+                    purpose: inputs.purpose.value.toUpperCase().trim(),
+                    departureTime: formatTime(inputs.departureTime.value),
+                    arrivalTime: formatTime(inputs.arrivalTime.value),
+                    date: dateStr.toUpperCase(),
+                    // Apply hidden zero logic
+                    fuelBalance: getFuelVal(inputs.fuelBalance.value),
+                    fuelIssue: getFuelVal(inputs.fuelIssue.value),
+                    fuelPurchased: getFuelVal(inputs.fuelPurchased.value),
+                    fuelTotal: getFuelVal(inputs.fuelTotal.value),
+                    fuelUse: getFuelVal(inputs.fuelUse.value),
+                    fuelEndBalance: getFuelVal(inputs.fuelEndBalance.value),
+                    oilMotor: getFuelVal(inputs.oilMotor.value),
+                    oilGear: getFuelVal(inputs.oilGear.value),
+                    
+                    recommendedName: inputs.recommendedName.value.toUpperCase().trim(),
+                    recommendedTitle: inputs.recommendedTitle.value.toUpperCase().trim(),
+                    approvedName: inputs.approvedName.value.toUpperCase().trim(),
+                    approvedTitle: inputs.approvedTitle.value.toUpperCase().trim()
                 };
             }
 
+            // --- HTML GENERATION ---
+
             function createPassengerTableHTML(passengers) {
-                const maxPerColumn = 4;
-                const numColumns = Math.ceil(passengers.length / maxPerColumn);
-                let html = '<div class="passenger-columns-container" style="grid-template-columns: ' + Array(numColumns).fill('1fr').join(' ') + ';">';
+                const maxRowsPerCol = 5; 
+                const numColumns = Math.max(2, Math.ceil(passengers.length / maxRowsPerCol));
+                
+                let html = `<div class="passenger-columns-container" style="grid-template-columns: repeat(${numColumns}, 1fr);">`;
                 
                 for (let col = 0; col < numColumns; col++) {
-                    const start = col * maxPerColumn;
-                    const end = Math.min(start + maxPerColumn, passengers.length);
-                    const columnPassengers = passengers.slice(start, end);
+                    const start = col * maxRowsPerCol;
                     
                     html += '<div class="passenger-column-wrapper">';
                     html += '<table class="passenger-column-table">';
-                    html += '<thead><tr><th>NAME</th><th style="width: 40%; text-align: center;">SIGN</th></tr></thead>';
-                    html += '<tbody>';
+                    html += '<thead><tr><th>NAME</th><th style="width:35%">SIGNATURE</th></tr></thead><tbody>';
                     
-                    columnPassengers.forEach((name, idx) => {
-                        html += `<tr><td>${idx + 1}. ${name}</td><td>&nbsp;</td></tr>`;
-                    });
-                    
-                    html += '</tbody></table>';
-                    html += '</div>';
+                    for(let i=0; i<maxRowsPerCol; i++) {
+                        const passengerIndex = start + i;
+                        if(passengerIndex < passengers.length) {
+                             html += `<tr><td>${passengerIndex + 1}. ${passengers[passengerIndex]}</td><td></td></tr>`;
+                        } else {
+                            html += `<tr><td>&nbsp;</td><td></td></tr>`;
+                        }
+                    }
+
+                    html += '</tbody></table></div>';
                 }
-                
                 html += '</div>';
                 return html;
             }
 
             function createTripTicketHTML(data, copyType) {
-                const departureAMPM = data.departureTime.includes('pm') ? 'pm' : 'am';
-                const arrivalAMPM = data.arrivalTime.includes('pm') ? 'pm' : 'am';
-                const passengerTableHTML = createPassengerTableHTML(data.passengerNames);
+                const passengerHTML = createPassengerTableHTML(data.passengerNames);
+                const printDate = new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', month: 'short', day: 'numeric', year: 'numeric' });
 
                 return `
-                    <div class="trip-ticket-half">
-<div class="header-box">
-                            <div class="institution">Republic of the Philippines</div>
-                            <div class="institution">Province of Nueva Ecija</div>
-                            <div class="institution">Municipality of Gabaldon</div>
-                            <div class="title">DRIVER'S TRIP TICKET</div>
-                            <div class="copy-type">(${copyType})</div>
+                <div class="trip-ticket-half">
+                    <div class="p-header">
+                        <div class="republic">Republic of the Philippines</div>
+                        <div class="province">Province of Nueva Ecija &bull; Municipality of Gabaldon</div>
+                        <div class="title">Driver's Trip Ticket</div>
+                        <div class="meta">
+                            <span class="copy-label">${copyType}</span>
+                            <span style="color:#666">Printed: ${printDate}</span>
                         </div>
+                    </div>
 
-                        <div style="text-align: center; font-size: 7pt; color: #666; margin-top: 2px;">
-                            Printed: ${new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                        </div>
-
-                        <div class="info-row">
-                            <span class="info-label">Date:</span>
-                            <span class="info-value">${data.date || '&nbsp;'}</span>
-                        </div>
-
-                        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <div class="info-row">
-                                    <span class="info-label">Driver:</span>
-                                    <span class="info-value">${data.driverName || '&nbsp;'}</span>
-                                </div>
-
-                                <div class="info-row">
-                                    <span class="info-label">Plate:</span>
-                                    <span class="info-value">${data.plateNo || '&nbsp;'}</span>
-                                </div>
-
-                                <div class="passenger-section">
-                                    ${passengerTableHTML}
-                                </div>
-
-                                <div class="info-row">
-                                    <span class="info-label">Dest:</span>
-                                    <span class="info-value">${data.placeVisited || '&nbsp;'}</span>
-                                </div>
-
-                                <div class="info-row">
-                                    <span class="info-label">Purpose:</span>
-                                    <span class="info-value">${data.purpose || '&nbsp;'}</span>
-                                </div>
+                    <div class="p-body">
+                        
+                        <div class="p-col-left">
+                            <div class="p-row">
+                                <span class="p-label">DATE:</span>
+                                <span class="p-value">${data.date}</span>
+                            </div>
+                            <div class="p-row">
+                                <span class="p-label">DRIVER:</span>
+                                <span class="p-value">${data.driverName}</span>
+                            </div>
+                            <div class="p-row">
+                                <span class="p-label">PLATE NO:</span>
+                                <span class="p-value">${data.plateNo}</span>
+                            </div>
+                            <div class="p-row">
+                                <span class="p-label">DESTINATION:</span>
+                                <span class="p-value">${data.placeVisited}</span>
+                            </div>
+                            <div class="p-row">
+                                <span class="p-label">PURPOSE:</span>
+                                <span class="p-value">${data.purpose}</span>
                             </div>
 
-                            <div style="border: 1px solid #2c3e50; font-size: 7.5pt; margin: 1px 0; background: #f8f9fa; display: grid; grid-template-columns: 1fr 1fr;">
-                                <div style="display: flex; border-right: 1px solid #2c3e50; min-height: 1.8em;">
-                                    <div style="font-weight: 700; padding: 2px 3px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #2c3e50; background: #ecf0f1; font-size: 6.5pt; white-space: nowrap;">Recommended by:</div>
-                                    <div style="flex: 1; padding: 15px 3px 2px 3px; display: flex; align-items: center; justify-content: center;">
-                                        <div style="text-align: center; width: 100%; border-bottom: 1px solid #2c3e50; font-weight: 700; font-size: 7pt; min-height: 1.1em;">${data.recommendedName || '&nbsp;'}</div>
-                                    </div>
-                                </div>
-                                <div style="display: flex; min-height: 1.8em;">
-                                    <div style="font-weight: 700; padding: 2px 3px; display: flex; align-items: center; justify-content: center; border-right: 1px solid #2c3e50; background: #ecf0f1; font-size: 6.5pt; white-space: nowrap;">Approved by:</div>
-                                    <div style="flex: 1; padding: 15px 3px 2px 3px; display: flex; align-items: center; justify-content: center;">
-                                        <div style="text-align: center; width: 100%; border-bottom: 1px solid #2c3e50; font-weight: 700; font-size: 7pt; min-height: 1.1em;">${data.approvedName || '&nbsp;'}</div>
-                                    </div>
-                                </div>
+                            <div class="passenger-container">
+                                <div class="passenger-label">Passenger Manifest</div>
+                                ${passengerHTML}
                             </div>
-                            <div style="font-size: 6pt; color: #666; text-align: center; padding: 1px 3px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: 1px solid #2c3e50; border-top: none; background: #f8f9fa;">
-                                <div style="text-align: center; border-right: 1px solid #2c3e50;">${data.recommendedTitle || '&nbsp;'}</div>
-                                <div style="text-align: center;">${data.approvedTitle || '&nbsp;'}</div>
-                            </div>
+                        </div>
 
-                            <div style="font-size: 8pt; line-height: 1.2; display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">
-                                <div>
-                                    <div class="time-row" style="margin-bottom: 1px;">
-                                        <span style="font-weight: 700; font-size: 8pt; width: 45px; flex-shrink: 0;">1. Departure:</span>
-                                        <span class="time-value" style="min-width: 40px;">${data.departureTime.split(' ')[0] || '&nbsp;'}</span>
-                                        <span class="time-unit" style="width: 20px;">${departureAMPM}</span>
-                                    </div>
-
-                                    <div class="time-row" style="margin-bottom: 1px;">
-                                        <span style="font-weight: 700; font-size: 8pt; width: 45px; flex-shrink: 0;">2. Arrival:</span>
-                                        <span class="time-value" style="min-width: 40px;">${data.arrivalTime.split(' ')[0] || '&nbsp;'}</span>
-                                        <span class="time-unit" style="width: 20px;">${arrivalAMPM}</span>
-                                    </div>
-
-                                    <div class="section-title" style="margin-top: 1px; margin-bottom: 1px; font-size: 7.5pt;">3. Fuel/Diesel:</div>
-                                    <div class="fuel-grid" style="grid-template-columns: auto 1fr auto; font-size: 7.5pt;">
-                                        <span class="fuel-item-label">a. Balance:</span>
-                                        <span class="fuel-item-value">${data.fuelBalance}</span>
-                                        <span class="fuel-item-unit">L</span>
-
-                                        <span class="fuel-item-label">b. Issue:</span>
-                                        <span class="fuel-item-value">${data.fuelIssue}</span>
-                                        <span class="fuel-item-unit">L</span>
-
-                                        <span class="fuel-item-label">c. Purchased:</span>
-                                        <span class="fuel-item-value">${data.fuelPurchased}</span>
-                                        <span class="fuel-item-unit">L</span>
-
-                                        <span class="fuel-item-label total-row">TOTAL:</span>
-                                        <span class="fuel-item-value total-row">${data.fuelTotal}</span>
-                                        <span class="fuel-item-unit total-row">L</span>
-
-                                        <span class="fuel-item-label">d. Used:</span>
-                                        <span class="fuel-item-value">${data.fuelUse}</span>
-                                        <span class="fuel-item-unit">L</span>
-
-                                        <span class="fuel-item-label">e. End Balance:</span>
-                                        <span class="fuel-item-value">${data.fuelEndBalance}</span>
-                                        <span class="fuel-item-unit">L</span>
-                                    </div>
+                        <div class="p-col-right">
+                            <div class="stats-box">
+                                <div class="stats-header">TIME LOG</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Departure</div>
+                                    <div class="stats-val">${data.departureTime}</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Arrival</div>
+                                    <div class="stats-val">${data.arrivalTime}</div>
+                                </div>
+                                
+                                <div class="stats-header" style="border-top:1px solid #000">FUEL (Liters)</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Balance</div>
+                                    <div class="stats-val">${data.fuelBalance}</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Issue</div>
+                                    <div class="stats-val">${data.fuelIssue}</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Purchased</div>
+                                    <div class="stats-val">${data.fuelPurchased}</div>
+                                </div>
+                                <div class="sub-header" style="display:flex; justify-content:space-between">
+                                    <span>TOTAL</span>
+                                    <span>${data.fuelTotal}</span>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Consumed</div>
+                                    <div class="stats-val">${data.fuelUse}</div>
+                                </div>
+                                <div class="stats-row" style="background:#f0f0f0;">
+                                    <div class="stats-label">End Bal</div>
+                                    <div class="stats-val">${data.fuelEndBalance}</div>
                                 </div>
 
-                                <div>
-                                    <div class="section-title" style="margin-bottom: 1px; font-size: 7.5pt;">Lubricant:</div>
-                                    <div class="fuel-grid" style="grid-template-columns: auto 1fr auto; font-size: 7.5pt;">
-                                        <span class="fuel-item-label">a. Motor Oil:</span>
-                                        <span class="fuel-item-value">${data.oilMotor}</span>
-                                        <span class="fuel-item-unit">L</span>
-
-                                        <span class="fuel-item-label">b. Gear Oil:</span>
-                                        <span class="fuel-item-value">${data.oilGear}</span>
-                                        <span class="fuel-item-unit">L</span>
-                                    </div>
-
-                                    <div style="margin-top: 5px; border-top: 1px solid #ddd; padding-top: 2px;">
-                                        <div class="section-title" style="margin-bottom: 1px; font-size: 7.5pt;">Signature:</div>
-                                        <div style="text-align: center;">
-                                            <div class="signature-line-inner" style="height: 0.9em;"></div>
-                                            <div class="signature-label" style="font-size: 6.5pt;">Driver</div>
-                                        </div>
-                                    </div>
+                                <div class="stats-header" style="border-top:1px solid #000">LUBRICANTS</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Motor Oil</div>
+                                    <div class="stats-val">${data.oilMotor}</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Gear Oil</div>
+                                    <div class="stats-val">${data.oilGear}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                `;
+
+                    <div class="p-footer">
+                        <div class="certification">
+                            I hereby certify that the vehicle was used on official business as stated above.
+                        </div>
+                        <div class="sig-grid">
+                            <div class="sig-box">
+                                <div class="sig-line">${data.driverName}</div>
+                                <div class="sig-title">Driver / Prepared By</div>
+                            </div>
+                            <div class="sig-box">
+                                <div class="sig-line">${data.recommendedName}</div>
+                                <div class="sig-title">Recommending Approval/Department head</div>
+                                <div class="sig-role">${data.recommendedTitle}</div>
+                            </div>
+                            <div class="sig-box">
+                                <div class="sig-line">${data.approvedName}</div>
+                                <div class="sig-title">Approved By</div>
+                                <div class="sig-role">${data.approvedTitle}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             }
 
-            function validateForm() {
-                errorMessageDiv.classList.add('hidden');
-                return true;
-            }
+            // --- HANDLERS ---
+            
+            const previewModal = document.getElementById('preview-modal');
+            const previewContent = document.getElementById('preview-content');
+            const editDateInput = document.getElementById('editDate');
 
-            function handlePreview() {
-                if (validateForm()) {
-                    const data = getFormData();
-                    currentData = { ...data };
-                    editDateInput.value = ticketDateInput.value;
-                    previewContent.innerHTML = `<div class="trip-ticket-container">${createTripTicketHTML(data, "PREVIEW COPY")}</div>`;
-                    previewModal.classList.remove('hidden');
-                }
-            }
-
-            function handleGenerate() {
-                if (validateForm()) {
-                    const data = getFormData();
-                    const ticketHTML_Driver = createTripTicketHTML(data, "DRIVER'S COPY");
-                    const ticketHTML_Office = createTripTicketHTML(data, "OFFICE COPY");
-                    const pageContainer = document.createElement('div');
-                    pageContainer.className = 'page-container';
-                    pageContainer.innerHTML = ticketHTML_Driver + ticketHTML_Office;
-                    printArea.innerHTML = '';
-                    printArea.appendChild(pageContainer);
-                    window.print();
-                }
-            }
-
-            previewBtn.addEventListener('click', handlePreview);
-            generateBtn.addEventListener('click', handleGenerate);
-            modalClose.addEventListener('click', () => {
-                previewModal.classList.add('hidden');
+            document.getElementById('preview-btn').addEventListener('click', () => {
+                currentData = getFormData();
+                editDateInput.value = inputs.ticketDate.value;
+                previewContent.innerHTML = createTripTicketHTML(currentData, "PREVIEW COPY");
+                previewModal.classList.remove('hidden');
             });
-            previewModal.addEventListener('click', (e) => {
-                if (e.target === previewModal) {
-                    previewModal.classList.add('hidden');
-                }
+
+            document.getElementById('generate-btn').addEventListener('click', () => {
+                const data = getFormData();
+                const area = document.getElementById('print-area');
+                area.innerHTML = `
+                    <div class="page-container">
+                        ${createTripTicketHTML(data, "DRIVER'S COPY")}
+                        ${createTripTicketHTML(data, "OFFICE COPY")}
+                    </div>
+                `;
+                window.print();
+            });
+
+            document.getElementById('modal-close').addEventListener('click', () => {
+                previewModal.classList.add('hidden');
             });
 
             editDateInput.addEventListener('change', () => {
-                if (currentData && editDateInput.value) {
-                    const newDate = new Date(editDateInput.value).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
-                    currentData.date = newDate;
-                    previewContent.innerHTML = `<div class="trip-ticket-container">${createTripTicketHTML(currentData, "PREVIEW COPY")}</div>`;
+                if(currentData) {
+                    const d = new Date(editDateInput.value);
+                    currentData.date = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
+                    previewContent.innerHTML = createTripTicketHTML(currentData, "PREVIEW COPY");
                 }
             });
+
+            createPassengerRow();
         });
     </script>
 </body>

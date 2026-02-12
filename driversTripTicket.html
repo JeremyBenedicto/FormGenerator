@@ -136,6 +136,15 @@
             flex: 1; border-bottom: 1px solid #333; font-weight: 600; padding-left: 5px; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
+        .p-row-wrap { align-items: flex-start; }
+        .p-value-wrap {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.2;
+            min-height: 22px;
+            word-break: break-word;
+        }
 
         /* --- PASSENGER TABLE --- */
         .passenger-container {
@@ -235,11 +244,37 @@
         .sig-title { font-size: 6.5pt; text-transform: uppercase; color: #444; }
         .sig-role { font-size: 6pt; font-weight: 700; margin-top: 2px; }
 
+        @page {
+            size: 8.5in 11in;
+            margin: 0;
+        }
+
         @media print {
-            body { margin: 0; padding: 0; background: white; }
+            html, body {
+                width: 8.5in;
+                height: 11in;
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
             .no-print { display: none !important; }
-            #print-area { display: block !important; }
-            .page-container { margin: 0; page-break-after: always; box-shadow: none; }
+            #print-area {
+                display: block !important;
+                width: 8.5in;
+                height: 11in;
+            }
+            .page-container {
+                width: 8.5in;
+                height: 11in;
+                margin: 0;
+                page-break-after: always;
+                box-shadow: none;
+                overflow: hidden;
+            }
+            .trip-ticket-half {
+                height: 5.5in;
+                padding: 0.35in 0.5in;
+            }
         }
     </style>
 </head>
@@ -270,8 +305,12 @@
 
             <div class="input-grid" style="margin-top: 20px;">
                 <div class="form-field">
-                    <label for="ticketDate">Ticket Date</label>
+                    <label for="ticketDate">Ticket Date (From)</label>
                     <input type="date" id="ticketDate">
+                </div>
+                <div class="form-field">
+                    <label for="ticketDateTo">Ticket Date (To)</label>
+                    <input type="date" id="ticketDateTo">
                 </div>
                 <div class="form-field">
                     <label for="placeVisited">Destination</label>
@@ -381,9 +420,15 @@
                 <span id="modal-close" style="cursor:pointer; font-size: 24px;">×</span>
             </div>
             <div style="padding: 15px 25px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
-                <div class="form-field" style="margin: 0;">
-                    <label for="editDate">Edit Date (optional)</label>
-                    <input type="date" id="editDate" style="margin: 0;">
+                <div class="input-grid">
+                    <div class="form-field" style="margin: 0;">
+                        <label for="editDate">Edit Date (From)</label>
+                        <input type="date" id="editDate" style="margin: 0;">
+                    </div>
+                    <div class="form-field" style="margin: 0;">
+                        <label for="editDateTo">Edit Date (To)</label>
+                        <input type="date" id="editDateTo" style="margin: 0;">
+                    </div>
                 </div>
             </div>
             <div id="preview-content"></div>
@@ -399,6 +444,7 @@
                 plateNo: document.getElementById('plateNo'),
                 placeVisited: document.getElementById('placeVisited'),
                 ticketDate: document.getElementById('ticketDate'),
+                ticketDateTo: document.getElementById('ticketDateTo'),
                 purpose: document.getElementById('purpose'),
                 departureTime: document.getElementById('departureTime'),
                 arrivalTime: document.getElementById('arrivalTime'),
@@ -422,6 +468,48 @@
             let currentData = null;
 
             inputs.ticketDate.valueAsDate = new Date();
+            inputs.ticketDateTo.value = inputs.ticketDate.value;
+
+            function parseDateInput(value) {
+                if (!value) return null;
+                const parts = value.split('-').map(Number);
+                if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+                return new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+
+            function formatTicketDate(dateObj) {
+                return dateObj.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            }
+
+            function getDateDisplay(fromValue, toValue) {
+                let fromDate = parseDateInput(fromValue) || new Date();
+                let toDate = parseDateInput(toValue) || fromDate;
+
+                if (toDate < fromDate) {
+                    const temp = fromDate;
+                    fromDate = toDate;
+                    toDate = temp;
+                }
+
+                const fromText = formatTicketDate(fromDate);
+                const toText = formatTicketDate(toDate);
+                return fromText === toText ? fromText : `${fromText} TO ${toText}`;
+            }
+
+            function syncDateRange(startInput, endInput) {
+                if (startInput.value) {
+                    endInput.min = startInput.value;
+                } else {
+                    endInput.removeAttribute('min');
+                }
+                if (startInput.value && endInput.value && endInput.value < startInput.value) {
+                    endInput.value = startInput.value;
+                }
+            }
+
+            syncDateRange(inputs.ticketDate, inputs.ticketDateTo);
+            inputs.ticketDate.addEventListener('change', () => syncDateRange(inputs.ticketDate, inputs.ticketDateTo));
+            inputs.ticketDateTo.addEventListener('change', () => syncDateRange(inputs.ticketDate, inputs.ticketDateTo));
 
             function createPassengerRow(initialValue = '') {
                 const row = document.createElement('div');
@@ -457,8 +545,7 @@
             fuelInputs.forEach(input => input.addEventListener('input', calculateTotalFuel));
 
 function getFormData() {
-                const d = new Date(inputs.ticketDate.value || new Date());
-                const dateStr = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                const dateStr = getDateDisplay(inputs.ticketDate.value, inputs.ticketDateTo.value);
 
                 const formatTime = (t) => {
                     if(!t) return '';
@@ -572,9 +659,9 @@ return {
                                 <span class="p-label">DESTINATION:</span>
                                 <span class="p-value">${data.placeVisited}</span>
                             </div>
-                            <div class="p-row">
+                            <div class="p-row p-row-wrap">
                                 <span class="p-label">PURPOSE:</span>
-                                <span class="p-value">${data.purpose}</span>
+                                <span class="p-value p-value-wrap">${data.purpose}</span>
                             </div>
 
                             <div class="passenger-container">
@@ -663,11 +750,20 @@ return {
             const previewModal = document.getElementById('preview-modal');
             const previewContent = document.getElementById('preview-content');
             const editDateInput = document.getElementById('editDate');
+            const editDateToInput = document.getElementById('editDateTo');
+
+            function renderPreview() {
+                if (!currentData) return;
+                currentData.date = getDateDisplay(editDateInput.value, editDateToInput.value).toUpperCase();
+                previewContent.innerHTML = createTripTicketHTML(currentData, "PREVIEW COPY");
+            }
 
             document.getElementById('preview-btn').addEventListener('click', () => {
                 currentData = getFormData();
                 editDateInput.value = inputs.ticketDate.value;
-                previewContent.innerHTML = createTripTicketHTML(currentData, "PREVIEW COPY");
+                editDateToInput.value = inputs.ticketDateTo.value;
+                syncDateRange(editDateInput, editDateToInput);
+                renderPreview();
                 previewModal.classList.remove('hidden');
             });
 
@@ -688,11 +784,13 @@ return {
             });
 
             editDateInput.addEventListener('change', () => {
-                if(currentData) {
-                    const d = new Date(editDateInput.value);
-                    currentData.date = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
-                    previewContent.innerHTML = createTripTicketHTML(currentData, "PREVIEW COPY");
-                }
+                syncDateRange(editDateInput, editDateToInput);
+                renderPreview();
+            });
+
+            editDateToInput.addEventListener('change', () => {
+                syncDateRange(editDateInput, editDateToInput);
+                renderPreview();
             });
 
             createPassengerRow();

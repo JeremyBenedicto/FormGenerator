@@ -410,6 +410,10 @@
                     <span class="mr-2">Date:</span>
                     <span id="out13_fund_date" class="fill-line-large min-w-[150px] text-left"></span>
                 </div>
+
+                <div class="text-left uppercase text-base whitespace-normal font-sans mt-8 underline">
+                    <span id="out13_appointee_footer"></span>
+                </div>
             </div>
             
             <div class="document-container">
@@ -740,6 +744,7 @@
             document.getElementById('out13_ord_series').innerText = ordSeries;
             document.getElementById('out13_accountant_name').innerText = accountantName;
             document.getElementById('out13_fund_date').innerText = fundCertObj.full;
+            document.getElementById('out13_appointee_footer').innerText = `${empName} - ${pos}`;
 
 
             // --- POPULATE FORM 32 ---

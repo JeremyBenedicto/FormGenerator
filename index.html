@@ -167,44 +167,58 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px) saturate(120%);
+            -webkit-backdrop-filter: blur(8px) saturate(120%);
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             padding: 40px;
-            border-radius: 35px;
+            border-radius: 30px;
             width: 90%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.05);
         }
 
         .modal-content input {
             width: 100%;
             padding: 16px 24px;
             margin-bottom: 25px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 999px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
             font-size: 1rem;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             text-align: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .modal-content .submit-btn {
-            background: #111827;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 14px 28px;
-            border-radius: 999px;
+            border-radius: 12px;
             border: none;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .modal-content .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
         }
 
         @media (max-width: 480px) {
@@ -254,10 +268,46 @@
         </div>
     </div>
 
+    <div id="shutdown-modal" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 15px;">⚠️</h2>
+            <h3 style="font-size: 1.4rem; color: #111827; margin-bottom: 15px; font-weight: 700;">Important Notice</h3>
+            <p style="margin-bottom: 20px; color: #4B5563; font-weight: 500; line-height: 1.6;">
+                The Form Generator Hub will be <strong>shut down soon</strong>. To continue accessing this service, you need to create an account in our new portal.
+            </p>
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <a href="#" id="portal-link" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 14px 28px; border-radius: 999px; text-decoration: none; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s ease;">
+                    Create Account in Portal →
+                </a>
+                <button onclick="closeShutdownModal()" style="background:#E5E7EB; border:none; padding:14px 28px; border-radius:999px; cursor:pointer; font-weight:600; transition: all 0.3s ease;">
+                    Continue (Temporary Access)
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const modal = document.getElementById('auth-modal');
+        const shutdownModal = document.getElementById('shutdown-modal');
         const passwordInput = document.getElementById('auth-password');
         const submitBtn = document.getElementById('auth-submit');
+        const portalLink = document.getElementById('portal-link');
+
+        // Show shutdown notification on page load
+        window.addEventListener('load', () => {
+            shutdownModal.style.display = 'flex';
+        });
+
+        function closeShutdownModal() {
+            shutdownModal.style.display = 'none';
+        }
+
+        // Portal link - update this URL to your actual portal
+        portalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Portal registration URL
+            window.location.href = 'https://lgugabaldon.liveblog365.com/register.php';
+        });
 
         document.getElementById('appointment-btn').addEventListener('click', (e) => {
             e.preventDefault();
@@ -279,7 +329,10 @@
             }
         });
 
-        window.onclick = (e) => { if (e.target === modal) closeModal(); };
+        window.onclick = (e) => { 
+            if (e.target === modal) closeModal();
+            if (e.target === shutdownModal) closeShutdownModal();
+        };
     </script>
 </body>
 </html>

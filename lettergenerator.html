@@ -127,8 +127,29 @@
         .oath-fill {
             border-bottom: 1px solid black;
             font-weight: bold;
+            font-size: 11pt;
             display: inline-block;
             text-align: center;
+            margin: 0;
+            padding: 0 2px;
+            vertical-align: bottom;
+            min-width: 80px;
+        }
+        .oath-inline-tight {
+            font-size: 0;
+            word-spacing: 0;
+            letter-spacing: 0;
+        }
+        .oath-tight {
+            text-align: left;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .oath-text-underline {
+            border-bottom: none;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
         }
 
         /* --- FORM 13 STYLES --- */
@@ -515,12 +536,8 @@
                 </div>
 
                 <div class="oath-body mb-8">
-                    <div class="indent-12">
-                        <span class="oath-filipino ">Ako si</span>
-                        <span id="out32_name" class="oath-fill uppercase min-w-[100px] px-2"></span>
-                        <span class="oath-filipino">, ng</span>
-                        <span id="out32_address" class="oath-fill min-w-[200px] px-2"></span>
-                        <span class="oath-filipino">, na</span>
+                    <div class="indent-12 oath-inline-tight">
+                        <span class="oath-filipino">Ako si</span><span id="out32_name" class="oath-fill oath-text-underline uppercase"></span><span class="oath-filipino">, ng</span><span id="out32_address" class="oath-fill oath-text-underline"></span><span class="oath-filipino">, na</span>
                     </div>
                     <div class="oath-english indent-12">
                         I, <span class="pl-12">(Name of Appointee)</span> <span class="pl-32">(Address)</span>, having
@@ -528,7 +545,7 @@
 
                     <div>
                         <span class="oath-filipino">itinalaga bilang</span>
-                        <span id="out32_pos" class="oath-fill min-w-[150px] px-2"></span>
+                        <span id="out32_pos" class="oath-fill px-2"></span>
                         <span class="oath-filipino">, ay taimtim na nanunumpa na tutuparin ko nang</span>
                     </div>
                     <div class="oath-english">
@@ -749,9 +766,9 @@
 
             // --- POPULATE FORM 32 ---
             document.getElementById('out32_agency').innerText = agency;
-            document.getElementById('out32_name').innerText = empName; // Usually just name without Prefix in Oath
-            document.getElementById('out32_address').innerText = address;
-            document.getElementById('out32_pos').innerText = pos;
+            document.getElementById('out32_name').innerText = empName.trim();
+            document.getElementById('out32_address').innerText = address.trim();
+            document.getElementById('out32_pos').innerText = pos.trim();
 
             // Signatures & ID
             document.getElementById('out32_name_sign').innerText = empName;
@@ -780,7 +797,26 @@
                 sgGrade: document.getElementById('sg_grade').value,
             };
             sessionStorage.setItem('checklistData', JSON.stringify(checklistData));
+
+            // Auto-fit font sizes for oath form fields
+            autoFitFont('out32_name', 280);
+            autoFitFont('out32_address', 280);
+            autoFitFont('out32_pos', 200);
         };
+
+        function autoFitFont(elementId, maxWidth = 300) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let fontSize = 11; // Start at 11pt
+            element.style.fontSize = fontSize + 'pt';
+            
+            // Reduce font size if text is too wide
+            while (element.scrollWidth > maxWidth && fontSize > 6) {
+                fontSize -= 0.5;
+                element.style.fontSize = fontSize + 'pt';
+            }
+        }
 
         document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", updateDoc));
         loadData();

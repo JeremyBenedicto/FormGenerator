@@ -135,6 +135,16 @@
             vertical-align: bottom;
             min-width: 80px;
         }
+        .oath-fill.wrap-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 200px;
+            white-space: normal;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
         .oath-inline-tight {
             font-size: 0;
             word-spacing: 0;
@@ -545,7 +555,7 @@
 
                     <div>
                         <span class="oath-filipino">itinalaga bilang</span>
-                        <span id="out32_pos" class="oath-fill px-2"></span>
+                        <span id="out32_pos" class="oath-fill wrap-text px-2"></span>
                         <span class="oath-filipino">, ay taimtim na nanunumpa na tutuparin ko nang</span>
                     </div>
                     <div class="oath-english">
@@ -801,7 +811,7 @@
             // Auto-fit font sizes for oath form fields
             autoFitFont('out32_name', 280);
             autoFitFont('out32_address', 280);
-            autoFitFont('out32_pos', 200);
+            // Position field will wrap text instead of auto-sizing
         };
 
         function autoFitFont(elementId, maxWidth = 300) {

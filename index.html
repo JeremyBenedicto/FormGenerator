@@ -4,335 +4,836 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Generator Hub - LGU Gabaldon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --sky: #c8e6ff;
+            --blush: #ffd6c2;
+            --mint: #c0f5e2;
+            --lavender: #d8d0ff;
+            --gold: #ffe8a0;
+            --liquid-bg: rgba(255, 255, 255, 0.28);
+            --liquid-border: rgba(255, 255, 255, 0.75);
+            --liquid-shadow-top: rgba(255, 255, 255, 0.9);
+            --liquid-shadow-bottom: rgba(0, 0, 0, 0.08);
+            --text-dark: #0a1628;
+            --text-mid: #2d3f5c;
+            --text-soft: #5a7090;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            /* A vibrant background is essential for the glass effect to be visible */
-            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%), 
-                        radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.15) 0, transparent 50%), 
-                        radial-gradient(at 100% 0%, rgba(160, 147, 255, 0.15) 0, transparent 50%);
-            background-attachment: fixed;
+            font-family: 'Outfit', sans-serif;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 32px 20px;
+            overflow-x: hidden;
+            position: relative;
+            background: #dce9f8;
         }
 
-        /* --- Glassmorphism Container --- */
-        .container {
-            /* Transparency */
-            background: rgba(255, 255, 255, 0.45); 
-            /* The "Frosted" effect */
-            backdrop-filter: blur(12px) saturate(160%);
-            -webkit-backdrop-filter: blur(12px) saturate(160%);
-            
-            padding: 50px 40px;
-            border-radius: 40px;
-            
-            /* High-definition border (the 'shine') */
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            
-            box-shadow: 
-                0 8px 32px 0 rgba(31, 38, 135, 0.07),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-                
-            max-width: 550px;
+        /* Animated aurora background */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+            animation: float linear infinite;
+        }
+
+        .blob-1 {
+            width: 700px; height: 600px;
+            background: radial-gradient(circle, #a8d8ff 0%, #c8e6ff 60%, transparent 80%);
+            top: -200px; left: -150px;
+            animation-duration: 18s;
+        }
+        .blob-2 {
+            width: 600px; height: 650px;
+            background: radial-gradient(circle, #ffc9b0 0%, #ffd6c2 60%, transparent 80%);
+            top: -100px; right: -100px;
+            animation-duration: 22s;
+            animation-direction: reverse;
+        }
+        .blob-3 {
+            width: 750px; height: 500px;
+            background: radial-gradient(circle, #a8f0d0 0%, #c0f5e2 60%, transparent 80%);
+            bottom: -150px; left: 10%;
+            animation-duration: 26s;
+        }
+        .blob-4 {
+            width: 500px; height: 600px;
+            background: radial-gradient(circle, #c8b8ff 0%, #d8d0ff 60%, transparent 80%);
+            bottom: -100px; right: 5%;
+            animation-duration: 20s;
+            animation-direction: reverse;
+        }
+        .blob-5 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #ffe0a0 0%, #ffe8c0 60%, transparent 80%);
+            top: 40%; left: 40%;
+            animation-duration: 15s;
+        }
+
+        @keyframes float {
+            0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+            25%  { transform: translate(40px, 30px) scale(1.04) rotate(2deg); }
+            50%  { transform: translate(15px, 60px) scale(0.97) rotate(-1deg); }
+            75%  { transform: translate(-30px, 25px) scale(1.02) rotate(1.5deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        }
+
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* Main card */
+        .card {
+            position: relative;
+            z-index: 10;
             width: 100%;
-            text-align: center;
-            animation: fadeUp 0.6s ease-out;
+            max-width: 520px;
+            animation: riseIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0;
         }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(32px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        .glass-panel {
+            background: linear-gradient(
+                160deg,
+                rgba(255,255,255,0.55) 0%,
+                rgba(255,255,255,0.22) 40%,
+                rgba(255,255,255,0.32) 100%
+            );
+            backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+            border-radius: 40px;
+            border: 1px solid var(--liquid-border);
+            box-shadow:
+                0 0 0 0.5px rgba(255,255,255,0.4) inset,
+                0 2px 0 0 rgba(255,255,255,0.95) inset,
+                0 -1px 0 0 rgba(255,255,255,0.3) inset,
+                1px 0 0 0 rgba(255,255,255,0.5) inset,
+                -1px 0 0 0 rgba(255,255,255,0.5) inset,
+                0 40px 80px -20px rgba(10, 30, 60, 0.18),
+                0 12px 32px -8px rgba(10, 30, 60, 0.10);
+            padding: 52px 44px 48px;
+            overflow: hidden;
+        }
+
+        /* Inner highlight shimmer */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(
+                180deg,
+                rgba(255,255,255,0.6) 0%,
+                rgba(255,255,255,0.0) 100%
+            );
+            border-radius: 40px 40px 80% 80% / 40px 40px 60% 60%;
+            pointer-events: none;
+        }
+
+        /* Refraction caustic at bottom */
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 10%; right: 10%;
+            height: 30%;
+            background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.25) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        /* ---- Header ---- */
         .header {
-            margin-bottom: 45px;
+            text-align: center;
+            margin-bottom: 44px;
+            position: relative;
+        }
+
+        .logo-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .logo-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(168, 216, 255, 0.8),
+                rgba(255, 201, 176, 0.8),
+                rgba(168, 240, 208, 0.8),
+                rgba(200, 184, 255, 0.8),
+                rgba(255, 224, 160, 0.8),
+                rgba(168, 216, 255, 0.8)
+            );
+            animation: spinRing 6s linear infinite;
+            filter: blur(3px);
+        }
+
+        @keyframes spinRing {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        .logo-ring-inner {
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
         }
 
         .logo {
-            height: 90px;
-            width: 90px;
+            position: relative;
+            z-index: 2;
+            width: 92px;
+            height: 92px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255,255,255,0.7);
             padding: 5px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin: 0 auto 25px;
             display: block;
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.08),
+                0 1px 0 rgba(255,255,255,0.9) inset;
         }
 
         h1 {
-            color: #111827;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.1rem;
+            font-weight: 400;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+            line-height: 1.15;
+            margin-bottom: 8px;
         }
 
         .subtitle {
-            color: #4B5563;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 500;
+            color: var(--text-soft);
+            letter-spacing: 0.5px;
         }
 
-        /* --- Glass Buttons --- */
+        /* ---- Liquid Glass Buttons ---- */
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 13px;
         }
 
         .btn {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 30px;
-            border-radius: 9999px; 
+            padding: 17px 26px 17px 22px;
+            border-radius: 100px;
             text-decoration: none;
             cursor: pointer;
+            font-family: 'Outfit', sans-serif;
             font-weight: 600;
-            font-size: 1.05rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            
-            /* Glass styling for buttons */
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(4px);
-            color: #1F2937;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-size: 1rem;
+            color: var(--text-dark);
+            border: 1px solid rgba(255,255,255,0.72);
+            outline: none;
+            background: linear-gradient(
+                130deg,
+                rgba(255,255,255,0.62) 0%,
+                rgba(255,255,255,0.22) 50%,
+                rgba(255,255,255,0.40) 100%
+            );
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            box-shadow:
+                0 2px 0 rgba(255,255,255,0.95) inset,
+                0 -1px 0 rgba(0,0,0,0.04) inset,
+                0 8px 24px -10px rgba(10,30,60,0.22),
+                0 2px 8px -2px rgba(10,30,60,0.10);
+            transition: all 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+            overflow: hidden;
+            animation: btnSlide 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        /* --- Hover State (Ref: Black Pill from Image) --- */
+        .btn:nth-child(1) { animation-delay: 0.15s; }
+        .btn:nth-child(2) { animation-delay: 0.25s; }
+        .btn:nth-child(3) { animation-delay: 0.35s; }
+        .btn:nth-child(4) { animation-delay: 0.45s; }
+
+        @keyframes btnSlide {
+            from { opacity: 0; transform: translateX(-16px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Liquid shimmer surface */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -60%; right: -20%;
+            height: 50%;
+            background: linear-gradient(
+                95deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.75) 40%,
+                rgba(255,255,255,0.45) 55%,
+                rgba(255,255,255,0) 100%
+            );
+            border-radius: 100px 100px 0 0;
+            pointer-events: none;
+            transition: left 0.5s ease;
+        }
+
+        /* Subtle color tint per button */
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 100px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+        }
+
+        .btn:nth-child(1)::after { background: linear-gradient(135deg, rgba(168,216,255,0.35) 0%, transparent 60%); }
+        .btn:nth-child(2)::after { background: linear-gradient(135deg, rgba(255,201,176,0.35) 0%, transparent 60%); }
+        .btn:nth-child(3)::after { background: linear-gradient(135deg, rgba(168,240,208,0.35) 0%, transparent 60%); }
+        .btn:nth-child(4)::after { background: linear-gradient(135deg, rgba(200,184,255,0.35) 0%, transparent 60%); }
+
         .btn:hover {
-            background-color: #111827; /* Dark transition from image */
-            color: #FFFFFF;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
-            backdrop-filter: none;
-            border-color: #111827;
+            transform: translateY(-3px) scale(1.015);
+            border-color: rgba(255,255,255,0.9);
+            box-shadow:
+                0 2px 0 rgba(255,255,255,0.98) inset,
+                0 -1px 0 rgba(0,0,0,0.04) inset,
+                0 18px 36px -10px rgba(10,30,60,0.22),
+                0 4px 12px -2px rgba(10,30,60,0.12);
         }
 
-        .btn-icon-right {
-            font-size: 1.4rem;
-            transition: transform 0.3s ease;
+        .btn:hover::before {
+            left: 60%;
+            transition: left 0.6s ease;
         }
 
-        .btn:hover .btn-icon-right {
-            transform: translateX(5px) scale(1.1);
+        .btn:hover::after {
+            opacity: 1;
         }
 
-        .footer-note {
-            margin-top: 40px;
-            color: #6B7280;
-            font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: 1px;
+        .btn:active {
+            transform: translateY(0) scale(0.99);
         }
 
-        /* --- Update Badge --- */
-        .update-badge {
-            display: inline-block;
+        .btn-label {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-emoji {
+            font-size: 1.3rem;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+            flex-shrink: 0;
+        }
+
+        .btn-text {
+            font-size: 0.985rem;
+        }
+
+        .btn-arrow {
+            position: relative;
+            z-index: 2;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .btn:hover .btn-arrow {
+            transform: translateX(4px);
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Update badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.62rem;
             font-weight: 700;
-            padding: 3px 10px;
+            padding: 3px 9px;
             border-radius: 999px;
-            margin-left: 8px;
+            letter-spacing: 0.6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.35);
+            animation: pulseBadge 2.5s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.05); }
+        @keyframes pulseBadge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.75; }
         }
 
-        /* --- Glass Modal --- */
-        .modal {
+        /* Lock state */
+        .btn-locked .btn-arrow {
+            background: rgba(200,184,255,0.4);
+        }
+
+        /* Footer */
+        .footer-note {
+            text-align: center;
+            margin-top: 36px;
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-soft);
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .footer-note::before, .footer-note::after {
+            content: '·';
+            margin: 0 10px;
+            opacity: 0.5;
+        }
+
+        /* ============ MODALS ============ */
+        .modal-backdrop {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(8px) saturate(120%);
-            -webkit-backdrop-filter: blur(8px) saturate(120%);
-            justify-content: center;
+            inset: 0;
+            z-index: 100;
+            background: rgba(10, 22, 50, 0.30);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
             align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .modal-content {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            padding: 40px;
-            border-radius: 30px;
-            width: 90%;
+        .modal-backdrop.open {
+            display: flex;
+            animation: backdropIn 0.3s ease;
+        }
+
+        @keyframes backdropIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            background: linear-gradient(
+                160deg,
+                rgba(255,255,255,0.75) 0%,
+                rgba(255,255,255,0.45) 100%
+            );
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.85);
+            box-shadow:
+                0 2px 0 rgba(255,255,255,0.95) inset,
+                0 50px 100px -20px rgba(10,20,50,0.25);
+            padding: 44px 40px;
+            width: 100%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            animation: modalPop 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
         }
 
-        .modal-content input {
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.88) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 45%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 100%);
+            border-radius: 32px 32px 60% 60%;
+            pointer-events: none;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 14px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .modal-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 0.92rem;
+            color: var(--text-soft);
+            font-weight: 500;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        /* Password input */
+        .input-wrap {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .input-wrap input {
             width: 100%;
-            padding: 16px 24px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 12px;
+            padding: 15px 22px;
+            background: rgba(255,255,255,0.55);
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 100px;
+            font-family: 'Outfit', sans-serif;
             font-size: 1rem;
-            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-dark);
             text-align: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            outline: none;
+            box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset, 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.25s ease;
         }
 
-        .modal-content .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 12px;
-            border: none;
+        .input-wrap input::placeholder { color: #9ab0c8; }
+
+        .input-wrap input:focus {
+            background: rgba(255,255,255,0.78);
+            border-color: rgba(168,216,255,0.9);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset, 0 0 0 4px rgba(168,216,255,0.25);
+        }
+
+        /* Modal buttons */
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.8);
+            font-family: 'Outfit', sans-serif;
             font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
-            width: 100%;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .modal-content .submit-btn:hover {
+        .modal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: rgba(255,255,255,0.5);
+            border-radius: 100px 100px 80% 80%;
+            pointer-events: none;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255,255,255,0.5);
+            color: var(--text-mid);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset;
+        }
+
+        .modal-btn-cancel:hover {
+            background: rgba(255,255,255,0.7);
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-btn-confirm {
+            flex: 2;
+            background: linear-gradient(135deg, rgba(100,120,220,0.85) 0%, rgba(118,75,162,0.85) 100%);
+            color: white;
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset, 0 8px 24px rgba(100,120,220,0.3);
+        }
+
+        .modal-btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset, 0 12px 32px rgba(100,120,220,0.4);
+        }
+
+        /* Shutdown modal specific */
+        .shutdown-modal-box {
+            max-width: 440px;
+        }
+
+        .shutdown-desc {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .shutdown-desc strong {
+            color: var(--text-dark);
+        }
+
+        .portal-btn {
+            display: block;
+            width: 100%;
+            padding: 17px 28px;
+            background: linear-gradient(135deg, rgba(100,120,220,0.85) 0%, rgba(118,75,162,0.85) 100%);
+            color: white;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.35);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset, 0 8px 24px rgba(100,120,220,0.35);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .portal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: rgba(255,255,255,0.15);
+            border-radius: 100px;
+            pointer-events: none;
+        }
+
+        .portal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset, 0 14px 36px rgba(100,120,220,0.45);
+        }
+
+        .skip-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 28px;
+            background: rgba(255,255,255,0.45);
+            color: var(--text-mid);
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.8);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 2px 0 rgba(255,255,255,0.9) inset;
+        }
+
+        .skip-btn:hover {
+            background: rgba(255,255,255,0.65);
+            transform: translateY(-2px);
         }
 
         @media (max-width: 480px) {
-            .container { padding: 35px 20px; border-radius: 30px; }
+            .glass-panel { padding: 36px 22px 40px; border-radius: 32px; }
+            h1 { font-size: 1.75rem; }
+            .modal-box { padding: 36px 24px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+<!-- Aurora background -->
+<div class="aurora" aria-hidden="true">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+    <div class="aurora-blob blob-4"></div>
+    <div class="aurora-blob blob-5"></div>
+</div>
+<div class="noise" aria-hidden="true"></div>
+
+<!-- Main card -->
+<div class="card">
+    <div class="glass-panel">
         <header class="header">
-            <img src="logo.png" alt="LGU Gabaldon Logo" class="logo">
+            <div class="logo-wrap">
+                <div class="logo-ring"></div>
+                <div class="logo-ring-inner"></div>
+                <img src="logo.png" alt="LGU Gabaldon Logo" class="logo">
+            </div>
             <h1>Form Generator Hub</h1>
-            <p class="subtitle">LGU Gabaldon Document Services</p>
+            <p class="subtitle">LGU Gabaldon · Document Services</p>
         </header>
 
         <nav class="button-group">
             <a href="accomplishment-generator.html" class="btn">
-                <span>Accomplishment Report</span>
-                <span class="btn-icon-right">📊</span>
+                <span class="btn-label">
+                    <span class="btn-emoji">📊</span>
+                    <span class="btn-text">Accomplishment Report</span>
+                </span>
+                <span class="btn-arrow">→</span>
             </a>
+
             <a href="TravelOrder_LocatorSlip.html" class="btn">
-                <span>Travel Order / Locator Slip</span>
-                <span class="btn-icon-right">✈️</span>
+                <span class="btn-label">
+                    <span class="btn-emoji">✈️</span>
+                    <span class="btn-text">Travel Order / Locator Slip</span>
+                </span>
+                <span class="btn-arrow">→</span>
             </a>
+
             <a href="driversTripTicket.html" class="btn">
-                <span>Driver's Trip Ticket <span class="update-badge">New Format</span></span>
-                <span class="btn-icon-right">🚗</span>
+                <span class="btn-label">
+                    <span class="btn-emoji">🚗</span>
+                    <span class="btn-text">Driver's Trip Ticket</span>
+                    <span class="badge">New</span>
+                </span>
+                <span class="btn-arrow">→</span>
             </a>
-            <a href="#" id="appointment-btn" class="btn">
-                <span>Appointment Letter</span>
-                <span class="btn-icon-right">🔒</span>
+
+            <a href="#" id="appointment-btn" class="btn btn-locked">
+                <span class="btn-label">
+                    <span class="btn-emoji">🔐</span>
+                    <span class="btn-text">Appointment Letter</span>
+                </span>
+                <span class="btn-arrow">→</span>
             </a>
         </nav>
 
-        <div class="footer-note">MABUHAY!</div>
+        <div class="footer-note">Mabuhay</div>
     </div>
+</div>
 
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <h2 style="font-size: 2.5rem; margin-bottom: 10px;">🔒</h2>
-            <p style="margin-bottom: 20px; color: #4B5563; font-weight: 500;">Authorized Personnel Only</p>
-            <input type="password" id="auth-password" placeholder="Enter password">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="closeModal()" style="flex:1; background:#E5E7EB; border:none; padding:14px; border-radius:999px; cursor:pointer; font-weight:600;">Cancel</button>
-                <button id="auth-submit" class="submit-btn" style="flex:2;">Confirm Access</button>
-            </div>
+<!-- Auth Modal -->
+<div id="auth-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Authorized Personnel Only">
+    <div class="modal-box">
+        <span class="modal-icon">🔒</span>
+        <h2 class="modal-title">Restricted Access</h2>
+        <p class="modal-subtitle">Authorized personnel only.<br>Please enter your password to continue.</p>
+        <div class="input-wrap">
+            <input type="password" id="auth-password" placeholder="Enter password" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-cancel" onclick="closeAuthModal()">Cancel</button>
+            <button class="modal-btn modal-btn-confirm" id="auth-submit">Confirm Access</button>
         </div>
     </div>
+</div>
 
-    <div id="shutdown-modal" class="modal">
-        <div class="modal-content" style="max-width: 450px;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 15px;">⚠️</h2>
-            <h3 style="font-size: 1.4rem; color: #111827; margin-bottom: 15px; font-weight: 700;">Important Notice</h3>
-            <p style="margin-bottom: 20px; color: #4B5563; font-weight: 500; line-height: 1.6;">
-                The Form Generator Hub will be <strong>shut down soon</strong>. To continue accessing this service, you need to create an account in our new portal.
-            </p>
-            <div style="display: flex; gap: 12px; flex-direction: column;">
-                <a href="#" id="portal-link" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 28px; border-radius: 12px; text-decoration: none; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(102, 126, 234, 0.3)'">
-                    Create Account in Portal →
-                </a>
-                <button onclick="closeShutdownModal()" style="background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.7); padding: 16px 28px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #111827; font-size: 1rem;" onmouseover="this.style.background='rgba(255, 255, 255, 0.8)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.6)'; this.style.transform='translateY(0)'">
-                    Continue (Temporary Access)
-                </button>
-            </div>
-        </div>
+<!-- Shutdown Modal -->
+<div id="shutdown-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Important Notice">
+    <div class="modal-box shutdown-modal-box">
+        <span class="modal-icon">⚠️</span>
+        <h2 class="modal-title">Important Notice</h2>
+        <p class="shutdown-desc">
+            The Form Generator Hub will be <strong>shut down soon</strong>. To continue accessing this service, please create an account in our new portal.
+        </p>
+        <a href="#" id="portal-link" class="portal-btn">Create Account in Portal →</a>
+        <button class="skip-btn" onclick="closeShutdownModal()">Continue with Temporary Access</button>
     </div>
+</div>
 
-    <script>
-        const modal = document.getElementById('auth-modal');
-        const shutdownModal = document.getElementById('shutdown-modal');
-        const passwordInput = document.getElementById('auth-password');
-        const submitBtn = document.getElementById('auth-submit');
-        const portalLink = document.getElementById('portal-link');
+<script>
+    const authModal = document.getElementById('auth-modal');
+    const shutdownModal = document.getElementById('shutdown-modal');
+    const passwordInput = document.getElementById('auth-password');
+    const authSubmit = document.getElementById('auth-submit');
+    const portalLink = document.getElementById('portal-link');
 
-        // Show shutdown notification on page load
-        window.addEventListener('load', () => {
-            shutdownModal.style.display = 'flex';
-        });
+    // Show shutdown on load
+    window.addEventListener('load', () => {
+        shutdownModal.classList.add('open');
+    });
 
-        function closeShutdownModal() {
-            shutdownModal.style.display = 'none';
-        }
+    function closeShutdownModal() {
+        shutdownModal.classList.remove('open');
+    }
 
-        // Portal link - update this URL to your actual portal
-        portalLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Portal registration URL
-            window.location.href = 'https://lgugabaldon.liveblog365.com/register.php';
-        });
+    portalLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'https://lgugabaldon.liveblog365.com/register.php';
+    });
 
-        document.getElementById('appointment-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.style.display = 'flex';
-            passwordInput.focus();
-        });
+    document.getElementById('appointment-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        authModal.classList.add('open');
+        setTimeout(() => passwordInput.focus(), 100);
+    });
 
-        function closeModal() {
-            modal.style.display = 'none';
+    function closeAuthModal() {
+        authModal.classList.remove('open');
+        passwordInput.value = '';
+    }
+
+    authSubmit.addEventListener('click', () => {
+        if (passwordInput.value === atob('aHJtbzIwMjU=')) {
+            window.location.href = 'lettergenerator.html';
+        } else {
+            passwordInput.style.borderColor = 'rgba(255,100,100,0.7)';
+            passwordInput.style.boxShadow = '0 0 0 4px rgba(255,100,100,0.15), 0 2px 0 rgba(255,255,255,0.9) inset';
             passwordInput.value = '';
+            setTimeout(() => {
+                passwordInput.style.borderColor = '';
+                passwordInput.style.boxShadow = '';
+            }, 1200);
         }
+    });
 
-        submitBtn.addEventListener('click', () => {
-            if (passwordInput.value === atob('aHJtbzIwMjU=')) {
-                window.location.href = 'lettergenerator.html';
-            } else {
-                alert('Access Denied');
-                passwordInput.value = '';
-            }
-        });
+    passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') authSubmit.click();
+    });
 
-        window.onclick = (e) => { 
-            if (e.target === modal) closeModal();
-            if (e.target === shutdownModal) closeShutdownModal();
-        };
-    </script>
+    // Close on backdrop click
+    authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuthModal();
+    });
+    shutdownModal.addEventListener('click', (e) => {
+        if (e.target === shutdownModal) closeShutdownModal();
+    });
+</script>
 </body>
 </html>

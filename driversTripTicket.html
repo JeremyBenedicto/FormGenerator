@@ -126,7 +126,7 @@
             overflow: hidden;
         }
 
-        .p-col-left { flex: 1.6; display: flex; flex-direction: column; }
+        .p-col-left { flex: 1.6; display: flex; flex-direction: column; min-width: 0; }
         .p-col-right { flex: 1; display: flex; flex-direction: column; }
 
         /* Generic Field Styles */
@@ -655,9 +655,9 @@ return {
                                 <span class="p-label">PLATE NO:</span>
                                 <span class="p-value">${data.plateNo}</span>
                             </div>
-                            <div class="p-row">
+                            <div class="p-row p-row-wrap">
                                 <span class="p-label">DESTINATION:</span>
-                                <span class="p-value">${data.placeVisited}</span>
+                                <span class="p-value p-value-wrap">${data.placeVisited}</span>
                             </div>
                             <div class="p-row p-row-wrap">
                                 <span class="p-label">PURPOSE:</span>
